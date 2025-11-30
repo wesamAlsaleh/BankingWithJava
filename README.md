@@ -1,4 +1,4 @@
 ## This is project one
 
-* Developed by Java 17.
+* Developed using Java version 17.
 * Due date: 9 Dec 2025.
