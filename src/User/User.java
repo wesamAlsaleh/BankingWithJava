@@ -71,4 +71,17 @@ public class User {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+    public String getUserRecord() {
+        return String.format(
+                "First_Name:%s, Last_Name:%s, Email:%s, Password: %s, Role: %s, Created_At: %s, Updated_At: %s",
+                firstName,
+                lastName,
+                email,
+                password,
+                role,
+                createdAt,
+                updatedAt
+        );
+    }
 }

@@ -1,0 +1,1 @@
+First_Name:wesam, Last_Name:muneer, Email:wesammuneer@gmail.com, Password: $2a$10$I2yN5N4sj28MyiwHljc1geOiSJiQWngeYPF5KoUrjOsEJ1cOZdyZO, Role: Customer, Created_At: 2025-12-02T01:37:06.125880900, Updated_At: 2025-12-02T01:37:06.125880900

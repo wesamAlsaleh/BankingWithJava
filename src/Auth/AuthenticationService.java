@@ -24,7 +24,6 @@ public class AuthenticationService {
         var indexesPath = "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\user_index.txt";
         var recordsPath = "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\users";
 
-
         while (true) {
             // store the first name
             System.out.println("What is your first name?");
@@ -84,7 +83,7 @@ public class AuthenticationService {
                 // create new file to store the new user record
                 try {
                     // prepare the new file name to be created
-                    var fileName = id + ".txt";
+                    var fileName = "Customer-" + user.getFirstName() + "_" + user.getLastName() + "-" + user.getId() + ".txt";
 
                     // prepare the path of the new record
                     var newRecordPath = recordsPath + "\\" + fileName;
@@ -97,6 +96,7 @@ public class AuthenticationService {
                         // successful message
                         System.out.println("User with the ID " + id + " created successfully!");
                     } else {
+                        // if the file with the same name exits
                         System.out.println("File already exists.");
                     }
 
@@ -104,7 +104,7 @@ public class AuthenticationService {
                     try (FileWriter writer = new FileWriter(newRecordPath)) {
                         // write the user record
                         // Customer-<CustomerName>-<CustomerID>
-                        writer.write("Customer-" + user.getFullName() + "-" + user.getId());
+                        writer.write(user.getUserRecord());
                     } catch (IOException e) {
                         System.out.println("Something went wrong while writing the indexes. Please try again.");
                         System.out.println(e.getMessage());
