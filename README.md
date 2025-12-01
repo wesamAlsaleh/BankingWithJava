@@ -1,4 +1,6 @@
-## This is project one
+# Banking With Java
 
-* Developed using Java version 17.
-* Due date: 9 Dec 2025.
+This is project one in General Assembly Java bootcamp, it's about creating a small bank system with authentication functionalities.
+
+
+[//]: # (## Entity Relation Diagram)
