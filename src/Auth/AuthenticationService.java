@@ -1,8 +1,6 @@
 package Auth;
 
-import UI.AuthUi;
 import User.User;
-import User.dtos.RegisterDto;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,8 +20,10 @@ public class AuthenticationService {
         // initial message
         System.out.println("Welcome to GA01 Bank");
 
-        // index file path
-        var path = "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\user_index.txt";
+        // path's for the files
+        var indexesPath = "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\user_index.txt";
+        var recordsPath = "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\users";
+
 
         while (true) {
             // store the first name
@@ -48,7 +48,7 @@ public class AuthenticationService {
             // if no error then create new user
             if (reply.isEmpty()) {
                 // Get the index file (make sure of the path in WIN/MACOS)
-                File fileObject = new File(path);
+                File fileObject = new File(indexesPath);
 
                 // index container
                 long id = 0; // with initial value just in case
@@ -65,7 +65,7 @@ public class AuthenticationService {
                         id++;
 
                         // update the index file with the new index
-                        try (FileWriter writer = new FileWriter(path)) {
+                        try (FileWriter writer = new FileWriter(indexesPath)) {
                             // write the new id as string
                             writer.write(String.valueOf(id));
                         } catch (IOException e) {
@@ -81,8 +81,39 @@ public class AuthenticationService {
                 // create user record and customer record
                 var user = new User(id, firstName, lastName, email, password);
 
-                // successful message
-                System.out.println("User created!");
+                // create new file to store the new user record
+                try {
+                    // prepare the new file name to be created
+                    var fileName = id + ".txt";
+
+                    // prepare the path of the new record
+                    var newRecordPath = recordsPath + "\\" + fileName;
+
+                    // prepare the file object to create the text (id.txt)
+                    File newFileObject = new File(newRecordPath);
+
+                    // try to create the file
+                    if (newFileObject.createNewFile()) {
+                        // successful message
+                        System.out.println("User with the ID " + id + " created successfully!");
+                    } else {
+                        System.out.println("File already exists.");
+                    }
+
+                    // add the record to the created file
+                    try (FileWriter writer = new FileWriter(newRecordPath)) {
+                        // write the user record
+                        // Customer-<CustomerName>-<CustomerID>
+                        writer.write("Customer-" + user.getFullName() + "-" + user.getId());
+                    } catch (IOException e) {
+                        System.out.println("Something went wrong while writing the indexes. Please try again.");
+                        System.out.println(e.getMessage());
+                    }
+
+                } catch (IOException e) {
+                    System.out.println("Something went wrong while writing the new user record. Please try again.");
+//                    e.printStackTrace(); // Print error details
+                }
 
                 // exit the loop
                 break;
