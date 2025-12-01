@@ -11,6 +11,32 @@ public class User {
     private UserRole role;
     private int fraudAttemptsCount;
     private LocalDateTime lockUntil;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
+    // default constructor
+    public User(String firstName, String lastName, String email, String password) {
+        this.id = null;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = UserRole.Customer;
+        this.fraudAttemptsCount  = 0;
+        this.lockUntil = null;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", lockUntil=" + lockUntil +
+                '}';
+    }
 }
