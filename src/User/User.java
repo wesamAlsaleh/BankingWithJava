@@ -15,28 +15,29 @@ public class User {
     private LocalDateTime updatedAt;
 
     // default constructor
-    public User(String firstName, String lastName, String email, String password) {
-        this.id = null;
+    public User(Long id, String firstName, String lastName, String email, String password) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.role = UserRole.Customer;
-        this.fraudAttemptsCount  = 0;
+        this.fraudAttemptsCount = 0;
         this.lockUntil = null;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+
     @Override
     public String toString() {
         return "User{" +
-                "firstName='" + firstName + '\'' +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
-                ", lockUntil=" + lockUntil +
                 '}';
     }
 }

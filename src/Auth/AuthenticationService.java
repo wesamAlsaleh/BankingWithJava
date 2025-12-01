@@ -4,6 +4,10 @@ import UI.AuthUi;
 import User.User;
 import User.dtos.RegisterDto;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class AuthenticationService {
@@ -12,9 +16,14 @@ public class AuthenticationService {
 
     // function to register a new user
     public void register() {
+        // response container
         String reply;
 
+        // initial message
         System.out.println("Welcome to GA01 Bank");
+
+        // index file path
+        var path = "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\user_index.txt";
 
         while (true) {
             // store the first name
@@ -38,22 +47,52 @@ public class AuthenticationService {
 
             // if no error then create new user
             if (reply.isEmpty()) {
-                // create user record and customer record
-                var user = new User(firstName, lastName, email, password);
+                // Get the index file (make sure of the path in WIN/MACOS)
+                File fileObject = new File(path);
 
-                System.out.println(user);
+                // index container
+                long id = 0; // with initial value just in case
+
+                // try to get the last id number in the system from the index file
+                try (Scanner scanner = new Scanner(fileObject)) {
+                    // While there is lines to read
+                    while (scanner.hasNextLine()) {
+                        // read the index
+                        String index = scanner.nextLine();
+
+                        // convert it to long and then increase it by one
+                        id = Long.parseLong(index);
+                        id++;
+
+                        // update the index file with the new index
+                        try (FileWriter writer = new FileWriter(path)) {
+                            // write the new id as string
+                            writer.write(String.valueOf(id));
+                        } catch (IOException e) {
+                            System.out.println("Something went wrong while writing the indexes. Please try again.");
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                } catch (FileNotFoundException e) {
+                    System.out.println("Something went wrong while reading the indexes. Please try again.");
+                    System.out.println(e.getMessage());
+                }
+
+                // create user record and customer record
+                var user = new User(id, firstName, lastName, email, password);
+
+                // successful message
+                System.out.println("User created!");
 
                 // exit the loop
                 break;
             } else {
                 // print the errors available
                 System.out.println(reply);
-                System.out.println("Please try again with a valid credentials");
                 System.out.println(" ");
             }
         }
     }
-
 
     // todo: function to log in the user
 
@@ -101,7 +140,7 @@ public class AuthenticationService {
 
         // basic email validation
         if (!email.contains("@") || !email.contains(".")) {
-            return "Email is not valid!";
+            return "Email is not valid, please add a valid email!";
         }
 
         // basic email validation
