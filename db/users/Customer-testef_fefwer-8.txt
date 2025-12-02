@@ -1,0 +1,1 @@
+First_Name:testef, Last_Name:fefwer, Email:fwerwre@fe.com, Password: $2a$10$CCw.43TGi7HTuHclhqpfj.CytX8DgINDXGSeCQabHmaNJ69fygu2e, Role: Customer, Created_At: 2025-12-02T03:41:45.404798700, Updated_At: 2025-12-02T03:41:45.404798700
