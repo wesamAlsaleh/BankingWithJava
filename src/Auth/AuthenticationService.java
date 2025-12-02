@@ -94,4 +94,10 @@ public class AuthenticationService {
             break;
         }
     }
+
+    // function to test the get user by id
+    public void testGetUser() {
+        var user = userRepository.getUserById(10);
+        System.out.println(user);
+    }
 }
