@@ -38,7 +38,7 @@ public class AuthenticationService {
             var password = bcryptService.hashPassword(input.nextLine());
 
             // validate the input
-            reply = userValidation.validateUserInput(firstName, lastName, email, password);
+            reply = userValidation.validateRegisterInput(firstName, lastName, email, password);
 
             // if no error then create new user
             if (reply.isEmpty()) {
@@ -51,7 +51,7 @@ public class AuthenticationService {
                 // create user file
                 userRepository.saveUser(user);
 
-                // exit the loop
+                // exit the while loop
                 break;
             } else {
                 // print the errors available
@@ -62,4 +62,36 @@ public class AuthenticationService {
     }
 
     // todo: function to log in the user
+    public void login() {
+        // response container
+        String reply;
+
+        // initial message
+        System.out.println("Welcome to GA01 Bank");
+
+        // exit flag
+        var exitLogin = false;
+
+        while (true) {
+            // get the email from the user
+            System.out.println("Enter your email address:");
+            var email = input.nextLine();
+
+            // get the password from the user
+            System.out.println("Enter your password:");
+            var password = input.nextLine();
+
+            // validate the input
+            reply = userValidation.validateLoginInput(email, password);
+
+            // if no error then try to log in the user
+            if (reply.isEmpty()) {
+                // verify the password
+
+            }
+
+            // exit the while loop
+            break;
+        }
+    }
 }

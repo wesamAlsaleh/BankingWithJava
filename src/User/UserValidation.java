@@ -90,8 +90,8 @@ public class UserValidation {
         return "";
     }
 
-    // function to check if there is a validation issue in the input
-    public String validateUserInput(
+    // function to check if there is a validation issue in the input for the registeration
+    public String validateRegisterInput(
             String firstName,
             String lastName,
             String email,
@@ -123,7 +123,32 @@ public class UserValidation {
             errors.append(emailError).append("\n");
         }
 
-        // validate the last name
+        // validate the password
+        var passwordError = validatePassword(password);
+
+        // if there is an error add it to the string
+        if (!passwordError.isEmpty()) {
+            errors.append(passwordError).append("\n");
+        }
+
+        // return the errors available
+        return errors.toString().trim();
+    }
+
+    // function to check if there is a validation error for the login
+    public String validateLoginInput(String email, String password) {
+        // String to contain the errors
+        StringBuilder errors = new StringBuilder();
+
+        // validate the email todo: refactor duplicate code
+        var emailError = validateEmail(email);
+
+        // if there is an error add it to the string
+        if (!emailError.isEmpty()) {
+            errors.append(emailError).append("\n");
+        }
+
+        // validate the password
         var passwordError = validatePassword(password);
 
         // if there is an error add it to the string

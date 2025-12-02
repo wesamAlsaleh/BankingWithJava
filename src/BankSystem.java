@@ -8,6 +8,5 @@ public class BankSystem {
         AuthenticationService authenticationService = new AuthenticationService();
 
         authenticationService.register();
-
     }
 }

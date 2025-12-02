@@ -28,6 +28,18 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
+    // custom constructor
+    public User(Long id, String firstName, String lastName, String email, String password, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
     public Long getId() {
         return id;
     }
@@ -72,6 +84,7 @@ public class User {
         return updatedAt;
     }
 
+    // function to help writing the user record in the text
     public String getUserRecord() {
         return String.format(
                 "First_Name:%s, Last_Name:%s, Email:%s, Password: %s, Role: %s, Created_At: %s, Updated_At: %s",
@@ -83,5 +96,21 @@ public class User {
                 createdAt,
                 updatedAt
         );
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", fraudAttemptsCount=" + fraudAttemptsCount +
+                ", lockUntil=" + lockUntil +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }
