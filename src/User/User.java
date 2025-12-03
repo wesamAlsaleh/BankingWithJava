@@ -126,6 +126,17 @@ public class User {
         );
     }
 
+    // function to check if the user is locked
+    public boolean isLocked() {
+        // if the field is null return false
+        if (this.lockUntil == null) {
+            return false;
+        }
+
+        // if the lock time is after the current time return true otherwise false
+        return getLockUntil().isAfter(LocalDateTime.now());
+    }
+
     @Override
     public String toString() {
         return "User{" +

@@ -102,40 +102,32 @@ public class AuthenticationService {
                     // wrong password message
                     printMessage("Wrong password, try again!");
 
-                    // update the user file record
-                    var doneIncreaseOperation = userRepository.increaseFraudAttemptsCounter(user.getId());
+                    // increase the attempts counter
+                    userRepository.increaseFraudAttemptsCounter(user.getId());
 
-                    // if failed to do the increment
-                    if (!doneIncreaseOperation) {
-                        System.out.println("Failed to increase the fraud counter");
-                    }
+                    // if the counter is more than 3 terminate the login attempt
+                    if (user.getFraudAttemptsCount() >= 3) {
+                        // locked message
+                        printMessage("This account has already been locked! try after one minute");
 
-                    // if the counter is more than 3 lock the account
-                    if (user.getFraudAttemptsCount() + 1 > 3) {
-                        // add 1 minute lock
-                        user.setLockUntil(LocalDateTime.now().plusMinutes(1));
-
-                        // todo: update the file
-
-                        // restart the loop
-                        continue;
-                    }
-                } // end of if statement of wrong password
-
-                // if the account is locked before (lockUntil is not null)
-                if (user.getLockUntil() != null) {
-                    // check if the account is locked (lock time is after the current time)
-                    if (user.getLockUntil().isAfter(LocalDateTime.now())) {
-                        // locked account message
-                        printMessage("Your account has been locked! please try again later.");
-
-                        // terminate the attempt
+                        // exit the while loop
                         break;
                     }
+
+                    continue;  // restart the loop
+                } // end of if statement of wrong password
+
+                // check if the account is locked
+                if (user.isLocked()) {
+                    // locked account message
+                    printMessage("Your account has been locked! please try again later.");
+
+                    // terminate the attempt
+                    break;
                 }
 
-                // todo: remove this line
-                System.out.println("logged in successfully");
+                // successfully message
+                printMessage("logged in successfully");
 
                 // exit the loop
                 break;
@@ -150,7 +142,7 @@ public class AuthenticationService {
 
     // function to test the get user by id
     public void testGetUser() {
-        var user = userRepository.getUserByEmail("wesam@gmail.com");
+        var user = userRepository.getUserById(1);
         System.out.println(user);
     }
 

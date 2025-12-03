@@ -7,10 +7,10 @@ public class BankSystem {
     public static void main(String[] args) {
         AuthenticationService authenticationService = new AuthenticationService();
 
-        authenticationService.testGetUser();
+//        authenticationService.testGetUser();
 
 //        authenticationService.register();
-//        authenticationService.login();
+        authenticationService.login();
     }
 }
 
