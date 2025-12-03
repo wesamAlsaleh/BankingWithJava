@@ -10,6 +10,7 @@ public class BankSystem {
 //        authenticationService.testGetUser();
 
 //        authenticationService.register();
+
         authenticationService.login();
     }
 }

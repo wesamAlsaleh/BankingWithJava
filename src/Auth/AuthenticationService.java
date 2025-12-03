@@ -14,6 +14,12 @@ public class AuthenticationService {
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
 
+    // function to print message with space below in the terminal
+    private void printMessage(String message) {
+        System.out.println(message);
+        System.out.println(" ");
+    }
+
     // function to register a new user
     public void register() {
         // response container
@@ -144,11 +150,5 @@ public class AuthenticationService {
     public void testGetUser() {
         var user = userRepository.getUserById(1);
         System.out.println(user);
-    }
-
-    // function to print message with space below in the terminal
-    private void printMessage(String message) {
-        System.out.println(message);
-        System.out.println(" ");
     }
 }
