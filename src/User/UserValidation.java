@@ -73,7 +73,7 @@ public class UserValidation {
         }
 
         // length validation
-        if (password.length() < 30) {
+        if (password.length() > 30) {
             return "Password is too long, please add a valid password!";
         }
 

@@ -1,6 +1,8 @@
 package User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     private Long id;
@@ -29,17 +31,20 @@ public class User {
     }
 
     // custom constructor
-    public User(Long id, String firstName, String lastName, String email, String password, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(Long id, String firstName, String lastName, String email, String password, UserRole role, int fraudAttemptsCount, LocalDateTime lockUntil, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.fraudAttemptsCount = fraudAttemptsCount;
+        this.lockUntil = lockUntil;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
+    // getters
     public Long getId() {
         return id;
     }
@@ -84,15 +89,26 @@ public class User {
         return updatedAt;
     }
 
-    // function to help writing the user record in the text
+    // setters
+    public void setFraudAttemptsCount(int fraudAttemptsCount) {
+        this.fraudAttemptsCount = fraudAttemptsCount;
+    }
+
+    public void setLockUntil(LocalDateTime lockUntil) {
+        this.lockUntil = lockUntil;
+    }
+
+    // function to help writing the user record in the text file
     public String getUserRecord() {
         return String.format(
-                "First_Name:%s, Last_Name:%s, Email:%s, Password: %s, Role: %s, Created_At: %s, Updated_At: %s",
+                "First_Name:%s, Last_Name:%s, Email:%s, Password: %s, Role: %s, fraud_Attempts_Count: %s, LockUntil: %s, Created_At: %s, Updated_At: %s",
                 firstName,
                 lastName,
                 email,
                 password,
                 role,
+                fraudAttemptsCount,
+                lockUntil,
                 createdAt,
                 updatedAt
         );
@@ -114,3 +130,4 @@ public class User {
                 '}';
     }
 }
+

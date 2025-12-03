@@ -1,6 +1,7 @@
 package User;
 
-import Global.utils.DBPaths;
+import Global.Utils.DBPaths;
+import Global.Utils.FileHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,6 +21,7 @@ import java.util.*;
 
 public class UserRepository {
     private final DBPaths dbPaths = new DBPaths();
+    private final FileHandler fileHandler = new FileHandler();
 
     // function to get the next new user id
     public long generateUserId() {
@@ -97,53 +99,161 @@ public class UserRepository {
         }
     }
 
+    // function to get the user record as a file among the user files
+    private File getUserRecord(Long id) {
+        // get the user files
+        var files = getFileContentAsList(dbPaths.getUsersPath());
+
+        // iterate over the files and get the user file by his id
+        for (File file : files) {
+            // if the name contains the user id
+            if (file.getName().endsWith("-" + id + ".txt")) return file;
+        }
+
+        // if the user is not found return null
+        return null;
+    }
+
     // function to find user file by id
     public User getUserById(long id) {
-        // get the users folder as file object
-       var fileObject = new File(dbPaths.getUsersPath());
-
-       // create array of files (users files) from the file object
-        File[] files = Objects.requireNonNull(fileObject.listFiles()); // Throws NullPointerExceptio if null!
-
         // get the user file by his id
-        for (File file : files) {
-            // check if the name contains the id
-            if (file.getName().endsWith("-" + id + ".txt")) {
-                // Read the Users file content
-                try (Scanner scanner = new Scanner(file)) {
-                    // read the content line by line
-                    String recordLine = scanner.nextLine();
+        var userFile = getUserRecord(id);
 
-                    // split the line into parts (ex: index0: First_Name:wesam and index1: Last_Name:muneer ...)
-                    ArrayList<String> parts = new ArrayList<>(List.of(recordLine.split(",")));
+        // return null if the user is not found
+        if (userFile == null) return null;
 
-                    // get the part from the array and then split it two part and take the right part (after the ':')
-                    var firstName = parts.get(0).split(":")[1].trim();
-                    var lastName = parts.get(1).split(":")[1].trim();
-                    var email = parts.get(2).split(":")[1].trim();
-                    var hashedPassword = parts.get(3).split(":")[1].trim();
-                    var role = parts.get(4).split(":")[1].trim();
+        // Read the Users file content
+        try (Scanner scanner = new Scanner(userFile)) {
+            // return the user object
+            return getUserFromRecord(scanner.nextLine(), id);
+        } catch (FileNotFoundException e) {
+            System.out.println("Something went wrong while reading the user file. Please try again.");
+            System.out.println(e.getMessage());
+        } // catch end
 
-                    // for the LocalDateTime, get the part from the array and then get the thing after the ':' (index of ':' + 1)
-                    var createdDate = parts.get(5).substring(parts.get(5).indexOf(':') + 1).trim();
-                    var updatedDate = parts.get(6).substring(parts.get(6).indexOf(':') + 1).trim();
-
-                    return new User(id, firstName, lastName, email, hashedPassword, UserRole.valueOf(role), LocalDateTime.parse(createdDate), LocalDateTime.parse(updatedDate));
-                } catch (FileNotFoundException e) {
-                    System.out.println("Something went wrong while reading the user file. Please try again.");
-                    System.out.println(e.getMessage());
-                } // catch end
-            } // if end
-        } // for end
-
-        return null; // it should never be here
+        // should not reach here
+        return null;
     } // function end
 
     // function to find user by email
-    public void getUserByEmail(String email) {
-        //
+    public User getUserByEmail(String email) {
+        // get the user files as array
+        var userFiles = getFileContentAsList(dbPaths.getUsersPath());
+
+        // read each file until the email match the provided
+        for (File file : userFiles) {
+            // read the file using the scanner
+            try (Scanner scanner = new Scanner(file)) {
+                // read the record line
+                var record = scanner.nextLine();
+
+                // extract the data
+                ArrayList<String> extractedParts = new ArrayList<>(List.of(record.split(",")));
+
+                // id holder
+                var id = 0L;
+
+                // get the email property from the record line
+                var emailFromRecord = extractedParts.get(2).substring(extractedParts.get(2).indexOf(':') + 1).trim();
+
+                // if the provided email match the email in the record, get the full data
+                if (email.equals(emailFromRecord)) {
+                    // get the file name
+                    var fileName = file.getName().replace(".txt", "");
+
+                    // get the id from the file name (get what is after {+1} the last index of -)
+                    id = Long.parseLong(fileName.substring(fileName.lastIndexOf("-") + 1));
+
+                    // return the user object
+                    return getUserFromRecord(record, id);
+                }
+
+                // if the user is not found return null
+                return null;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } // catch end
+        } // for loop end
+
+        // should not reach here
+        return null;
     }
 
+    // function to get the list of files of a folder
+    private File[] getFileContentAsList(String sourcePath) {
+        // create array of list of files from the file object of the provided path
+        return Objects.requireNonNull(new File(sourcePath).listFiles()); // Throws NullPointerExceptio if null!
+    }
 
+    // function to extract user record from the text file
+    public User getUserFromRecord(String userRecord, Long id) {
+        // split the user record line into parts (ex: index0: First_Name:wesam and index1: ,Last_Name:muneer ...)
+        ArrayList<String> parts = new ArrayList<>(List.of(userRecord.split(",")));
+
+        // get the part from the array and then split it two part and take the right part (after the ':')
+        var firstName = parts.get(0).split(":")[1].trim();
+        var lastName = parts.get(1).split(":")[1].trim();
+        var email = parts.get(2).split(":")[1].trim();
+        var hashedPassword = parts.get(3).split(":")[1].trim();
+        var role = parts.get(4).split(":")[1].trim();
+        var fraudAttemptsCount = parts.get(5).split(":")[1].trim();
+
+        // for the LocalDateTime, get the part from the array and then get the thing after the ':' (index of ':' + 1)
+        var lockUntilString = parts.get(6).substring(parts.get(6).indexOf(':') + 1).trim();
+        var createdDate = parts.get(7).substring(parts.get(7).indexOf(':') + 1).trim();
+        var updatedDate = parts.get(8).substring(parts.get(8).indexOf(':') + 1).trim();
+
+        // if the lock until is not null then cast the String to LocalDateTime, otherwise make it null
+        LocalDateTime lockUntil =
+                lockUntilString.equals("null") || lockUntilString.isEmpty()
+                        ? null
+                        : LocalDateTime.parse(lockUntilString);
+
+        // return as User object
+        return new User(
+                id,
+                firstName,
+                lastName,
+                email,
+                hashedPassword,
+                UserRole.valueOf(role),
+                Integer.parseInt(fraudAttemptsCount),
+                lockUntil,
+                LocalDateTime.parse(createdDate),
+                LocalDateTime.parse(updatedDate)
+        );
+    }
+
+    // function to update fraud counter for a user
+    public void increaseFraudAttemptsCounter(Long id) {
+        // get the user record as a file
+        var userFile = getUserRecord(id);
+
+        // return if the user is not found (should not be activated since there is a validation on the parent)
+        if (userFile == null) return;
+
+        // read the content of the file
+        try (Scanner scanner = new Scanner(userFile)) {
+            // get the record line
+            var recordLine = scanner.nextLine();
+
+            // get the user object from the file
+            var user = getUserFromRecord(recordLine, id);
+
+            // get the counter
+
+
+            // update the counter
+            try (FileWriter writer = new FileWriter(userFile.getPath())) {
+                // write operation
+            } catch (IOException e) {
+                System.out.println("Something went wrong while updating the indexes. Please try again.");
+                System.out.println(e.getMessage());
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Something went wrong while reading the user file. Please try again.");
+            System.out.println(e.getMessage());
+        } // catch end
+    }
 
 }

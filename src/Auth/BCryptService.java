@@ -12,11 +12,9 @@ public class BCryptService {
     }
 
     // function to authenticate the user
-    public boolean verifyPassword(String password) {
-        // get the user details that has the email provided
-
-        //  check if the original password is the same as the hashed password
-        return true;
+    public boolean verifyPassword(String rawPassword, String hashedPassword) {
+        // if the raw password is the same as the hashed password return true
+        return BCrypt.checkpw(rawPassword, hashedPassword);
     }
 
 

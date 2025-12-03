@@ -1,16 +1,18 @@
 package Auth;
 
+import Global.Utils.FileHandler;
 import User.User;
 import User.UserRepository;
 import User.UserValidation;
 
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class AuthenticationService {
-    private static final Scanner input = new Scanner(System.in);
-    private static final BCryptService bcryptService = new BCryptService();
-    private static final UserRepository userRepository = new UserRepository();
-    private static final UserValidation userValidation = new UserValidation();
+    private final Scanner input = new Scanner(System.in);
+    private final BCryptService bcryptService = new BCryptService();
+    private final UserRepository userRepository = new UserRepository();
+    private final UserValidation userValidation = new UserValidation();
 
     // function to register a new user
     public void register() {
@@ -69,9 +71,6 @@ public class AuthenticationService {
         // initial message
         System.out.println("Welcome to GA01 Bank");
 
-        // exit flag
-        var exitLogin = false;
-
         while (true) {
             // get the email from the user
             System.out.println("Enter your email address:");
@@ -86,18 +85,71 @@ public class AuthenticationService {
 
             // if no error then try to log in the user
             if (reply.isEmpty()) {
-                // verify the password
+                // get the user that has the email
+                var user = userRepository.getUserByEmail(email);
 
+                // if the user is not available in the system return error
+                if (user == null) {
+                    // not found error:
+                    printMessage("Sorry, that email does not exist in the system!");
+
+                    // restart the loop
+                    continue;
+                }
+
+                // if the password is not correct
+                if (!bcryptService.verifyPassword(password, user.getPassword())) {
+                    // wrong password message
+                    printMessage("Wrong password, try again!");
+
+                    // increase the fraud counter
+                    var updatedCounter = user.getFraudAttemptsCount() + 1;
+                    user.setFraudAttemptsCount(updatedCounter);
+
+                    // update the user file record
+                    userRepository.increaseFraudAttemptsCounter();
+
+                    // if the counter is more than 3 lock the account
+                    if (updatedCounter > 3) {
+                        // add 1 minute lock
+                        user.setLockUntil(LocalDateTime.now().plusMinutes(1));
+
+                        // restart the loop
+                        continue;
+                    }
+                } // end of if statement of wrong password
+
+                // if the account is locked before (lockUntil is not null)
+                if (user.getLockUntil() != null) {
+                    // check the account is locked (lock time is after the current time)
+                    if (user.getLockUntil().isAfter(LocalDateTime.now())) {
+                        // locked account message
+                        printMessage("Your account has been locked! please try again later.");
+
+                        // exit the while loop
+                        break;
+                    }
+                }
+            } else {
+                // print the errors available
+                System.out.println(reply);
+                System.out.println(" ");
             }
+        } // end of while loop
 
-            // exit the while loop
-            break;
-        }
+        // todo: redirect to bank features UI
+        System.out.println("logged in successfully");
     }
 
     // function to test the get user by id
     public void testGetUser() {
         var user = userRepository.getUserById(10);
         System.out.println(user);
+    }
+
+    // function to print message with space below in the terminal
+    private void printMessage(String message) {
+        System.out.println(message);
+        System.out.println(" ");
     }
 }

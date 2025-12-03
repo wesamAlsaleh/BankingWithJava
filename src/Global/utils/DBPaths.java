@@ -1,4 +1,4 @@
-package Global.utils;
+package Global.Utils;
 
 public class DBPaths {
     // function to get the operating system
@@ -18,11 +18,11 @@ public class DBPaths {
     }
 
     // function to map the links based on the OS
-    private String pathBasedOnOs(String winLink, String macLink, String linuxLink) {
+    private String pathBasedOnOs(String winLink, String macLink) {
         if (getOS().equals("windows")) {
             return winLink;
         } else if (getOS().equals("linux")) {
-            return linuxLink;
+            return "";
         } else if (getOS().equals("mac")) {
             return macLink;
         }
@@ -36,8 +36,7 @@ public class DBPaths {
         // return the path of file "user_index.txt" based on the OS
         return pathBasedOnOs(
                 "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\user_index.txt",
-                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/user_index.txt",
-                ""
+                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/user_index.txt"
         );
     }
 
@@ -46,8 +45,7 @@ public class DBPaths {
         // return the path of the users directory based on the OS
         return pathBasedOnOs(
                 "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\users",
-                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/users",
-                ""
+                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/users"
         );
     }
 
