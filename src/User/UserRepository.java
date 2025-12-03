@@ -100,9 +100,9 @@ public class UserRepository {
     }
 
     // function to get the user record as a file among the user files
-    private File getUserRecord(Long id) {
+    private File getUserRecordFile(Long id) {
         // get the user files
-        var files = getFileContentAsList(dbPaths.getUsersPath());
+        var files = getDirectoryContentAsList(dbPaths.getUsersPath());
 
         // iterate over the files and get the user file by his id
         for (File file : files) {
@@ -117,9 +117,9 @@ public class UserRepository {
     // function to find user file by id
     public User getUserById(long id) {
         // get the user file by his id
-        var userFile = getUserRecord(id);
+        var userFile = getUserRecordFile(id);
 
-        // return null if the user is not found
+        // return null if the user file is not found
         if (userFile == null) return null;
 
         // Read the Users file content
@@ -138,12 +138,21 @@ public class UserRepository {
     // function to find user by email
     public User getUserByEmail(String email) {
         // get the user files as array
-        var userFiles = getFileContentAsList(dbPaths.getUsersPath());
+        var userFiles = getDirectoryContentAsList(dbPaths.getUsersPath());
 
         // read each file until the email match the provided
         for (File file : userFiles) {
             // read the file using the scanner
             try (Scanner scanner = new Scanner(file)) {
+                // if there is no content (safety check required by java)
+                if (!scanner.hasNextLine()) {
+                    // it should not be an empty file in the first place
+//                    System.out.println("Skipping empty file...");
+
+                    // keep searching next file
+                    continue;
+                }
+
                 // read the record line
                 var record = scanner.nextLine();
 
@@ -164,13 +173,11 @@ public class UserRepository {
                     // get the id from the file name (get what is after {+1} the last index of -)
                     id = Long.parseLong(fileName.substring(fileName.lastIndexOf("-") + 1));
 
-                    // return the user object
+                    // return as user object
                     return getUserFromRecord(record, id);
                 }
-
-                // if the user is not found return null
-                return null;
             } catch (Exception e) {
+                System.out.println("Something went wrong while reading the user file. Please try again.");
                 throw new RuntimeException(e);
             } // catch end
         } // for loop end
@@ -180,15 +187,21 @@ public class UserRepository {
     }
 
     // function to get the list of files of a folder
-    private File[] getFileContentAsList(String sourcePath) {
+    private File[] getDirectoryContentAsList(String sourcePath) {
         // create array of list of files from the file object of the provided path
         return Objects.requireNonNull(new File(sourcePath).listFiles()); // Throws NullPointerExceptio if null!
     }
 
+    // function to extract user data from the record into array
+    private List<String> extractUserData(String userRecord) {
+        // split the user record line into parts and return it (ex: index0: First_Name:wesam and index1: ,Last_Name:muneer ...)
+        return new ArrayList<>(List.of(userRecord.split(",")));
+    }
+
     // function to extract user record from the text file
     public User getUserFromRecord(String userRecord, Long id) {
-        // split the user record line into parts (ex: index0: First_Name:wesam and index1: ,Last_Name:muneer ...)
-        ArrayList<String> parts = new ArrayList<>(List.of(userRecord.split(",")));
+        // split the user record line into parts
+        var parts = extractUserData(userRecord);
 
         // get the part from the array and then split it two part and take the right part (after the ':')
         var firstName = parts.get(0).split(":")[1].trim();
@@ -225,35 +238,55 @@ public class UserRepository {
     }
 
     // function to update fraud counter for a user
-    public void increaseFraudAttemptsCounter(Long id) {
+    public boolean increaseFraudAttemptsCounter(Long id) {
         // get the user record as a file
-        var userFile = getUserRecord(id);
+        var userFile = getUserRecordFile(id);
 
         // return if the user is not found (should not be activated since there is a validation on the parent)
-        if (userFile == null) return;
+        if (userFile == null) return false;
 
         // read the content of the file
         try (Scanner scanner = new Scanner(userFile)) {
-            // get the record line
-            var recordLine = scanner.nextLine();
+            var originalRecord = scanner.nextLine();
+            // extract the data from the record line
+            var parts = extractUserData(originalRecord);
 
-            // get the user object from the file
-            var user = getUserFromRecord(recordLine, id);
+            // iterate over the parts
+            for (int i = 0; i < parts.size(); i++) {
+                // get the part of each iteration
+                var part = parts.get(i);
 
-            // get the counter
+                // if the part is the counter part
+                if (part.contains("fraud_Attempts_Count")) {
+                    // get the number after the ':'
+                    var count = Integer.parseInt(part.split(":")[1].trim());
 
+                    // increase the count
+                    count = count + 1;
 
-            // update the counter
-            try (FileWriter writer = new FileWriter(userFile.getPath())) {
-                // write operation
+                    // replace the old count in the array
+                    parts.set(i, "fraud_Attempts_Count: " + count);
+
+                    // exit the for loop
+                    break;
+                }
+            }
+
+            // join the array again
+            var newRecord = String.join(",", parts);
+
+            // overwrite the line (false to append)
+            try (FileWriter writer = new FileWriter(userFile, false)) {
+                writer.write(newRecord);
             } catch (IOException e) {
-                System.out.println("Something went wrong while updating the indexes. Please try again.");
-                System.out.println(e.getMessage());
+                System.out.println("Error updating fraud counter: " + e.getMessage());
             }
         } catch (FileNotFoundException e) {
             System.out.println("Something went wrong while reading the user file. Please try again.");
             System.out.println(e.getMessage());
         } // catch end
+
+        return true;
     }
 
 }

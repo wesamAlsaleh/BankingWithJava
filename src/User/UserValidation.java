@@ -73,9 +73,9 @@ public class UserValidation {
         }
 
         // length validation
-        if (password.length() > 30) {
-            return "Password is too long, please add a valid password!";
-        }
+//        if (password.length() > 30) {
+//            return "Password is too long, please add a valid password!";
+//        }
 
         // ensure the password contain letters and numbers
         var hasLetter = password.matches(".*[a-zA-Z].*");

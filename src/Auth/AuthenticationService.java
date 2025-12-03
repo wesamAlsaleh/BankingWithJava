@@ -102,17 +102,20 @@ public class AuthenticationService {
                     // wrong password message
                     printMessage("Wrong password, try again!");
 
-                    // increase the fraud counter
-                    var updatedCounter = user.getFraudAttemptsCount() + 1;
-                    user.setFraudAttemptsCount(updatedCounter);
-
                     // update the user file record
-                    userRepository.increaseFraudAttemptsCounter();
+                    var doneIncreaseOperation = userRepository.increaseFraudAttemptsCounter(user.getId());
+
+                    // if failed to do the increment
+                    if (!doneIncreaseOperation) {
+                        System.out.println("Failed to increase the fraud counter");
+                    }
 
                     // if the counter is more than 3 lock the account
-                    if (updatedCounter > 3) {
+                    if (user.getFraudAttemptsCount() + 1 > 3) {
                         // add 1 minute lock
                         user.setLockUntil(LocalDateTime.now().plusMinutes(1));
+
+                        // update the file
 
                         // restart the loop
                         continue;
@@ -121,7 +124,7 @@ public class AuthenticationService {
 
                 // if the account is locked before (lockUntil is not null)
                 if (user.getLockUntil() != null) {
-                    // check the account is locked (lock time is after the current time)
+                    // check if the account is locked (lock time is after the current time)
                     if (user.getLockUntil().isAfter(LocalDateTime.now())) {
                         // locked account message
                         printMessage("Your account has been locked! please try again later.");

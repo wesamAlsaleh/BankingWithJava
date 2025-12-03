@@ -44,6 +44,18 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
+    // custom construct to update the counter
+    public User(Long id, String firstName, String lastName, String email, String password, UserRole role, int fraudAttemptsCount, LocalDateTime lockUntil) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.fraudAttemptsCount = fraudAttemptsCount;
+        this.lockUntil = lockUntil;
+    }
+
     // getters
     public Long getId() {
         return id;
