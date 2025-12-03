@@ -63,7 +63,7 @@ public class AuthenticationService {
         }
     }
 
-    // todo: function to log in the user
+    // function to log in the user
     public void login() {
         // response container
         String reply;
@@ -115,7 +115,7 @@ public class AuthenticationService {
                         // add 1 minute lock
                         user.setLockUntil(LocalDateTime.now().plusMinutes(1));
 
-                        // update the file
+                        // todo: update the file
 
                         // restart the loop
                         continue;
@@ -129,24 +129,28 @@ public class AuthenticationService {
                         // locked account message
                         printMessage("Your account has been locked! please try again later.");
 
-                        // exit the while loop
+                        // terminate the attempt
                         break;
                     }
                 }
+
+                // todo: remove this line
+                System.out.println("logged in successfully");
+
+                // exit the loop
+                break;
             } else {
                 // print the errors available
-                System.out.println(reply);
-                System.out.println(" ");
+                printMessage(reply);
             }
         } // end of while loop
 
         // todo: redirect to bank features UI
-        System.out.println("logged in successfully");
     }
 
     // function to test the get user by id
     public void testGetUser() {
-        var user = userRepository.getUserById(10);
+        var user = userRepository.getUserByEmail("wesam@gmail.com");
         System.out.println(user);
     }
 
