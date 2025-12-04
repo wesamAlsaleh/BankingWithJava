@@ -21,14 +21,14 @@ public class AnsiPrinter {
 
     // function to print customized title with spaces
     public void printColoredTitle(String textColor, String placeholder) {
-        printColoredLine(textColor, "\n===================================");
+        printColoredLine(textColor, "\n=======================================");
         System.out.println("\t" + placeholder);
-        printColoredLine(textColor, "===================================\n");
+        printColoredLine(textColor, "=======================================\n");
     }
 
     // function to print error message
     public void printError(String placeholder) {
-        System.out.println(RED + placeholder + RESET);
+        System.out.println(RED + placeholder + "\n" + RESET);
     }
 
     // function to print warning message

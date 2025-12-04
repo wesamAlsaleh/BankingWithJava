@@ -1,5 +1,6 @@
 package Auth;
 
+import Global.Utils.AnsiPrinter;
 import User.User;
 import User.UserRepository;
 import User.UserValidation;
@@ -12,6 +13,7 @@ public class AuthenticationService {
     private final BCryptService bcryptService = new BCryptService();
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
+    private static final AnsiPrinter ansiPrinter = new AnsiPrinter();
     private static final UserInterface ui = new UserInterface();
 
     // function to print message with space below in the terminal
@@ -26,7 +28,7 @@ public class AuthenticationService {
         String reply;
 
         // initial message
-        System.out.println("Create new account in GA01 Bank");
+        ansiPrinter.printColoredTitle(AnsiPrinter.CYAN,"Create new account in GA01 Bank");
 
         while (true) {
             // store the first name
@@ -50,6 +52,15 @@ public class AuthenticationService {
 
             // if no error then create new user
             if (reply.isEmpty()) {
+                // check if the email exists in the system
+                if (userRepository.getUserByEmail(email) != null) {
+                    // print error message
+                    ansiPrinter.printError("User with email " + email + " already exists!");
+
+                    // restart the loop
+                    continue;
+                }
+
                 // generate new id
                 var id = userRepository.generateUserId();
 
@@ -63,8 +74,7 @@ public class AuthenticationService {
                 break;
             } else {
                 // print the errors available
-                System.out.println(reply);
-                System.out.println(" ");
+                ansiPrinter.printError(reply);
             }
         }
 
@@ -78,7 +88,7 @@ public class AuthenticationService {
         String reply;
 
         // initial message
-        System.out.println("login to your account in GA01 Bank");
+        ansiPrinter.printColoredTitle(AnsiPrinter.CYAN,"login to your account in GA01 Bank");
 
         while (true) {
             // get the email from the user
@@ -100,7 +110,7 @@ public class AuthenticationService {
                 // if the user is not available in the system return error
                 if (user == null) {
                     // not found error:
-                    printMessage("Sorry, that email does not exist in the system!");
+                    ansiPrinter.printError("Sorry, that email does not exist in the system!");
 
                     // restart the loop
                     continue;
@@ -109,7 +119,7 @@ public class AuthenticationService {
                 // if the password is not correct
                 if (!bcryptService.verifyPassword(password, user.getPassword())) {
                     // wrong password message
-                    printMessage("Wrong password, try again!");
+                    ansiPrinter.printError("Wrong password, try again!");
 
                     // increase the attempts counter
                     userRepository.increaseFraudAttemptsCounter(user.getId());
@@ -117,7 +127,7 @@ public class AuthenticationService {
                     // if the counter is more than 3 terminate the login attempt
                     if (user.getFraudAttemptsCount() >= 3) {
                         // locked message
-                        printMessage("This account has already been locked! try after one minute");
+                        ansiPrinter.printError("This account has already been locked! try after one minute");
 
                         // exit the while loop
                         break;
@@ -129,7 +139,7 @@ public class AuthenticationService {
                 // check if the account is locked
                 if (user.isLocked()) {
                     // locked account message
-                    printMessage("Your account has been locked! please try again later.");
+                    ansiPrinter.printError("Your account has been locked! please try again later.");
 
                     // terminate the attempt
                     break;
@@ -142,7 +152,7 @@ public class AuthenticationService {
                 break;
             } else {
                 // print the errors available
-                printMessage(reply);
+                ansiPrinter.printError(reply);
             }
         } // end of while loop
     }
