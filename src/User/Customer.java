@@ -9,4 +9,12 @@ public class Customer extends User {
     private Long userId;
     private List<Account> accounts; // user accounts
     private List<DebitCard> debitCards; // user debit card
+
+
+    // default constructor
+    public Customer(Long id, String firstName, String lastName, String email, String password) {
+        super(id, firstName, lastName, email, password);
+    }
+
+
 }

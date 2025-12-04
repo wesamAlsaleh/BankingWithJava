@@ -1,0 +1,1 @@
+First_Name:wesam, Last_Name:muneer, Email:testNewUI@gmail.com, Password: $2a$10$gHwWayYLum2t//e7oLPZReILi8yVTJ6vvrtbXCQV3QOAJrQ6/7lC., Role: Customer, fraud_Attempts_Count: 0, LockUntil: null, Created_At: 2025-12-04T03:26:02.329401, Updated_At: 2025-12-04T03:26:02.329401
