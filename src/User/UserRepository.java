@@ -254,7 +254,7 @@ public class UserRepository {
             user.setFraudAttemptsCount(user.getFraudAttemptsCount() + 1);
 
             // if the count is more than 3
-            if (user.getFraudAttemptsCount() > 3) {
+            if (user.getFraudAttemptsCount() >= 3) {
                 // add 1 minute lock
                 user.setLockUntil(LocalDateTime.now().plusMinutes(1));
 
@@ -262,7 +262,7 @@ public class UserRepository {
                 user.setFraudAttemptsCount(0);
             }
 
-            // overwrite the line (false to append)
+            // overwrite the line (false to append means overwrite)
             try (FileWriter writer = new FileWriter(userFile, false)) {
                 // write the new user record
                 writer.write(user.getUserRecord());

@@ -145,10 +145,4 @@ public class AuthenticationService {
 
         // todo: redirect to bank features UI
     }
-
-    // function to test the get user by id
-    public void testGetUser() {
-        var user = userRepository.getUserById(1);
-        System.out.println(user);
-    }
 }
