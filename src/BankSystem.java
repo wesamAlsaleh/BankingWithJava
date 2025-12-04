@@ -1,17 +1,13 @@
 
 // This class is the entry point for the bank project
 
-import Auth.AuthenticationService;
+import ui.UserInterface;
 
 public class BankSystem {
+    private static final UserInterface ui = new UserInterface();
+
     public static void main(String[] args) {
-        AuthenticationService authenticationService = new AuthenticationService();
-
-//        authenticationService.testGetUser();
-
-//        authenticationService.register();
-
-        authenticationService.login();
+        ui.startApplication();
     }
 }
 

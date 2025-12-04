@@ -1,11 +1,10 @@
 package Auth;
 
-import Global.Utils.FileHandler;
 import User.User;
 import User.UserRepository;
 import User.UserValidation;
+import ui.UserInterface;
 
-import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class AuthenticationService {
@@ -13,6 +12,7 @@ public class AuthenticationService {
     private final BCryptService bcryptService = new BCryptService();
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
+    private static final UserInterface ui = new UserInterface();
 
     // function to print message with space below in the terminal
     private void printMessage(String message) {
@@ -26,7 +26,7 @@ public class AuthenticationService {
         String reply;
 
         // initial message
-        System.out.println("Welcome to GA01 Bank");
+        System.out.println("Create new account in GA01 Bank");
 
         while (true) {
             // store the first name
@@ -67,6 +67,9 @@ public class AuthenticationService {
                 System.out.println(" ");
             }
         }
+
+        // redirect to startup page
+        ui.startApplication();
     }
 
     // function to log in the user
@@ -75,7 +78,7 @@ public class AuthenticationService {
         String reply;
 
         // initial message
-        System.out.println("Welcome to GA01 Bank");
+        System.out.println("login to your account in GA01 Bank");
 
         while (true) {
             // get the email from the user
@@ -132,17 +135,15 @@ public class AuthenticationService {
                     break;
                 }
 
-                // successfully message
-                printMessage("logged in successfully");
+                // redirect to home page
+                ui.homePage(user);
 
-                // exit the loop
+                // exit the loop (should not reach here)
                 break;
             } else {
                 // print the errors available
                 printMessage(reply);
             }
         } // end of while loop
-
-        // todo: redirect to bank features UI
     }
 }
