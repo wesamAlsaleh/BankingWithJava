@@ -26,19 +26,21 @@ public class AuthenticationService {
 
         while (true) {
             // store the first name
-            System.out.println("What is your first name?");
+            printer.printQuestion("What is your first name:");
             var firstName = input.nextLine();
 
             // store the last name
-            System.out.println("What is your last name?");
+            printer.printQuestion("What is your last name:");
+
             var lastName = input.nextLine();
 
             // store the email
-            System.out.println("What is your email address?");
+            printer.printQuestion("What is your email address:");
+
             var email = input.nextLine();
 
             // store the hashed password
-            System.out.println("What is your password?");
+            printer.printQuestion("What is your password:");
             var password = bcryptService.hashPassword(input.nextLine());
 
             // validate the input
@@ -86,11 +88,11 @@ public class AuthenticationService {
 
         while (true) {
             // get the email from the user
-            System.out.println("Enter your email address:");
+            printer.printQuestion("Enter your email address:");
             var email = input.nextLine();
 
             // get the password from the user
-            System.out.println("Enter your password:");
+            printer.printQuestion("Enter your password:");
             var password = input.nextLine();
 
             // validate the input

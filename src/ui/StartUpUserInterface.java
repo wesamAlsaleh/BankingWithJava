@@ -12,6 +12,7 @@ public class StartUpUserInterface {
     private final AuthenticationService authenticationService = new AuthenticationService();
     private final Printer printer = new Printer();
     private final CurrenciesUserInterface currenciesUserInterface = new CurrenciesUserInterface();
+    private final AccountUserInterface accountUserInterface = new AccountUserInterface();
 
     // function to display a page title
     private void title(String title) {
@@ -21,7 +22,7 @@ public class StartUpUserInterface {
     }
 
     // function to handle role violation
-    private void isUserCustomer(String userRole) {
+    private void userMiddleware(String userRole) {
         if (userRole.equals(UserRole.Customer.toString())) {
             printer.printWrongChoice();
         }
@@ -73,7 +74,7 @@ public class StartUpUserInterface {
             System.out.println("[dep]  Deposit money");
             System.out.println("[with] Withdraw money");
             System.out.println("[t]    Transfer money");
-            System.out.println("[acc]  My my accounts");
+            System.out.println("[acc]  Manage my accounts");
             System.out.println("[card] Manage my cards");
 
             // banker user options
@@ -94,15 +95,19 @@ public class StartUpUserInterface {
                     break;
                 case ("t"):
                     break;
+                case ("acc"):
+                    accountUserInterface.manageAccountsPage(user);
+                    break;
                 case ("q"):
                     printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
+                    System.exit(0); // Exit
                     break;
                 case ("curr"):
                     // if user not allowed
-                    isUserCustomer(user.getRole().toString());
+                    userMiddleware(user.getRole().toString());
                     // redirect to manage currencies page
                     currenciesUserInterface.manageCurrenciesPage();
-                    break; //
+                    break;
                 default:
                     printer.printWrongChoice();
             }

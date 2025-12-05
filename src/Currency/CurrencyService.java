@@ -2,6 +2,8 @@ package Currency;
 
 import Global.Utils.Printer;
 
+import java.util.List;
+
 public class CurrencyService {
     private final Printer printer = new Printer();
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
@@ -40,5 +42,26 @@ public class CurrencyService {
             // print the formated line
             System.out.println(c);
         }
+    }
+
+    // function to get currencies list
+    public List<Currency> getCurrencies() {
+        return currencyRepository.getCurrencies();
+    }
+
+    // function to check if the input code is in the list
+    public boolean isCurrencyVerified(String currencyCode) {
+        // get the currencies array
+        var currencies = currencyRepository.getCurrencies();
+
+        // iterate over the currencies
+        for (var currency : currencies) {
+            // if the selected currency code is in the system return true
+            if (currency.getCurrencyCode().equals(currencyCode)) {
+                return true;
+            }
+        }
+        // return false
+        return false;
     }
 }

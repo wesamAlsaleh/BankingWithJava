@@ -19,6 +19,11 @@ public class Printer {
         System.out.print(textColor + placeholder + RESET);
     }
 
+    // function to print question on the terminal
+    public void printQuestion(String question) {
+        printColoredLine(Printer.BLUE, question);
+    }
+
     // function to print customized title with spaces
     public void printColoredTitle(String placeholder) {
         printColoredLine(Printer.CYAN, "\n=======================================");

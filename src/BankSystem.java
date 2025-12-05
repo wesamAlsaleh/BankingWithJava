@@ -11,4 +11,4 @@ public class BankSystem {
     }
 }
 
-// Bankere User credentials: wesam@gmail.com and wwwweeee44
+// Banker User credentials: wesam@gmail.com and wwwweeee

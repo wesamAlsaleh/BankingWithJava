@@ -27,7 +27,7 @@ public class CurrenciesUserInterface {
     // function to show the add currencies page
     private void addCurrencyPage() {
         // init message
-        printer.printColoredTitle("Add new currency: ");
+        printer.printColoredTitle("Add new currency");
 
         while (true) {
             System.out.println("What is the currency code:");
@@ -60,7 +60,7 @@ public class CurrenciesUserInterface {
     // function to show see all currencies page
     private void seeAllCurrenciesPage() {
         // init message
-        printer.printColoredTitle("See all currencies: ");
+        printer.printColoredTitle("See all currencies");
 
         // print the all the currencies in the system
         currencyService.printCurrencies();
