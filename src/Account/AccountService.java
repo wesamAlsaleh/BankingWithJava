@@ -7,6 +7,7 @@ import User.User;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.util.List;
 
 public class AccountService {
     private final AccountRepository accountRepository = new AccountRepository();
@@ -131,5 +132,42 @@ public class AccountService {
 
         // create new record
         accountRepository.saveNewAccountRecord(fileName, account.accountRecord());
+    }
+
+    // todo: function to change the main account
+
+    // todo: function to delete account (make sure its not main and empty from money)
+
+    // function to get user accounts
+    public List<Account> getUserAccounts(User user) {
+        // get all the accounts of the user
+        return accountRepository.getAllAccountsByUserId(user.getId());
+    }
+
+    // function to format the print of the accounts
+    public void printUserAccounts(User user) {
+        // get the user accounts
+        var userAccounts = getUserAccounts(user);
+
+        // if no accounts
+        if (userAccounts.isEmpty()) {
+            printer.printColoredLine(Printer.YELLOW, "No user accounts found.");
+        }
+
+        // iterate over them and print each
+        for (Account account : userAccounts) {
+            System.out.println("**************************************************************************");
+            printer.printColoredLine(Printer.YELLOW, String.format("Account Number: %s, IBAN: %s, Type: %s, Balance: %.3f %s, Main Account: %s, Account Locked: %s",
+                    account.getAccountNumber(),
+                    account.getIban(),
+                    account.getAccountType().toString(),
+                    account.getBalance(),
+                    account.getCurrency(),
+                    account.isMainAccount() ? "Yes" : "No",
+                    account.isActive() ? "Yes" : "No"
+            ));
+            System.out.println("**************************************************************************");
+            System.out.println(" ");
+        }
     }
 }

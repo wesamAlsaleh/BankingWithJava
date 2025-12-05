@@ -14,8 +14,13 @@ public class AccountUserInterface {
     private final AccountService accountService = new AccountService();
     private final CurrencyService currencyService = new CurrencyService();
 
-    // todo: function to show accounts list page
-    private void accountsListPage() {
+    // function to show accounts list page
+    private void accountsListPage(User user) {
+        // init message
+        printer.printColoredTitle("My accounts");
+
+        // print the accounts
+        accountService.printUserAccounts(user);
     }
 
     // function to show create account page
@@ -106,7 +111,6 @@ public class AccountUserInterface {
     private void deleteAccountPage() {
     }
 
-
     // function to show manage accounts page
     public void manageAccountsPage(User user) {
         // StartUp Message
@@ -127,7 +131,7 @@ public class AccountUserInterface {
             // based on the choice go to the next direction
             switch (choice) {
                 case ("s"):
-                    accountsListPage();
+                    accountsListPage(user);
                     break;
                 case ("a"):
                     createAccountPage(user);

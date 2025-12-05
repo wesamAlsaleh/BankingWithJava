@@ -37,7 +37,7 @@ public class CurrencyService {
         // iterate over them
         for (var currency : currencies) {
             // format the output
-            var c = String.format("Currency Code: %s ------ Rate: %f", currency.getCurrencyCode(), currency.getExchangeRate());
+            var c = String.format("Currency Code: %s -- Rate: %.2f", currency.getCurrencyCode(), currency.getExchangeRate());
 
             // print the formated line
             System.out.println(c);
@@ -52,7 +52,7 @@ public class CurrencyService {
     // function to check if the input code is in the list
     public boolean isCurrencyVerified(String currencyCode) {
         // get the currencies array
-        var currencies = currencyRepository.getCurrencies();
+        var currencies = getCurrencies();
 
         // iterate over the currencies
         for (var currency : currencies) {

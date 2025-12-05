@@ -64,22 +64,6 @@ public class CurrenciesUserInterface {
 
         // print the all the currencies in the system
         currencyService.printCurrencies();
-
-        while (true) {
-            printer.printColoredLine(Printer.BLUE, "To quit the app press [Y]");
-
-            // get the input
-            var choice = scanner.nextLine().trim().toLowerCase();
-
-            // exit the while loop
-            if (choice.equals("y")) {
-                // terminate the terminal
-                System.exit(0); // Exit successfully
-                break;
-            } else {
-                printer.printWrongChoice();
-            }
-        }
     }
 
     // function to show the manage currencies page
@@ -94,7 +78,7 @@ public class CurrenciesUserInterface {
             System.out.println("[S] See All Currencies");
             System.out.println("[A] Add currency");
             System.out.println("[D] Delete currency");
-            System.out.println("[q]    Quit / Logout");
+            System.out.println("[q] Quit / Logout");
             printer.printPrompt("Your choice: ");
 
             // input from the user
@@ -106,7 +90,7 @@ public class CurrenciesUserInterface {
                     seeAllCurrenciesPage();
                     break;
                 case ("a"):
-                    addCurrencyPage(); // go to add currencies page
+                    addCurrencyPage();
                     break;
                 case ("d"):
                     break;

@@ -6,12 +6,18 @@ import Global.Utils.FileHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class AccountRepository {
     private final DBPaths dbPaths = new DBPaths();
     private final FileHandler fileHandler = new FileHandler();
     private final Printer printer = new Printer();
+
+    // function to extract record to account object
+//    private Account recordToAccount(String recordLine) {}
 
     // function to write a new record in the account number list! file
     public void saveAccountsListFile(String accountNumber) {
@@ -82,6 +88,67 @@ public class AccountRepository {
 
         // if not available return false
         return false;
+    }
+
+    // function to get the accounts as files
+    public List<Account> getAllAccountsByUserId(Long userId) {
+        // get the files
+        var files = fileHandler.getDirectoryContentAsList(dbPaths.getAccountsDirectoryPath());
+
+        // array holder
+        List<Account> accounts = new ArrayList<>();
+
+        // iterate
+        for (File file : files) {
+            // if the file has the user id
+            if (file.getName().endsWith("-" + userId + ".txt")) {
+                // try to read the file
+                try (Scanner scanner = new Scanner(new File(file.getPath()))) {
+                    // while there is a line
+                    while (scanner.hasNextLine()) {
+                        // get the record line
+                        String line = scanner.nextLine();
+
+                        // get the record as parts
+                        var parts = new ArrayList<>(List.of(line.split(",")));
+
+                        // extract the values
+                        var id = parts.get(0).split(":")[1];
+                        var accountNumber = parts.get(1).split(":")[1];
+                        var iban = parts.get(2).split(":")[1];
+                        var accountType = parts.get(3).split(":")[1];
+                        var accountCurrency = parts.get(4).split(":")[1];
+                        var balance = parts.get(5).split(":")[1];
+                        var overdraftCount = parts.get(6).split(":")[1];
+                        var isActive = parts.get(7).split(":")[1];
+                        var isMainAccount = parts.get(8).split(":")[1];
+                        var createdAt = parts.get(9).substring(parts.get(9).indexOf(":") + 1);
+
+                        // create account object
+                        var account = new Account(
+                                Long.valueOf(id),
+                                accountNumber,
+                                iban,
+                                AccountType.valueOf(accountType),
+                                accountCurrency,
+                                Double.parseDouble(balance),
+                                Integer.parseInt(overdraftCount),
+                                Boolean.getBoolean(isActive),
+                                Boolean.getBoolean(isMainAccount),
+                                LocalDateTime.parse(createdAt)
+                        );
+
+                        // add the account to the list
+                        accounts.add(account);
+                    } // while end
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } // catch end
+            } // if end
+        } // for loop end
+
+        // return the array
+        return accounts;
     }
 
 }
