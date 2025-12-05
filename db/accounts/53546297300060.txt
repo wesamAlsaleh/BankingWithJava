@@ -1,1 +1,0 @@
-user_id: 9999, account_number: 53546297300060, iban: BH57 GAJB 5354 6297 3000 60, account_type: Checking, currency: BHD, balance: 0.000000, overdraft_count: 0, is_active: TRUE, isMainAccount: TRUE, createdAt: 2025-12-05T05:27:43.420015200

@@ -1,9 +1,11 @@
 package Global.Utils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class FileHandler {
     private final Printer printer = new Printer();
@@ -55,12 +57,13 @@ public class FileHandler {
     }
 
     // function to check if target is available in the directory
-    public boolean isAvailableInTheDirectory(String sourcePath, String targetName) {
+    public boolean isExistsInTheDirectory(String sourcePath, String targetName) {
         // get the directory files
         var files = getDirectoryContentAsList(sourcePath);
 
         // if there is a file with similar to the target name return true
         for (File file : files) {
+            // if the file name equals the target return true
             if (file.getName().equals(targetName)) {
                 return true;
             }
@@ -70,28 +73,23 @@ public class FileHandler {
         return false;
     }
 
-    // todo: function to split a record into array
-//    public <T> List<T> convertFile(File file, Class<T> tClass) {
-//        // init
-//        List<T> parts = new ArrayList<>();
-//
-//        // try to read the file
-//        try (Scanner scanner = new Scanner(file)) {
-//            // while there is a line read
-//            while (scanner.hasNextLine()) {
-//                // get the line
-//                String line = scanner.nextLine();
-//
-//                // if the line is blank go to next line if available
-//                if (line.isBlank()) continue;
-//
-//                // split the fields
-//                parts.add((T) line.split(","));
-//
-//            }
-//
-//
-//        } catch (Exception e) {
-//        }
-//    }
+    // function to read a file and check if the target exist in it
+    public boolean isExistInTheFile(File file, String targetContent) {
+        // try to read the file
+        try (Scanner scanner = new Scanner(file)) {
+            // read while there is a lines
+            while (scanner.hasNextLine()) {
+                // get the line
+                String line = scanner.nextLine();
+
+                // if the line contains the exits return
+                if (line.contains(targetContent)) return true;
+            }
+        } catch (FileNotFoundException e) {
+            printer.printError("File not found!");
+        }
+
+        // if not available return false
+        return false;
+    }
 }

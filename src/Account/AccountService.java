@@ -114,7 +114,7 @@ public class AccountService {
 
     // function to create account record
     public void createAccount(User user, AccountType accountType, String currency) {
-        // generate account number
+        // generate a unique account number
         var accountNumber = generateAccountNumber();
 
         // generate iban
@@ -132,7 +132,7 @@ public class AccountService {
 
         // prepare the path of the new file
         var rootDirectory = dbPaths.getAccountsDirectoryPath();
-        var fileName = accountNumber + ".txt";
+        var fileName = accountNumber + "-" + user.getId() + ".txt";
         var newFile = new File(rootDirectory, fileName); // this will handle the path
 
         // create new file

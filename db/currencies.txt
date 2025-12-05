@@ -1,0 +1,1 @@
+Currency_Code:BHD, Exchange_Rate:0.20

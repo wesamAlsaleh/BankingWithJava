@@ -64,4 +64,12 @@ public class DBPaths {
                 ""
         );
     }
+
+    // function to get the path of the file that store the currencies list
+    public String getCurrenciesListPath() {
+        return pathBasedOnOs(
+                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\currencies.txt",
+                ""
+        );
+    }
 }

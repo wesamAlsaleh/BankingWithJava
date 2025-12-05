@@ -45,7 +45,7 @@ public class Account implements IAccount {
     // function to create account record
     public String accountRecord() {
         return String.format(
-                "user_id: %s, account_number: %s, iban: %s, account_type: %s, currency: %s, balance: %f, overdraft_count: %d, is_active: %B, isMainAccount: %B, createdAt: %s",
+                "user_id:%s, account_number:%s, iban:%s, account_type:%s, currency:%s, balance:%f, overdraft_count:%d, is_active:%B, isMainAccount:%B, createdAt:%s",
                 userId,
                 accountNumber,
                 iban,

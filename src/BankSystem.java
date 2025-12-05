@@ -1,14 +1,14 @@
 
 // This class is the entry point for the bank project
 
-import ui.UserInterface;
+import ui.StartUpUserInterface;
 
 public class BankSystem {
-    private static final UserInterface ui = new UserInterface();
+    private static final StartUpUserInterface ui = new StartUpUserInterface();
 
     public static void main(String[] args) {
         ui.startApplication();
     }
 }
 
-// User 1 credentials: wesam@gmail.com and wwwweeee44
+// Bankere User credentials: wesam@gmail.com and wwwweeee44

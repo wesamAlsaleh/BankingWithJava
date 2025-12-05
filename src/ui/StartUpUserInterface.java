@@ -3,13 +3,15 @@ package ui;
 import Auth.AuthenticationService;
 import Global.Utils.Printer;
 import User.User;
+import User.UserRole;
 
 import java.util.Scanner;
 
-public class UserInterface {
+public class StartUpUserInterface {
     private final Scanner input = new Scanner(System.in);
     private final AuthenticationService authenticationService = new AuthenticationService();
-    private final Printer ansiColors = new Printer();
+    private final Printer printer = new Printer();
+    private final CurrenciesUserInterface currenciesUserInterface = new CurrenciesUserInterface();
 
     // function to display a page title
     private void title(String title) {
@@ -18,19 +20,26 @@ public class UserInterface {
         System.out.println("==============================");
     }
 
+    // function to handle role violation
+    private void isUserCustomer(String userRole) {
+        if (userRole.equals(UserRole.Customer.toString())) {
+            printer.printWrongChoice();
+        }
+    }
+
     // function to display the startup page
     public void startApplication() {
         // StartUp Message
-        ansiColors.printColoredTitle(Printer.CYAN, "Welcome to GA01 Bank");
+        printer.printColoredTitle(Printer.CYAN, "Welcome to GA01 Bank");
 
         // wait for user to chose
         while (true) {
             // options message
-            ansiColors.printColoredLine(Printer.BLUE, "Please choose an option:");
+            printer.printColoredLine(Printer.BLUE, "Please choose an option:");
             System.out.println("[R] Register a new account");
             System.out.println("[L] Login to your account");
             System.out.println("[Q] Quit the application");
-            ansiColors.printPrompt("Your choice: ");
+            printer.printPrompt("Your choice: ");
 
             // input from the user
             var choice = input.nextLine().toLowerCase().trim();
@@ -44,10 +53,10 @@ public class UserInterface {
                     authenticationService.login();
                     break;
                 case ("q"):
-                    ansiColors.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
+                    printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
                     break;
                 default:
-                    ansiColors.printWrongChoice();
+                    printer.printWrongChoice();
             }
         }
     }
@@ -55,19 +64,25 @@ public class UserInterface {
     // function to display the home page
     public void homePage(User user) {
         // title
-        ansiColors.printColoredTitle(Printer.CYAN, "Welcome back, " + user.getFullName());
+        printer.printColoredTitle(Printer.CYAN, "Welcome back, " + user.getFullName());
 
         // wait for user to chose
         while (true) {
             // options message
-            ansiColors.printColoredLine(Printer.BLUE, "Please choose an option:");
+            printer.printColoredLine(Printer.BLUE, "Please choose an option:");
             System.out.println("[dep]  Deposit money");
             System.out.println("[with] Withdraw money");
             System.out.println("[t]    Transfer money");
             System.out.println("[acc]  My my accounts");
             System.out.println("[card] Manage my cards");
+
+            // banker user options
+            if (user.getRole().equals(UserRole.Banker)) {
+                System.out.println("[curr] Manage System Currencies");
+            }
+
             System.out.println("[q]    Quit / Logout");
-            ansiColors.printPrompt("Your choice: ");
+            printer.printPrompt("Your choice: ");
 
             // input from the user
             var choice = input.nextLine().toLowerCase().trim();
@@ -80,10 +95,16 @@ public class UserInterface {
                 case ("t"):
                     break;
                 case ("q"):
-                    ansiColors.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
+                    printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
                     break;
+                case ("curr"):
+                    // if user not allowed
+                    isUserCustomer(user.getRole().toString());
+                    // redirect to manage currencies page
+                    currenciesUserInterface.manageCurrenciesPage();
+                    break; //
                 default:
-                    ansiColors.printWrongChoice();
+                    printer.printWrongChoice();
             }
         }
     }

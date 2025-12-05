@@ -4,7 +4,7 @@ import Global.Utils.Printer;
 import User.User;
 import User.UserRepository;
 import User.UserValidation;
-import ui.UserInterface;
+import ui.StartUpUserInterface;
 
 import java.util.Scanner;
 
@@ -14,7 +14,7 @@ public class AuthenticationService {
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
     private static final Printer ansiPrinter = new Printer();
-    private static final UserInterface ui = new UserInterface();
+    private static final StartUpUserInterface ui = new StartUpUserInterface();
 
     // function to print message with space below in the terminal
     private void printMessage(String message) {

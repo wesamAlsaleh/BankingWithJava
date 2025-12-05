@@ -1,0 +1,1 @@
+user_id:9999, account_number:53544973417439, iban:BH54 GAJB 5354 4973 4174 39, account_type:Checking, currency:BHD, balance:0.000000, overdraft_count:0, is_active:TRUE, isMainAccount:TRUE, createdAt:2025-12-05T19:36:27.333618400

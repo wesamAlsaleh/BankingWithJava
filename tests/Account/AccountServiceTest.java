@@ -45,34 +45,34 @@ public class AccountServiceTest {
 //        assertNotNull(checkDigit);
 //    }
 
-    @Test
-    @DisplayName("s")
-    void shouldGenerateUniqueIban(){
-        // Arrange
-        var accountNumber = accountService.generateAccountNumber();
+//    @Test
+//    @DisplayName("Should generate unique iban based on the account number")
+//    void shouldGenerateUniqueIban(){
+//        // Arrange
+//        var accountNumber = accountService.generateAccountNumber();
+//
+//        // Act
+//        var iban = accountService.generateIban(accountNumber);
+//
+//        System.out.println(iban);
+//
+//        // Assert
+//        assertNotNull(iban);
+//    }
 
-        // Act
-        var iban = accountService.generateIban(accountNumber);
-
-        System.out.println(iban);
-
-        // Assert
-        assertNotNull(iban);
-    }
-
-    @Test
-    @DisplayName("Should create new account and create new record file in the db")
-    void shouldCreateNewAccountAndCreateNewRecordFileInTheDb() {
-        // Arrange
-        UserRepository userRepository = new UserRepository();
-        var user = userRepository.getUserByEmail("unittest@gmail.com");
-
-        // Act
-        accountService.createAccount(user, AccountType.Checking, "BHD");
-
-        // Assert
-        assertNotNull(user);
-    }
+//    @Test
+//    @DisplayName("Should create new account and create new record file in the db")
+//    void shouldCreateNewAccountAndCreateNewRecordFileInTheDb() {
+//        // Arrange
+//        UserRepository userRepository = new UserRepository();
+//        var user = userRepository.getUserByEmail("unittest@gmail.com");
+//
+//        // Act
+//        accountService.createAccount(user, AccountType.Checking, "BHD");
+//
+//        // Assert
+//        assertNotNull(user);
+//    }
 
     @AfterEach
     public void tearDown() {

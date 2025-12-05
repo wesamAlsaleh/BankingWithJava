@@ -1,0 +1,92 @@
+package ui;
+
+import Currency.CurrencyService;
+import Global.Utils.Printer;
+
+import java.util.Scanner;
+
+public class CurrenciesUserInterface {
+    private final Scanner scanner = new Scanner(System.in);
+    private final Printer printer = new Printer();
+//    private final StartUpUserInterface startUpUserInterface = new StartUpUserInterface();
+    private final CurrencyService currencyService = new CurrencyService();
+
+    // function to validate the input
+    private String validateInput(String currencyCode, double exchangeRate) {
+        // messages holder
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // if any of the input return message
+        if (currencyCode == null || currencyCode.isEmpty()) stringBuilder.append("Please enter a currency code!");
+        if (exchangeRate <= 0) stringBuilder.append("Please enter a valid exchange rate!");
+
+        // return the messages
+        return stringBuilder.toString();
+    }
+
+    // function to get the add currencies page
+    private void addCurrencyPage() {
+        // init message
+        printer.printColoredTitle(Printer.CYAN, "Add new currency: ");
+
+        while (true) {
+            System.out.println("What is the currency code:");
+            String currencyCode = scanner.nextLine();
+
+            System.out.println("What is the exchange rate of:");
+            double exchangeRate = scanner.nextDouble();
+            scanner.nextLine(); // ← ADD THIS LINE to consume the newline
+
+            // validate the input
+            var reply = validateInput(currencyCode, exchangeRate);
+
+            // if no error proceed the operation
+            if (reply.isEmpty()) {
+                // add the currency to the system
+                var addCurrency = currencyService.addCurrency(currencyCode, exchangeRate);
+
+                // if the operation failed reset the loop
+                if (!addCurrency) continue; // restart the loop
+
+                // exit the loop
+                break;
+            }
+        }
+    }
+
+    // function to get the manage currencies page
+    public void manageCurrenciesPage() {
+        // StartUp Message
+        printer.printColoredTitle(Printer.CYAN, "Welcome to GA01 Bank");
+
+        // wait for user to chose
+        while (true) {
+            // options message
+            printer.printColoredLine(Printer.BLUE, "Please choose an option:");
+            System.out.println("[S] See All Currencies");
+            System.out.println("[A] Add currency");
+            System.out.println("[D] Delete currency");
+            System.out.println("[q]    Quit / Logout");
+            printer.printPrompt("Your choice: ");
+
+            // input from the user
+            var choice = scanner.nextLine().toLowerCase().trim();
+
+            // based on the choice go to the next direction
+            switch (choice) {
+                case ("s"):
+                    break;
+                case ("a"):
+                    addCurrencyPage(); // go to add currencies page
+                    break;
+                case ("d"):
+                    break;
+                case ("q"):
+                    printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
+                    break;
+                default:
+                    printer.printWrongChoice();
+            }
+        }
+    }
+}
