@@ -1,6 +1,6 @@
 package Auth;
 
-import Global.Utils.AnsiPrinter;
+import Global.Utils.Printer;
 import User.User;
 import User.UserRepository;
 import User.UserValidation;
@@ -13,7 +13,7 @@ public class AuthenticationService {
     private final BCryptService bcryptService = new BCryptService();
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
-    private static final AnsiPrinter ansiPrinter = new AnsiPrinter();
+    private static final Printer ansiPrinter = new Printer();
     private static final UserInterface ui = new UserInterface();
 
     // function to print message with space below in the terminal
@@ -28,7 +28,7 @@ public class AuthenticationService {
         String reply;
 
         // initial message
-        ansiPrinter.printColoredTitle(AnsiPrinter.CYAN,"Create new account in GA01 Bank");
+        ansiPrinter.printColoredTitle(Printer.CYAN,"Create new account in GA01 Bank");
 
         while (true) {
             // store the first name
@@ -88,7 +88,7 @@ public class AuthenticationService {
         String reply;
 
         // initial message
-        ansiPrinter.printColoredTitle(AnsiPrinter.CYAN,"login to your account in GA01 Bank");
+        ansiPrinter.printColoredTitle(Printer.CYAN,"login to your account in GA01 Bank");
 
         while (true) {
             // get the email from the user

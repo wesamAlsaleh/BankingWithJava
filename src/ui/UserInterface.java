@@ -1,7 +1,7 @@
 package ui;
 
 import Auth.AuthenticationService;
-import Global.Utils.AnsiPrinter;
+import Global.Utils.Printer;
 import User.User;
 
 import java.util.Scanner;
@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class UserInterface {
     private final Scanner input = new Scanner(System.in);
     private final AuthenticationService authenticationService = new AuthenticationService();
-    private final AnsiPrinter ansiColors = new AnsiPrinter();
+    private final Printer ansiColors = new Printer();
 
     // function to display a page title
     private void title(String title) {
@@ -21,12 +21,12 @@ public class UserInterface {
     // function to display the startup page
     public void startApplication() {
         // StartUp Message
-        ansiColors.printColoredTitle(AnsiPrinter.CYAN, "Welcome to GA01 Bank");
+        ansiColors.printColoredTitle(Printer.CYAN, "Welcome to GA01 Bank");
 
         // wait for user to chose
         while (true) {
             // options message
-            ansiColors.printColoredLine(AnsiPrinter.BLUE, "Please choose an option:");
+            ansiColors.printColoredLine(Printer.BLUE, "Please choose an option:");
             System.out.println("[R] Register a new account");
             System.out.println("[L] Login to your account");
             System.out.println("[Q] Quit the application");
@@ -55,12 +55,12 @@ public class UserInterface {
     // function to display the home page
     public void homePage(User user) {
         // title
-        ansiColors.printColoredTitle(AnsiPrinter.CYAN, "Welcome back, " + user.getFullName());
+        ansiColors.printColoredTitle(Printer.CYAN, "Welcome back, " + user.getFullName());
 
         // wait for user to chose
         while (true) {
             // options message
-            ansiColors.printColoredLine(AnsiPrinter.BLUE, "Please choose an option:");
+            ansiColors.printColoredLine(Printer.BLUE, "Please choose an option:");
             System.out.println("[dep]  Deposit money");
             System.out.println("[with] Withdraw money");
             System.out.println("[t]    Transfer money");

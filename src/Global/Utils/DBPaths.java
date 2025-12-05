@@ -41,7 +41,7 @@ public class DBPaths {
     }
 
     // function to get the path of the directory that contains the users files
-    public String getUsersPath() {
+    public String getUsersDirectoryPath() {
         // return the path of the users directory based on the OS
         return pathBasedOnOs(
                 "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\users",
@@ -49,4 +49,19 @@ public class DBPaths {
         );
     }
 
+    // function to get the path of the directory that contains the customers account files
+    public String getAccountsDirectoryPath() {
+        return pathBasedOnOs(
+                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\accounts",
+                ""
+        );
+    }
+
+    // function to get the path of the file that store all the account numbers
+    public String getAccountNumberListPath() {
+        return pathBasedOnOs(
+                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\account_number_list.txt",
+                ""
+        );
+    }
 }

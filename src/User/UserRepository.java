@@ -26,7 +26,7 @@ public class UserRepository {
     // function to get the user record as a file among the user files
     private File getUserRecordFile(Long id) {
         // get the user files
-        var files = getDirectoryContentAsList(dbPaths.getUsersPath());
+        var files = fileHandler.getDirectoryContentAsList(dbPaths.getUsersDirectoryPath());
 
         // iterate over the files and get the user file by his id
         for (File file : files) {
@@ -36,12 +36,6 @@ public class UserRepository {
 
         // if the user is not found return null
         return null;
-    }
-
-    // function to get the list of files of a folder
-    private File[] getDirectoryContentAsList(String sourcePath) {
-        // create array of list of files from the file object of the provided path
-        return Objects.requireNonNull(new File(sourcePath).listFiles()); // Throws NullPointerExceptio if null!
     }
 
     // function to extract user data from the record into array
@@ -132,7 +126,7 @@ public class UserRepository {
     // function to save the user in a file
     public void saveUser(User user) {
         // user files (root directory)
-        var recordsPath = dbPaths.getUsersPath();
+        var recordsPath = dbPaths.getUsersDirectoryPath();
 
         // create new file to store the new user record
         try {
@@ -189,7 +183,7 @@ public class UserRepository {
     // function to find user by email
     public User getUserByEmail(String email) {
         // get the user files as array
-        var userFiles = getDirectoryContentAsList(dbPaths.getUsersPath());
+        var userFiles = fileHandler.getDirectoryContentAsList(dbPaths.getUsersDirectoryPath());
 
         // read each file until the email match the provided
         for (File file : userFiles) {
