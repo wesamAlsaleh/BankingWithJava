@@ -10,8 +10,6 @@ import java.math.BigInteger;
 
 public class AccountService {
     private final AccountRepository accountRepository = new AccountRepository();
-    private final FileHandler fileHandler = new FileHandler();
-    private final DBPaths dbPaths = new DBPaths();
     private final Printer printer = new Printer();
 
     private static final String COUNTRY_CODE = "BH";
@@ -63,7 +61,7 @@ public class AccountService {
     }
 
     // function to generate account number
-    public String generateAccountNumber() {
+    private String generateAccountNumber() {
         // string container
         StringBuilder digitsHolder = new StringBuilder();
 
@@ -89,7 +87,7 @@ public class AccountService {
     }
 
     // function to generate iban number
-    public String generateIban(String accountNumber) {
+    private String generateIban(String accountNumber) {
         // ***** Header *****
         // country code (2 Alpha characters)
         // constant
@@ -107,11 +105,6 @@ public class AccountService {
         return structureTheIban(checkDigits, accountNumber, " ");
     }
 
-    // todo: function to check if the user has an account
-    public boolean hasMainAccount() {
-        return true;
-    }
-
     // function to create account record
     public void createAccount(User user, AccountType accountType, String currency) {
         // generate a unique account number
@@ -120,6 +113,9 @@ public class AccountService {
         // generate iban
         var iban = generateIban(accountNumber);
 
+        // is this account the first account
+        var hasAnAccount = accountRepository.userHasAnAccountRecord(user.getId());
+
         // create new account object
         var account = new Account(
                 user.getId(),
@@ -127,25 +123,13 @@ public class AccountService {
                 iban,
                 accountType,
                 currency,
-                true
+                !hasAnAccount // if the user has an account return false
         );
 
-        // prepare the path of the new file
-        var rootDirectory = dbPaths.getAccountsDirectoryPath();
+        // prepare the file name as accountNumber-userId.txt
         var fileName = accountNumber + "-" + user.getId() + ".txt";
-        var newFile = new File(rootDirectory, fileName); // this will handle the path
 
-        // create new file
-        fileHandler.createFile(
-                newFile,
-                "Failed to create account file!"
-        );
-
-        // write in the file
-        fileHandler.write(
-                newFile.getPath(),
-                account.accountRecord(),
-                "Failed to write account account record!"
-        );
+        // create new record
+        accountRepository.saveNewAccountRecord(fileName, account.accountRecord());
     }
 }

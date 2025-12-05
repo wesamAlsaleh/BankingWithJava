@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class CurrenciesUserInterface {
     private final Scanner scanner = new Scanner(System.in);
     private final Printer printer = new Printer();
-//    private final StartUpUserInterface startUpUserInterface = new StartUpUserInterface();
+    //    private final StartUpUserInterface startUpUserInterface = new StartUpUserInterface();
     private final CurrencyService currencyService = new CurrencyService();
 
     // function to validate the input
@@ -24,10 +24,10 @@ public class CurrenciesUserInterface {
         return stringBuilder.toString();
     }
 
-    // function to get the add currencies page
+    // function to show the add currencies page
     private void addCurrencyPage() {
         // init message
-        printer.printColoredTitle(Printer.CYAN, "Add new currency: ");
+        printer.printColoredTitle("Add new currency: ");
 
         while (true) {
             System.out.println("What is the currency code:");
@@ -45,6 +45,9 @@ public class CurrenciesUserInterface {
                 // add the currency to the system
                 var addCurrency = currencyService.addCurrency(currencyCode, exchangeRate);
 
+                // print successful message
+                printer.printSuccessful("The currency has been successfully added to the database!");
+
                 // if the operation failed reset the loop
                 if (!addCurrency) continue; // restart the loop
 
@@ -54,10 +57,35 @@ public class CurrenciesUserInterface {
         }
     }
 
-    // function to get the manage currencies page
+    // function to show see all currencies page
+    private void seeAllCurrenciesPage() {
+        // init message
+        printer.printColoredTitle("See all currencies: ");
+
+        // print the all the currencies in the system
+        currencyService.printCurrencies();
+
+        while (true) {
+            printer.printColoredLine(Printer.BLUE, "To quit the app press [Y]");
+
+            // get the input
+            var choice = scanner.nextLine().trim().toLowerCase();
+
+            // exit the while loop
+            if (choice.equals("y")) {
+                // terminate the terminal
+                System.exit(0); // Exit successfully
+                break;
+            } else {
+                printer.printWrongChoice();
+            }
+        }
+    }
+
+    // function to show the manage currencies page
     public void manageCurrenciesPage() {
         // StartUp Message
-        printer.printColoredTitle(Printer.CYAN, "Welcome to GA01 Bank");
+        printer.printColoredTitle("Manage currencies");
 
         // wait for user to chose
         while (true) {
@@ -75,6 +103,7 @@ public class CurrenciesUserInterface {
             // based on the choice go to the next direction
             switch (choice) {
                 case ("s"):
+                    seeAllCurrenciesPage();
                     break;
                 case ("a"):
                     addCurrencyPage(); // go to add currencies page
@@ -83,6 +112,7 @@ public class CurrenciesUserInterface {
                     break;
                 case ("q"):
                     printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
+                    System.exit(0); // Exit successfully
                     break;
                 default:
                     printer.printWrongChoice();

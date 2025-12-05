@@ -16,7 +16,6 @@ public class FileHandler {
             // write the in the file
             writer.write(content);
 
-            // operation done successfully
         } catch (IOException e) {
             printer.printError(fallbackMessage);
             throw new RuntimeException(e);
@@ -57,9 +56,9 @@ public class FileHandler {
     }
 
     // function to check if target is available in the directory
-    public boolean isExistsInTheDirectory(String sourcePath, String targetName) {
+    public boolean isExistsInTheDirectory(String directoryPath, String targetName) {
         // get the directory files
-        var files = getDirectoryContentAsList(sourcePath);
+        var files = getDirectoryContentAsList(directoryPath);
 
         // if there is a file with similar to the target name return true
         for (File file : files) {

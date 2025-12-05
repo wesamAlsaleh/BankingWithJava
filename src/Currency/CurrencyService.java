@@ -1,9 +1,6 @@
 package Currency;
 
-import Global.Utils.DBPaths;
 import Global.Utils.Printer;
-
-import java.io.File;
 
 public class CurrencyService {
     private final Printer printer = new Printer();
@@ -28,5 +25,20 @@ public class CurrencyService {
 
         // indicate the operation is failed
         return false;
+    }
+
+    // function to get the currencies in the system
+    public void printCurrencies() {
+        // get the currencies list
+        var currencies = currencyRepository.getCurrencies();
+
+        // iterate over them
+        for (var currency : currencies) {
+            // format the output
+            var c = String.format("Currency Code: %s ------ Rate: %f", currency.getCurrencyCode(), currency.getExchangeRate());
+
+            // print the formated line
+            System.out.println(c);
+        }
     }
 }

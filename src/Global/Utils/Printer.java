@@ -20,10 +20,10 @@ public class Printer {
     }
 
     // function to print customized title with spaces
-    public void printColoredTitle(String textColor, String placeholder) {
-        printColoredLine(textColor, "\n=======================================");
+    public void printColoredTitle(String placeholder) {
+        printColoredLine(Printer.CYAN, "\n=======================================");
         System.out.println("\t" + placeholder);
-        printColoredLine(textColor, "=======================================\n");
+        printColoredLine(Printer.CYAN, "=======================================\n");
     }
 
     // function to print error message

@@ -24,4 +24,12 @@ public class Currency {
     public String currencyRecord() {
         return String.format("Currency_Code:%s, Exchange_Rate:%.2f", currencyCode, exchangeRate); // %.2f => .00
     }
+
+    @Override
+    public String toString() {
+        return "Currency{" +
+                "currencyCode='" + currencyCode + '\'' +
+                ", exchangeRate=" + exchangeRate +
+                '}';
+    }
 }

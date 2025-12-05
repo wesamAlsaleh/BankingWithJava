@@ -30,7 +30,7 @@ public class StartUpUserInterface {
     // function to display the startup page
     public void startApplication() {
         // StartUp Message
-        printer.printColoredTitle(Printer.CYAN, "Welcome to GA01 Bank");
+        printer.printColoredTitle("Welcome to GA01 Bank");
 
         // wait for user to chose
         while (true) {
@@ -64,7 +64,7 @@ public class StartUpUserInterface {
     // function to display the home page
     public void homePage(User user) {
         // title
-        printer.printColoredTitle(Printer.CYAN, "Welcome back, " + user.getFullName());
+        printer.printColoredTitle("Welcome back, " + user.getFullName());
 
         // wait for user to chose
         while (true) {
