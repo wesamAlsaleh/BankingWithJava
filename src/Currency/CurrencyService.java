@@ -9,14 +9,14 @@ public class CurrencyService {
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
 
     // function to add currency to the system
-    public boolean addCurrency(String currencyCode, double exchangeRate) {
+    public boolean addCurrency(String country, String currencyCode, double exchangeRate) {
         // create currency object
-        var currency = new Currency(currencyCode, exchangeRate);
+        var currency = new Currency(country, currencyCode, exchangeRate);
 
         // if the currency is not available in the system
-        if (!currencyRepository.isCurrencyAvailable(currency.currencyRecord())) {
+        if (!currencyRepository.isCurrencyAvailable(currency.createCurrencyRecord())) {
             // add it to the system
-            currencyRepository.writeCurrencyRecord(currency.currencyRecord());
+            currencyRepository.writeCurrencyRecord(currency.createCurrencyRecord());
 
             // indicate the operation is successful
             return true;
@@ -37,12 +37,17 @@ public class CurrencyService {
         // if no currencies print message
         if (currencies.isEmpty()) {
             printer.printColoredLine(Printer.YELLOW, "No currencies available in the system!");
+            System.out.println(" "); // space below
         }
 
         // iterate over them
         for (var currency : currencies) {
             // format the output
-            var f = String.format("Currency Code: %s -- Rate: %.2f%%", currency.getCurrencyCode(), currency.getExchangeRate());
+            var f = String.format("Country: %s -- Currency Code: %s -- Rate: %.2f%%",
+                    currency.country(),
+                    currency.currencyCode(),
+                    currency.exchangeRate()
+            );
 
             // print the formated line
             System.out.println(f);
@@ -63,7 +68,7 @@ public class CurrencyService {
         // iterate over the currencies
         for (var currency : currencies) {
             // if the selected currency code is in the system return true
-            if (currency.getCurrencyCode().equals(currencyCode)) {
+            if (currency.currencyCode().equals(currencyCode)) {
                 return true;
             }
         }
@@ -73,6 +78,12 @@ public class CurrencyService {
 
     // function to delete currency by currency code
     public void deleteCurrency(String currencyCode) {
+        // if the currency is not in the system return error
+        if (!currencyRepository.isCurrencyAvailable(currencyCode)) {
+            printer.printError("This currency does not exist!");
+            return; // do not delete the currency
+        }
+        // delete the currency
         currencyRepository.deleteCurrency(currencyCode);
     }
 }

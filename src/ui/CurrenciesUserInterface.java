@@ -12,6 +12,21 @@ public class CurrenciesUserInterface {
     //    private final StartUpUserInterface startUpUserInterface = new StartUpUserInterface();
     private final CurrencyService currencyService = new CurrencyService();
 
+    // function to validate the country
+    private String validateCountry(String country) {
+        // if the name is empty
+        if (country.isBlank()) {
+            return "Country is required!";
+        }
+
+        // if the country is less than 4 characters return error
+        if (country.length() < 4) {
+            return "Country must be at least 4 characters!";
+        }
+
+        return "";
+    }
+
     // function to validate currency code input
     private String validateCurrencyCode(String currencyCode) {
         // validate the code
@@ -32,11 +47,12 @@ public class CurrenciesUserInterface {
     }
 
     // function to validate the input for create new currency record
-    private String validateCreateCurrencyInput(String currencyCode, double exchangeRate) {
+    private String validateCreateCurrencyInput(String country, String currencyCode, double exchangeRate) {
         // messages holder
         StringBuilder stringBuilder = new StringBuilder();
 
         // if there are any safety violation
+        stringBuilder.append(validateCountry(country));
         stringBuilder.append(validateCurrencyCode(currencyCode));
         stringBuilder.append(validateExchangeRate(exchangeRate));
 
@@ -56,20 +72,26 @@ public class CurrenciesUserInterface {
 
         while (true) {
             try {
+                // country name input
+                printer.printQuestion("What is the country:");
+                String country = scanner.nextLine();
+
+                // currency code input
                 printer.printQuestion("What is the currency code:");
                 String currencyCode = scanner.nextLine();
 
+                // exchange rate input as double!
                 printer.printQuestion("What is the exchange rate of:");
                 double exchangeRate = scanner.nextDouble();
                 scanner.nextLine(); // consume newline after nextDouble() !
 
                 // validate the input
-                var reply = validateCreateCurrencyInput(currencyCode, exchangeRate);
+                var reply = validateCreateCurrencyInput(country, currencyCode, exchangeRate);
 
                 // if no error proceed the operation
                 if (reply.isEmpty()) {
                     // add the currency to the system
-                    var success = currencyService.addCurrency(currencyCode, exchangeRate);
+                    var success = currencyService.addCurrency(country, currencyCode, exchangeRate);
 
                     // if the operation failed reset the loop
                     if (!success) continue; // restart the loop

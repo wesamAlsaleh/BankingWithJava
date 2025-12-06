@@ -107,10 +107,8 @@ public class AccountUserInterface {
                     accountName
             );
 
-            // if account creation failed restart the loop
-            if (!success) {
-                continue; // restart the while loop
-            }
+            // if the operation failed reset the loop
+            if (!success) continue; // restart the while loop
 
             // exit the while loop
             break;

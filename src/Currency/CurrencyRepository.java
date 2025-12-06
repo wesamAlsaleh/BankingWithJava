@@ -11,7 +11,6 @@ import java.util.*;
 public class CurrencyRepository {
     private final FileHandler fileHandler = new FileHandler();
     private final DBPaths dbPaths = new DBPaths();
-    private final Printer printer = new Printer();
 
     // function to check if the currency is available in the system
     public boolean isCurrencyAvailable(String currencyRecord) {
@@ -28,7 +27,7 @@ public class CurrencyRepository {
         );
     }
 
-    // function to get all the currencies as object from the list file
+    // function to get all the currencies as object from the list file todo: error here!
     public List<Currency> getCurrencies() {
         // currencies array holder
         List<Currency> currencies = new LinkedList<>(); // to Organize the order
@@ -47,11 +46,12 @@ public class CurrencyRepository {
                 List<String> parts = new ArrayList<>(List.of(line.split(",")));
 
                 // extract the values
-                var currencyCode = parts.get(0).split(":")[1];
-                var exchangeRate = parts.get(1).split(":")[1];
+                var country = parts.get(0).split(":")[1];
+                var currencyCode = parts.get(1).split(":")[1];
+                var exchangeRate = parts.get(2).split(":")[1];
 
                 // create instance
-                var currency = new Currency(currencyCode, Double.parseDouble(exchangeRate));
+                var currency = new Currency(country, currencyCode, Double.parseDouble(exchangeRate));
 
                 // add it to the array holder
                 currencies.add(currency);

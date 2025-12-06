@@ -1,34 +1,20 @@
 package Currency;
 
-public class Currency {
-    private final String currencyCode;
-    private final double exchangeRate;
-
-
-    // default constructor
-    public Currency(String currencyCode, double exchangeRate) {
-        this.currencyCode = currencyCode;
-        this.exchangeRate = exchangeRate;
-    }
-
-    // getters
-    public String getCurrencyCode() {
-        return currencyCode;
-    }
-
-    public double getExchangeRate() {
-        return exchangeRate;
-    }
-
+public record Currency(String country, String currencyCode, double exchangeRate) {
     // function to write a currency record
-    public String currencyRecord() {
-        return String.format("Currency_Code:%s, Exchange_Rate:%.2f", currencyCode, exchangeRate); // %.2f => .00
+    public String createCurrencyRecord() {
+        return String.format("Country:%s, Currency_Code:%s, Exchange_Rate:%.2f",
+                country,
+                currencyCode,
+                exchangeRate
+        ); // %.2f => .00
     }
 
     @Override
     public String toString() {
         return "Currency{" +
-                "currencyCode='" + currencyCode + '\'' +
+                "country='" + country + '\'' +
+                ", currencyCode='" + currencyCode + '\'' +
                 ", exchangeRate=" + exchangeRate +
                 '}';
     }

@@ -79,7 +79,7 @@ public class StartUpUserInterface {
 
             // banker user options
             if (user.getRole().equals(UserRole.Banker)) {
-                System.out.println("[curr] Manage System Currencies");
+                printer.printColoredLine(Printer.PURPLE, "[curr] Manage System Currencies");
             }
 
             System.out.println("[q]    Quit / Logout");

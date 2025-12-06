@@ -25,19 +25,20 @@ class CurrencyServiceTest {
     @DisplayName("Should return true if the currency is not on the system")
     void shouldReturnTrueIfTheCurrencyIsInTheSystem() {
         // Act
-        assertTrue(currencyService.currencyExistsInTheSystem("SAR"));
+        assertTrue(currencyService.currencyExistsInTheSystem("BHD"));
     }
 
     @Test
     @DisplayName("Should try to add currency to the system without duplicates and return success state (true/false) about the currency whether its added or not")
     void shouldTryToAddCurrencyToTheSystemWithoutDuplicatesAndReturnSuccessStateAboutTheCurrencyWhetherItsAddedOrNot() {
         // Arrange
-        var currencyCode = "IQD"; // ISO codes examples: IQD, KWD, JOD, SAR, AFN, DZD, ARS, ..
+        var country = "Kuwait";
+        var currencyCode = "KWD"; // ISO codes examples: IQD, KWD, JOD, SAR, AFN, DZD, ARS, ..
         var exchangeRate = 0.2f;
 
         // Act
         var availableInTheSystem = currencyService.currencyExistsInTheSystem(currencyCode);
-        var success = currencyService.addCurrency(currencyCode, exchangeRate);
+        var success = currencyService.addCurrency(country, currencyCode, exchangeRate);
 
         // Assert
         // if available in the system the state should be not true
@@ -48,11 +49,12 @@ class CurrencyServiceTest {
     @DisplayName("Should return error that says can not add duplicated currencies")
     void shouldReturnErrorThatCanNotAddDuplicatedCurrencies() {
         // Arrange
+        var country = "ALGERIA";
         var currencyCode = "DZD"; // make sure it's available!
         var exchangeRate = 0.2f;
 
         // Act
-        var success = currencyService.addCurrency(currencyCode, exchangeRate);
+        var success = currencyService.addCurrency(country, currencyCode, exchangeRate);
 
         // Assert
         assertFalse(success);
@@ -95,6 +97,16 @@ class CurrencyServiceTest {
     void shouldDeleteACurrencyRecordFromTheCurrenciesListFile() {
         // Arrange
         var currencyCode = "IQD";
+
+        // Act
+        currencyService.deleteCurrency(currencyCode);
+    }
+
+    @Test
+    @DisplayName("Should return an error if trying to delete a currency is not in the system")
+    void shouldReturnAnErrorIfTryingToDeleteACurrencyIsNotInTheSystem() {
+        // Arrange
+        var currencyCode = "BYN"; // BELARUS
 
         // Act
         currencyService.deleteCurrency(currencyCode);
