@@ -15,7 +15,6 @@ public class FileHandler {
         try (FileWriter writer = new FileWriter(fileName, true)) {
             // write the in the file
             writer.write(content);
-
         } catch (IOException e) {
             printer.printError(fallbackMessage);
             throw new RuntimeException(e);
@@ -38,7 +37,7 @@ public class FileHandler {
         // try to create the file
         try {
             if (file.createNewFile()) {
-                printer.printSuccessful("Record Created successfully!");
+                printer.printSuccessful("File Created successfully!");
             } else {
                 // if the file with the same name exits
                 printer.printError("File already exists.");

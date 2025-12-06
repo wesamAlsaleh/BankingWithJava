@@ -69,22 +69,22 @@ public class AccountUserInterface {
                 printer.printQuestion("What is currency of your new account:");
 
                 // user input
-                var selectedCurrencyCode = scanner.nextLine().trim().toUpperCase();
+                var providedCurrencyCode = scanner.nextLine().trim().toUpperCase();
 
-                // if the selected currency code is more than 3 digits return error
-                if (selectedCurrencyCode.length() != 3) {
+                // if the provided currency code is more than 3 digits return error
+                if (providedCurrencyCode.length() != 3) {
                     printer.printWrongChoice();
                     continue; // restart the loop
                 }
 
                 // if the selected currency code is not in the system print error
-                if (!currencyService.currencyExistsInTheSystem(selectedCurrencyCode)) {
+                if (!currencyService.currencyExistsInTheSystem(providedCurrencyCode)) {
                     printer.printWrongChoice();
                     continue; // restart the loop
                 }
 
                 // set the code
-                currencyCode = selectedCurrencyCode;
+                currencyCode = providedCurrencyCode;
 
                 // exit the nested loop
                 break;
@@ -114,7 +114,7 @@ public class AccountUserInterface {
 
         while (true) {
             // if no accounts found
-            if (accountService.userAccountsLength(user) == 0) {
+            if (accountService.userAccountsCount(user) == 0) {
                 break; // exit the while loop
             }
 

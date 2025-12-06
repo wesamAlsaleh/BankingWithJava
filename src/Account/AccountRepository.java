@@ -54,25 +54,33 @@ public class AccountRepository {
     }
 
     // function to write a new account record in the accounts directory
-    public void saveNewAccountRecord(String fileName, String accountRecord) {
-        // get the path of the parent directory
-        var rootDirectory = dbPaths.getAccountsDirectoryPath();
+    public boolean saveNewAccountRecord(String fileName, String accountRecord) {
+        try {
+            // get the path of the parent directory
+            var rootDirectory = dbPaths.getAccountsDirectoryPath();
 
-        // prepare the path of the new file
-        var newFile = new File(rootDirectory, fileName); // this will handle the path
+            // prepare the path of the new file
+            var newFile = new File(rootDirectory, fileName); // this will handle the path
 
-        // create new file
-        fileHandler.createFile(
-                newFile,
-                "Failed to create account record file!"
-        );
+            // create new file
+            fileHandler.createFile(
+                    newFile,
+                    "Failed to create account record file!"
+            );
 
-        // write in the file
-        fileHandler.write(
-                newFile.getPath(),
-                accountRecord,
-                "Failed to write account account record!"
-        );
+            // write in the file
+            fileHandler.write(
+                    newFile.getPath(),
+                    accountRecord,
+                    "Failed to write account account record!"
+            );
+
+            // success state
+            return true;
+        } catch (Exception e) {
+            printer.printError("Error while creating account record file");
+            return false;
+        }
     }
 
     // function to check if the user has an account
@@ -208,8 +216,10 @@ public class AccountRepository {
 
                 // try to delete it
                 if (file.delete()) {
+                    // todo: remove the account from the account list file
+
                     // show success message
-                    printer.printSuccessful("Account deleted successfully");
+                    printer.printSuccessful("Account deleted successfully!");
                 } else {
                     printer.printError("Error while deleting account record!");
                 } // else end

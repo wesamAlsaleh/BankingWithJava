@@ -49,9 +49,6 @@ public class CurrenciesUserInterface {
                     // add the currency to the system
                     var success = currencyService.addCurrency(currencyCode, exchangeRate);
 
-                    // print successful message
-                    printer.printSuccessful("The currency has been successfully added to the database!");
-
                     // if the operation failed reset the loop
                     if (!success) continue; // restart the loop
 

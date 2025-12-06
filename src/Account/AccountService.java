@@ -1,11 +1,8 @@
 package Account;
 
 import Global.Utils.Printer;
-import Global.Utils.DBPaths;
-import Global.Utils.FileHandler;
 import User.User;
 
-import java.io.File;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -107,7 +104,7 @@ public class AccountService {
     }
 
     // function to create account record
-    public void createAccount(User user, AccountType accountType, String currency) {
+    public boolean createAccount(User user, AccountType accountType, String currency) {
         // generate a unique account number
         var accountNumber = generateAccountNumber();
 
@@ -127,7 +124,7 @@ public class AccountService {
         var fileName = accountNumber + "-" + user.getId() + ".txt";
 
         // create new record
-        accountRepository.saveNewAccountRecord(fileName, account.accountRecord());
+        return accountRepository.saveNewAccountRecord(fileName, account.accountRecord());
     }
 
     // function to delete account
@@ -142,7 +139,7 @@ public class AccountService {
     }
 
     // function to get the number of the accounts belonged to the user
-    public Integer userAccountsLength(User user) {
+    public Integer userAccountsCount(User user) {
         // get the accounts
         var accounts = accountRepository.getAllAccountsByUserId(user.getId());
 
@@ -157,7 +154,7 @@ public class AccountService {
 
         // if no accounts
         if (userAccounts.isEmpty()) {
-            printer.printColoredLine(Printer.YELLOW, "No user accounts found.");
+            printer.printColoredLine(Printer.YELLOW, "No accounts found.");
             System.out.println(" "); // space
         }
 
@@ -171,7 +168,7 @@ public class AccountService {
                     account.getCurrency(),
                     account.isActive() ? "Yes" : "No"
             ));
-            System.out.println(" "); // space
+            System.out.println(" "); // space below each account
         }
     }
 }
