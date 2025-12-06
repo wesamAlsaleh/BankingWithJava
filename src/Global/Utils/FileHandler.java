@@ -161,8 +161,6 @@ public class FileHandler {
                 // if the line is empty skip to next one
                 if (line.isEmpty()) continue;
 
-                System.out.println(line.equals(targetLine));
-
                 // if the line is the target skip it
                 if (line.equals(targetLine)) continue;
 
@@ -172,8 +170,6 @@ public class FileHandler {
         } catch (FileNotFoundException e) {
             printer.printError("Cannot find or read the file!");
         }
-
-        System.out.println("Buffer: "  + tempBuffer.toString());
 
         // overwrite the file with the buffer data
         writeWithoutAppending(

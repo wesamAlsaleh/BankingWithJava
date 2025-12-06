@@ -6,6 +6,7 @@ public class Account implements IAccount {
     private Long userId;
     private String accountNumber;
     private String iban;
+    private String accountName;
     private AccountType accountType;
     private String currency;
     private double balance;
@@ -14,10 +15,11 @@ public class Account implements IAccount {
     private LocalDateTime createdAt;
 
     // default constructor
-    public Account(Long userId, String accountNumber, String iban, AccountType accountType, String currency) {
+    public Account(Long userId, String accountNumber, String iban, String accountName, AccountType accountType, String currency) {
         this.userId = userId;
         this.accountNumber = accountNumber;
         this.iban = iban;
+        this.accountName = accountName;
         this.accountType = accountType;
         this.currency = currency;
         this.balance = 0;
@@ -27,10 +29,11 @@ public class Account implements IAccount {
     }
 
     // custom constructor
-    public Account(Long userId, String accountNumber, String iban, AccountType accountType, String currency, double balance, int overdraftCount, boolean isActive, LocalDateTime createdAt) {
+    public Account(Long userId, String accountNumber, String iban, String accountName, AccountType accountType, String currency, double balance, int overdraftCount, boolean isActive, LocalDateTime createdAt) {
         this.userId = userId;
         this.accountNumber = accountNumber;
         this.iban = iban;
+        this.accountName = accountName;
         this.accountType = accountType;
         this.currency = currency;
         this.balance = balance;
@@ -66,6 +69,10 @@ public class Account implements IAccount {
         return iban;
     }
 
+    public String getAccountName() {
+        return accountName;
+    }
+
     public AccountType getAccountType() {
         return accountType;
     }
@@ -93,8 +100,9 @@ public class Account implements IAccount {
     // function to create account record
     public String accountRecord() {
         return String.format(
-                "user_id:%s, account_number:%s, iban:%s, account_type:%s, currency:%s, balance:%f, overdraft_count:%d, is_active:%B, created_at:%s",
+                "user_id:%s, account_name:%s, account_number:%s, iban:%s, account_type:%s, currency:%s, balance:%f, overdraft_count:%d, is_active:%B, created_at:%s",
                 userId,
+                accountName,
                 accountNumber,
                 iban,
                 accountType,
@@ -112,6 +120,7 @@ public class Account implements IAccount {
                 "userId=" + userId +
                 ", accountNumber='" + accountNumber + '\'' +
                 ", iban='" + iban + '\'' +
+                ", accountName='" + accountName + '\'' +
                 ", accountType=" + accountType +
                 ", currency='" + currency + '\'' +
                 ", balance=" + balance +

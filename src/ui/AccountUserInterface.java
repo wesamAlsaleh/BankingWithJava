@@ -14,15 +14,6 @@ public class AccountUserInterface {
     private final AccountService accountService = new AccountService();
     private final CurrencyService currencyService = new CurrencyService();
 
-    // function to show accounts list page
-    private void accountsListPage(User user) {
-        // init message
-        printer.printColoredTitle("My accounts");
-
-        // print the accounts
-        accountService.printUserAccounts(user);
-    }
-
     // function to show create account page
     private void createAccountPage(User user) {
         // init message
@@ -32,6 +23,7 @@ public class AccountUserInterface {
             // selected choices holder
             AccountType accountType;
             String currencyCode;
+            String accountName;
 
             // loop to select account type
             while (true) {
@@ -65,10 +57,8 @@ public class AccountUserInterface {
 
             // loop to select currency
             while (true) {
-                // select message
+                // currency input
                 printer.printQuestion("What is currency of your new account:");
-
-                // user input
                 var providedCurrencyCode = scanner.nextLine().trim().toUpperCase();
 
                 // if the provided currency code is more than 3 digits return error
@@ -90,11 +80,31 @@ public class AccountUserInterface {
                 break;
             }
 
+            // loop to select account name
+            while (true) {
+                // account name input
+                printer.printQuestion("What is the account name?");
+                var name = scanner.nextLine().trim();
+
+                // if the name length is too short return error and repeat the question
+                if (name.length() < 3) {
+                    printer.printError("The account name is too short!");
+                    continue; // restart the loop
+                }
+
+                // set the name
+                accountName = name;
+
+                // exit the nested loop
+                break;
+            }
+
             // create the account record
             accountService.createAccount(
                     user,
                     accountType,
-                    currencyCode
+                    currencyCode,
+                    accountName
             );
 
             // exit the while loop
@@ -102,6 +112,15 @@ public class AccountUserInterface {
         }
 
         // it will redirect to the root page automatically
+    }
+
+    // function to show accounts list page
+    private void accountsListPage(User user) {
+        // init message
+        printer.printColoredTitle("My accounts");
+
+        // print the accounts
+        accountService.printUserAccounts(user);
     }
 
     // function to show delete account page

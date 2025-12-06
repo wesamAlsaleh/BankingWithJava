@@ -104,18 +104,21 @@ public class AccountService {
     }
 
     // function to create account record
-    public boolean createAccount(User user, AccountType accountType, String currency) {
+    public boolean createAccount(User user, AccountType accountType, String currency, String accountName) {
         // generate a unique account number
         var accountNumber = generateAccountNumber();
 
         // generate iban
         var iban = generateIban(accountNumber);
 
+        System.out.println(accountName.length());
+
         // create new account object
         var account = new Account(
                 user.getId(),
                 accountNumber,
                 iban,
+                accountName.trim(), // just in case
                 accountType,
                 currency
         );
@@ -160,7 +163,8 @@ public class AccountService {
 
         // iterate over them and print each
         for (Account account : userAccounts) {
-            printer.printColoredLine(Printer.YELLOW, String.format("Account Number: %s, IBAN: %s, Type: %s, Balance: %.3f %s, Account Active: %s",
+            printer.printColoredLine(Printer.YELLOW, String.format("Account Name: %s, Account Number: %s, IBAN: %s, Type: %s, Balance: %.3f %s, Account Active: %s",
+                    account.getAccountName().substring(0, 1).toUpperCase() + account.getAccountName().substring(1).toLowerCase(), // capitalize first letter
                     account.getAccountNumber(),
                     account.getIban(),
                     account.getAccountType().toString(),

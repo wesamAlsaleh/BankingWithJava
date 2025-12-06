@@ -122,20 +122,22 @@ public class AccountRepository {
 
                         // extract the values
                         var id = parts.get(0).split(":")[1];
-                        var accountNumber = parts.get(1).split(":")[1];
-                        var iban = parts.get(2).split(":")[1];
-                        var accountType = parts.get(3).split(":")[1];
-                        var accountCurrency = parts.get(4).split(":")[1];
-                        var balance = parts.get(5).split(":")[1];
-                        var overdraftCount = parts.get(6).split(":")[1];
-                        var isActive = parts.get(7).split(":")[1];
-                        var createdAt = parts.get(8).substring(parts.get(8).indexOf(":") + 1);
+                        var accountName = parts.get(1).split(":")[1];
+                        var accountNumber = parts.get(2).split(":")[1];
+                        var iban = parts.get(3).split(":")[1];
+                        var accountType = parts.get(4).split(":")[1];
+                        var accountCurrency = parts.get(5).split(":")[1];
+                        var balance = parts.get(6).split(":")[1];
+                        var overdraftCount = parts.get(7).split(":")[1];
+                        var isActive = parts.get(8).split(":")[1];
+                        var createdAt = parts.get(9).substring(parts.get(9).indexOf(":") + 1);
 
                         // create account object
                         var account = new Account(
                                 Long.valueOf(id),
                                 accountNumber,
                                 iban,
+                                accountName,
                                 AccountType.valueOf(accountType),
                                 accountCurrency,
                                 Double.parseDouble(balance),
