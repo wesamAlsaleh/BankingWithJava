@@ -73,7 +73,6 @@ class CurrencyServiceTest {
 //        assertFalse(success);
 //    }
 
-
     @Test
     @DisplayName("Should return Array of the currencies in the system")
     void shouldReturnCurrenciesAsList() {
@@ -89,5 +88,15 @@ class CurrencyServiceTest {
     void shouldPrintCurrenciesOnTheTerminal() {
         // Act
         currencyService.printCurrencies();
+    }
+
+    @Test
+    @DisplayName("Should delete a currency record from the currencies list file")
+    void shouldDeleteACurrencyRecordFromTheCurrenciesListFile() {
+        // Arrange
+        var currencyCode = "four";
+
+        // Act
+        currencyService.deleteCurrency(currencyCode);
     }
 }

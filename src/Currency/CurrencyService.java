@@ -35,7 +35,7 @@ public class CurrencyService {
         var currencies = currencyRepository.getCurrencies();
 
         // if no currencies print message
-        if  (currencies.isEmpty()) {
+        if (currencies.isEmpty()) {
             printer.printColoredLine(Printer.YELLOW, "No currencies available in the system!");
         }
 
@@ -69,5 +69,10 @@ public class CurrencyService {
         }
         // return false
         return false;
+    }
+
+    // function to delete currency by currency code
+    public void deleteCurrency(String currencyCode) {
+        currencyRepository.deleteCurrency(currencyCode);
     }
 }

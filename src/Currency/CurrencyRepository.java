@@ -2,17 +2,18 @@ package Currency;
 
 import Global.Utils.DBPaths;
 import Global.Utils.FileHandler;
+import Global.Utils.Printer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class CurrencyRepository {
     private final FileHandler fileHandler = new FileHandler();
     private final DBPaths dbPaths = new DBPaths();
+    private final Printer printer = new Printer();
 
     // function to check if the currency is available in the system
     public boolean isCurrencyAvailable(String currencyRecord) {
@@ -64,5 +65,14 @@ public class CurrencyRepository {
 
         // return the list
         return currencies;
+    }
+
+    // function to delete a currency by currency code
+    public void deleteCurrency(String currencyCode) {
+        // get the file that hold the currencies
+        var currenciesFile = new File((dbPaths.getCurrenciesListPath()));
+
+        // try to overwrite the currencies list
+        fileHandler.overwrite(currenciesFile, "Currency_Code", currencyCode);
     }
 }

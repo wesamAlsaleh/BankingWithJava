@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -94,5 +96,53 @@ public class FileHandler {
     // function to delete a file
     public boolean delete(File file) {
         return file.delete();
+    }
+
+    // function to delete a line from a file
+    public void overwrite(File file, String key, String value) {
+        // temporary buffer to store the updated data without the one to delete
+        StringBuilder tempBuffer = new StringBuilder();
+
+        // try to read the file to exclude the targeted value
+        try (Scanner scanner = new Scanner(file)) {
+            // while there is data
+            while (scanner.hasNextLine()) {
+                // get the currency record line
+                var line = scanner.nextLine();
+
+                // if the line is empty skip to the next line
+                if (line.isEmpty()) continue;
+
+                // get the record parts
+                List<String> parts = new ArrayList<>(List.of(line.split(",")));
+
+                // iterate over the data in the record
+                for (String part : parts) {
+                    // if the key is the one to use
+                    if (part.split(":")[0].contains(key)) {
+                        // extract the value
+                        var extractedValue = part.split(":")[1];
+
+                        // if the provided code similar to the extracted code
+                        if (extractedValue.equals(value)) {
+                            // do not add it in the buffer
+                            continue; // skip writing it
+                        }
+
+                        // add the value to the buffer
+                        tempBuffer.append(line).append("\n"); // each record in a single line
+                    }
+                } // for loop end
+            } // end of reading while
+        } catch (FileNotFoundException e) {
+            printer.printError("Cannot find or read the file!");
+        } // end of reading catch
+
+        // try to write the new data (overwrite the date in the file)
+        writeWithoutAppending(
+                file.getPath(),
+                tempBuffer.toString(),
+                "Failed to overwrite " + file.getName() + "!"
+        );
     }
 }

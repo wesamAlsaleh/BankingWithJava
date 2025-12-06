@@ -1,4 +1,3 @@
-
 Currency_Code:BHD, Exchange_Rate:0.10
 Currency_Code:USD, Exchange_Rate:0.20
 Currency_Code:EUR, Exchange_Rate:0.40
@@ -8,4 +7,3 @@ Currency_Code:IQD, Exchange_Rate:0.20
 Currency_Code:KWD, Exchange_Rate:0.20
 Currency_Code:JOD, Exchange_Rate:0.20
 Currency_Code:DZD, Exchange_Rate:0.20
-Currency_Code:four, Exchange_Rate:0.20
