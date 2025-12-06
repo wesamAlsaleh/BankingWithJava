@@ -147,6 +147,7 @@ public class AccountUserInterface {
             // if account number length is not 14 return error
             if (accountNumber.length() != 14) {
                 printer.printError("Account number should be 14 characters!");
+                continue; // restart the loop
             }
 
             // delete the account

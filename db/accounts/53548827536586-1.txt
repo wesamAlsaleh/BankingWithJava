@@ -1,1 +1,0 @@
-user_id:1, account_name:Test Account, account_number:53548827536586, iban:BH32 GAJB 5354 8827 5365 86, account_type:Savings, currency:BHD, balance:0.000000, overdraft_count:0, is_active:TRUE, created_at:2025-12-07T01:32:04.361239400

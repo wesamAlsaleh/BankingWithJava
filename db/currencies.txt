@@ -1,3 +1,0 @@
-Country:Bahrain, Currency_Code:BHD, Exchange_Rate:0.00
-Country:Kuwait, Currency_Code:KWD, Exchange_Rate:0.20
-Country:ALGERIA, Currency_Code:DZD, Exchange_Rate:0.20

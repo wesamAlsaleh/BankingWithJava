@@ -124,6 +124,11 @@ public class CurrenciesUserInterface {
         currencyService.printCurrencies();
 
         while (true) {
+            // if no currencies found
+            if (currencyService.getCurrencies().isEmpty()) {
+                break; // exit the while loop
+            }
+
             printer.printQuestion("What is the currency code:");
             String currencyCode = scanner.nextLine();
 
