@@ -53,7 +53,7 @@ public class DBPaths {
     public String getAccountsDirectoryPath() {
         return pathBasedOnOs(
                 "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\accounts",
-                ""
+                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/accounts"
         );
     }
 
@@ -61,7 +61,7 @@ public class DBPaths {
     public String getAccountNumberListPath() {
         return pathBasedOnOs(
                 "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\account_number_list.txt",
-                ""
+                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/account_number_list.txt"
         );
     }
 
@@ -69,7 +69,7 @@ public class DBPaths {
     public String getCurrenciesListPath() {
         return pathBasedOnOs(
                 "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\currencies.txt",
-                ""
+                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/currencies.txt"
         );
     }
 }
