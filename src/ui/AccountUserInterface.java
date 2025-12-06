@@ -36,7 +36,7 @@ public class AccountUserInterface {
                 // user input
                 var typeNumber = scanner.nextLine().trim();
 
-                // make the type based on the selected choice
+                // set the type based on the selected choice
                 switch (typeNumber) {
                     case "1":
                         accountType = AccountType.Savings;
@@ -100,17 +100,21 @@ public class AccountUserInterface {
             }
 
             // create the account record
-            accountService.createAccount(
+            var success = accountService.createAccount(
                     user,
                     accountType,
                     currencyCode,
                     accountName
             );
 
+            // if account creation failed restart the loop
+            if (!success) {
+                continue; // restart the while loop
+            }
+
             // exit the while loop
             break;
         }
-
         // it will redirect to the root page automatically
     }
 

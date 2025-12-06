@@ -92,12 +92,27 @@ public class AccountServiceTest {
     void shouldCreateAccountAndStoreItInTheSystemAndReturnTrue() {
         // Arrange
         var currency = "USD"; // hard coded currency
+        var accountName = "Test Account";
 
         // Act
-        var success = accountService.createAccount(user, AccountType.Savings, currency);
+        var success = accountService.createAccount(user, AccountType.Savings, currency, accountName);
 
         // Assert
         assertTrue(success);
+    }
+
+    @Test
+    @DisplayName("Should return error and do not store it in the system and return false")
+    void shouldReturnErrorAndDoNotStoreItInTheSystemAndReturnFalse() {
+        // Arrange
+        var currency = "USD";
+        var accountName = "Test Account";
+
+        // Act
+        var success = accountService.createAccount(user, AccountType.Savings, currency, accountName);
+
+        // Assert
+        assertFalse(success); // false because the user has an account with the same currency and type
     }
 
     @Test

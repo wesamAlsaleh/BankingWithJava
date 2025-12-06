@@ -111,20 +111,33 @@ public class AccountService {
         // generate iban
         var iban = generateIban(accountNumber);
 
-        System.out.println(accountName.length());
-
         // create new account object
         var account = new Account(
                 user.getId(),
                 accountNumber,
                 iban,
-                accountName.trim(), // just in case
+                accountName,
                 accountType,
                 currency
         );
 
         // prepare the file name as accountNumber-userId.txt
         var fileName = accountNumber + "-" + user.getId() + ".txt";
+
+        // get the user accounts
+        List<Account> userAccounts = accountRepository.getAllAccountsByUserId(user.getId());
+
+        // iterate over the accounts
+        for (Account userAccount : userAccounts) {
+            //  if the user has an account with the same type and currency code
+            if (userAccount.getCurrency().equals(currency) && userAccount.getAccountType().equals(accountType)) {
+                // send message
+                printer.printError("Account with the same currency already exists.");
+
+                // return false
+                return false;
+            }
+        }
 
         // create new record
         return accountRepository.saveNewAccountRecord(fileName, account.accountRecord());

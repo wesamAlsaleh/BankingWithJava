@@ -1,1 +1,0 @@
-user_id:1, account_name:wesam dzd, account_number:53541900946284, iban:BH29 GAJB 5354 1900 9462 84, account_type:Savings, currency:DZD, balance:0.000000, overdraft_count:0, is_active:TRUE, created_at:2025-12-06T23:50:52.288335900
