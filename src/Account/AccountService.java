@@ -163,7 +163,7 @@ public class AccountService {
 
         // iterate over them and print each
         for (Account account : userAccounts) {
-            printer.printColoredLine(Printer.YELLOW, String.format("Account Number: %s, IBAN: %s, Type: %s, Balance: %.3f %s, Account Locked: %s",
+            printer.printColoredLine(Printer.YELLOW, String.format("Account Number: %s, IBAN: %s, Type: %s, Balance: %.3f %s, Account Active: %s",
                     account.getAccountNumber(),
                     account.getIban(),
                     account.getAccountType().toString(),
