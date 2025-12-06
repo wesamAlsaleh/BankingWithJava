@@ -1,10 +1,10 @@
 package Auth;
 
-import Global.Utils.AnsiPrinter;
+import Global.Utils.Printer;
 import User.User;
 import User.UserRepository;
 import User.UserValidation;
-import ui.UserInterface;
+import ui.StartUpUserInterface;
 
 import java.util.Scanner;
 
@@ -13,14 +13,8 @@ public class AuthenticationService {
     private final BCryptService bcryptService = new BCryptService();
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
-    private static final AnsiPrinter ansiPrinter = new AnsiPrinter();
-    private static final UserInterface ui = new UserInterface();
-
-    // function to print message with space below in the terminal
-    private void printMessage(String message) {
-        System.out.println(message);
-        System.out.println(" ");
-    }
+    private static final Printer printer = new Printer();
+    private static final StartUpUserInterface ui = new StartUpUserInterface();
 
     // function to register a new user
     public void register() {
@@ -28,23 +22,25 @@ public class AuthenticationService {
         String reply;
 
         // initial message
-        ansiPrinter.printColoredTitle(AnsiPrinter.CYAN,"Create new account in GA01 Bank");
+        printer.printColoredTitle("Create new account in GA01 Bank");
 
         while (true) {
             // store the first name
-            System.out.println("What is your first name?");
+            printer.printQuestion("What is your first name:");
             var firstName = input.nextLine();
 
             // store the last name
-            System.out.println("What is your last name?");
+            printer.printQuestion("What is your last name:");
+
             var lastName = input.nextLine();
 
             // store the email
-            System.out.println("What is your email address?");
+            printer.printQuestion("What is your email address:");
+
             var email = input.nextLine();
 
             // store the hashed password
-            System.out.println("What is your password?");
+            printer.printQuestion("What is your password:");
             var password = bcryptService.hashPassword(input.nextLine());
 
             // validate the input
@@ -55,7 +51,7 @@ public class AuthenticationService {
                 // check if the email exists in the system
                 if (userRepository.getUserByEmail(email) != null) {
                     // print error message
-                    ansiPrinter.printError("User with email " + email + " already exists!");
+                    printer.printError("User with email " + email + " already exists!");
 
                     // restart the loop
                     continue;
@@ -74,7 +70,7 @@ public class AuthenticationService {
                 break;
             } else {
                 // print the errors available
-                ansiPrinter.printError(reply);
+                printer.printError(reply);
             }
         }
 
@@ -88,15 +84,15 @@ public class AuthenticationService {
         String reply;
 
         // initial message
-        ansiPrinter.printColoredTitle(AnsiPrinter.CYAN,"login to your account in GA01 Bank");
+        printer.printColoredTitle("login to your account in GA01 Bank");
 
         while (true) {
             // get the email from the user
-            System.out.println("Enter your email address:");
+            printer.printQuestion("Enter your email address:");
             var email = input.nextLine();
 
             // get the password from the user
-            System.out.println("Enter your password:");
+            printer.printQuestion("Enter your password:");
             var password = input.nextLine();
 
             // validate the input
@@ -110,7 +106,7 @@ public class AuthenticationService {
                 // if the user is not available in the system return error
                 if (user == null) {
                     // not found error:
-                    ansiPrinter.printError("Sorry, that email does not exist in the system!");
+                    printer.printError("Sorry, that email does not exist in the system!");
 
                     // restart the loop
                     continue;
@@ -119,7 +115,7 @@ public class AuthenticationService {
                 // if the password is not correct
                 if (!bcryptService.verifyPassword(password, user.getPassword())) {
                     // wrong password message
-                    ansiPrinter.printError("Wrong password, try again!");
+                    printer.printError("Wrong password, try again!");
 
                     // increase the attempts counter
                     userRepository.increaseFraudAttemptsCounter(user.getId());
@@ -127,7 +123,7 @@ public class AuthenticationService {
                     // if the counter is more than 3 terminate the login attempt
                     if (user.getFraudAttemptsCount() >= 3) {
                         // locked message
-                        ansiPrinter.printError("This account has already been locked! try after one minute");
+                        printer.printError("This account has already been locked! try after one minute");
 
                         // exit the while loop
                         break;
@@ -139,7 +135,7 @@ public class AuthenticationService {
                 // check if the account is locked
                 if (user.isLocked()) {
                     // locked account message
-                    ansiPrinter.printError("Your account has been locked! please try again later.");
+                    printer.printError("Your account has been locked! please try again later.");
 
                     // terminate the attempt
                     break;
@@ -152,7 +148,7 @@ public class AuthenticationService {
                 break;
             } else {
                 // print the errors available
-                ansiPrinter.printError(reply);
+                printer.printError(reply);
             }
         } // end of while loop
     }
