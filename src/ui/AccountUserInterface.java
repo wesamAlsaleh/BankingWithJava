@@ -97,9 +97,6 @@ public class AccountUserInterface {
                     currencyCode
             );
 
-            // print message
-            printer.printSuccessful("Account has been created successfully!");
-
             // exit the while loop
             break;
         }
@@ -124,6 +121,7 @@ public class AccountUserInterface {
 
             // question
             printer.printQuestion("What is the account number:");
+            printer.printPrompt("Account number: ");
             var accountNumber = scanner.nextLine().trim();
 
             // if account number length is not 14 return error

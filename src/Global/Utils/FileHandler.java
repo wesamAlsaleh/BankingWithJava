@@ -38,7 +38,7 @@ public class FileHandler {
         // try to create the file
         try {
             if (file.createNewFile()) {
-                printer.printSuccessful("File created");
+                printer.printSuccessful("Record Created successfully!");
             } else {
                 // if the file with the same name exits
                 printer.printError("File already exists.");

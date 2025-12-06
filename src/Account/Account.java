@@ -11,11 +11,10 @@ public class Account implements IAccount {
     private double balance;
     private int overdraftCount;
     private boolean isActive;
-    private boolean isMainAccount;
     private LocalDateTime createdAt;
 
     // default constructor
-    public Account(Long userId, String accountNumber, String iban, AccountType accountType, String currency, boolean isMainAccount) {
+    public Account(Long userId, String accountNumber, String iban, AccountType accountType, String currency) {
         this.userId = userId;
         this.accountNumber = accountNumber;
         this.iban = iban;
@@ -24,12 +23,11 @@ public class Account implements IAccount {
         this.balance = 0;
         this.overdraftCount = 0;
         this.isActive = true;
-        this.isMainAccount = isMainAccount;
         this.createdAt = LocalDateTime.now();
     }
 
     // custom constructor
-    public Account(Long userId, String accountNumber, String iban, AccountType accountType, String currency, double balance, int overdraftCount, boolean isActive, boolean isMainAccount, LocalDateTime createdAt) {
+    public Account(Long userId, String accountNumber, String iban, AccountType accountType, String currency, double balance, int overdraftCount, boolean isActive, LocalDateTime createdAt) {
         this.userId = userId;
         this.accountNumber = accountNumber;
         this.iban = iban;
@@ -38,7 +36,6 @@ public class Account implements IAccount {
         this.balance = balance;
         this.overdraftCount = overdraftCount;
         this.isActive = isActive;
-        this.isMainAccount = isMainAccount;
         this.createdAt = createdAt;
     }
 
@@ -89,10 +86,6 @@ public class Account implements IAccount {
         return isActive;
     }
 
-    public boolean isMainAccount() {
-        return isMainAccount;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -100,7 +93,7 @@ public class Account implements IAccount {
     // function to create account record
     public String accountRecord() {
         return String.format(
-                "user_id:%s, account_number:%s, iban:%s, account_type:%s, currency:%s, balance:%f, overdraft_count:%d, is_active:%B, isMainAccount:%B, createdAt:%s",
+                "user_id:%s, account_number:%s, iban:%s, account_type:%s, currency:%s, balance:%f, overdraft_count:%d, is_active:%B, created_at:%s",
                 userId,
                 accountNumber,
                 iban,
@@ -109,7 +102,6 @@ public class Account implements IAccount {
                 balance,
                 overdraftCount,
                 isActive,
-                isMainAccount,
                 createdAt
         );
     }
@@ -125,7 +117,6 @@ public class Account implements IAccount {
                 ", balance=" + balance +
                 ", overdraftCount=" + overdraftCount +
                 ", isActive=" + isActive +
-                ", isMainAccount=" + isMainAccount +
                 ", createdAt=" + createdAt +
                 '}';
     }

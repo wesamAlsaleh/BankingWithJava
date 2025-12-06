@@ -114,17 +114,13 @@ public class AccountService {
         // generate iban
         var iban = generateIban(accountNumber);
 
-        // is this account the first account
-        var hasAnAccount = accountRepository.userHasAnAccountRecord(user.getId());
-
         // create new account object
         var account = new Account(
                 user.getId(),
                 accountNumber,
                 iban,
                 accountType,
-                currency,
-                !hasAnAccount // if the user has an account return false
+                currency
         );
 
         // prepare the file name as accountNumber-userId.txt
@@ -133,8 +129,6 @@ public class AccountService {
         // create new record
         accountRepository.saveNewAccountRecord(fileName, account.accountRecord());
     }
-
-    // todo: function to set a main account
 
     // function to delete account
     public void deleteAccount(Long userId, String accountNumber) {
@@ -146,7 +140,6 @@ public class AccountService {
         // get all the accounts of the user
         return accountRepository.getAllAccountsByUserId(user.getId());
     }
-
 
     // function to get the number of the accounts belonged to the user
     public Integer userAccountsLength(User user) {
@@ -171,13 +164,12 @@ public class AccountService {
         // iterate over them and print each
         for (Account account : userAccounts) {
             System.out.println("**************************************************************************");
-            printer.printColoredLine(Printer.YELLOW, String.format("Account Number: %s, IBAN: %s, Type: %s, Balance: %.3f %s, Main Account: %s, Account Locked: %s",
+            printer.printColoredLine(Printer.YELLOW, String.format("Account Number: %s, IBAN: %s, Type: %s, Balance: %.3f %s, Account Locked: %s",
                     account.getAccountNumber(),
                     account.getIban(),
                     account.getAccountType().toString(),
                     account.getBalance(),
                     account.getCurrency(),
-                    account.isMainAccount() ? "Yes" : "No",
                     account.isActive() ? "Yes" : "No"
             ));
             System.out.println("**************************************************************************");

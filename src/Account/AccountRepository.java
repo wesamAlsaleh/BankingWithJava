@@ -121,8 +121,7 @@ public class AccountRepository {
                         var balance = parts.get(5).split(":")[1];
                         var overdraftCount = parts.get(6).split(":")[1];
                         var isActive = parts.get(7).split(":")[1];
-                        var isMainAccount = parts.get(8).split(":")[1];
-                        var createdAt = parts.get(9).substring(parts.get(9).indexOf(":") + 1);
+                        var createdAt = parts.get(8).substring(parts.get(8).indexOf(":") + 1);
 
                         // create account object
                         var account = new Account(
@@ -133,8 +132,7 @@ public class AccountRepository {
                                 accountCurrency,
                                 Double.parseDouble(balance),
                                 Integer.parseInt(overdraftCount),
-                                Boolean.getBoolean(isActive),
-                                Boolean.getBoolean(isMainAccount),
+                                Boolean.parseBoolean(isActive),
                                 LocalDateTime.parse(createdAt)
                         );
 
@@ -177,11 +175,11 @@ public class AccountRepository {
                         var parts = new ArrayList<>(List.of(line.split(",")));
 
                         // iterate over the parts
-                        for (int i = 0; i < parts.size(); i++) {
+                        for (String part : parts) {
                             // get the isActive part
-                            if (parts.get(i).contains("is_active")) {
+                            if (part.contains("is_active")) {
                                 // extract the value
-                                var isActive = parts.get(i).split(":")[1];
+                                var isActive = part.split(":")[1];
 
                                 // if the account is not active return error
                                 if (!Boolean.parseBoolean(isActive)) {
@@ -190,23 +188,10 @@ public class AccountRepository {
                                 }
                             }
 
-                            // get the isMain part
-                            if (parts.get(i).contains("isMainAccount")) {
-                                // extract the value
-                                var isMainAccount = parts.get(i).split(":")[1];
-
-                                // if the account is the main return error
-                                if (Boolean.parseBoolean(isMainAccount)) {
-                                    System.out.println(Boolean.parseBoolean(isMainAccount));
-                                    printer.printError("Main account can not be deleted!");
-                                    break; // exit the loop
-                                }
-                            }
-
                             // get the balance part
-                            if (parts.get(i).contains("balance")) {
+                            if (part.contains("balance")) {
                                 // extract the value
-                                var balance = parts.get(i).split(":")[1];
+                                var balance = part.split(":")[1];
 
                                 // if the balance is greater than 1 return error
                                 if (Double.parseDouble(balance) > 1.0) {

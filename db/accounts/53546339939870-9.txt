@@ -1,1 +1,0 @@
-user_id:9, account_number:53546339939870, iban:BH48 GAJB 5354 6339 9398 70, account_type:Savings, currency:BHD, balance:0.000000, overdraft_count:0, is_active:TRUE, isMainAccount:FALSE, createdAt:2025-12-06T02:04:53.965453900
