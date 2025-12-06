@@ -30,7 +30,7 @@ public class AccountUserInterface {
 
         while (true) {
             // selected choices holder
-            AccountType accountType = null;
+            AccountType accountType;
             String currencyCode;
 
             // loop to select account type
@@ -78,7 +78,7 @@ public class AccountUserInterface {
                 }
 
                 // if the selected currency code is not in the system print error
-                if (!currencyService.isCurrencyVerified(selectedCurrencyCode)) {
+                if (!currencyService.currencyExistsInTheSystem(selectedCurrencyCode)) {
                     printer.printWrongChoice();
                     continue; // restart the loop
                 }
@@ -111,7 +111,6 @@ public class AccountUserInterface {
 
         // print the user accounts to help choosing the account number
         accountService.printUserAccounts(user);
-
 
         while (true) {
             // if no accounts found

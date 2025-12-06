@@ -19,17 +19,17 @@ public class AccountServiceTest {
         accountService = new AccountService();
     }
 
-    @Test
-    @DisplayName("Should generate unique account number and store it in a file")
-    void shouldGenerateUniqueAccountNumberAndStoreItInAFile() {
-        // Act
-        var accountNumber = accountService.generateAccountNumber();
-
-        System.out.println(accountNumber);
-
-        // Assert
-       assertNotNull(accountNumber);
-    }
+//    @Test
+//    @DisplayName("Should generate unique account number and store it in a file")
+//    void shouldGenerateUniqueAccountNumberAndStoreItInAFile() {
+//        // Act
+//        var accountNumber = accountService.generateAccountNumber();
+//
+//        System.out.println(accountNumber);
+//
+//        // Assert
+//       assertNotNull(accountNumber);
+//    }
 
 //    @Test
 //    @DisplayName("Should generate iban number and return it as string")

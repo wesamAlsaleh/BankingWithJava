@@ -15,14 +15,52 @@ class CurrencyServiceTest {
     }
 
     @Test
-    @DisplayName("")
-    void shouldAddCurrencyToTheSystemWithOutDuplicates() {
+    @DisplayName("Should return false if the currency is not in the system")
+    void shouldReturnFalseIfTheCurrencyIsNotInTheSystem() {
+        // Act
+        assertFalse(currencyService.currencyExistsInTheSystem("AUD"));
+    }
+
+    @Test
+    @DisplayName("Should return true if the currency is not on the system")
+    void shouldReturnTrueIfTheCurrencyIsInTheSystem() {
+        // Act
+        assertTrue(currencyService.currencyExistsInTheSystem("SAR"));
+    }
+
+    @Test
+    @DisplayName("Should try to add currency to the system without duplicates and return success state (true/false) about the currency whether its added or not")
+    void shouldTryToAddCurrencyToTheSystemWithoutDuplicatesAndReturnSuccessStateAboutTheCurrencyWhetherItsAddedOrNot() {
+        // Arrange
+        var currencyCode = "SAR"; // ISO codes examples: IQD, KWD, JOD, SAR
+        var exchangeRate = 0.2f;
+
+        // Act
+        var availableInTheSystem = currencyService.currencyExistsInTheSystem(currencyCode);
+        var success = currencyService.addCurrency(currencyCode, exchangeRate);
+
+
+        // Assert
+        // if available in the system the state should be not true
+        assertEquals(availableInTheSystem, !success);
+    }
+
+    @Test
+    @DisplayName("Should return Array of the currencies in the system")
+    void shouldReturnCurrenciesAsList() {
         // Arrange
 
         // Act
-//        currencyService.addCurrency();
+        var currencies = currencyService.getCurrencies();
 
         // Assert
+        assertNotNull(currencies);
+    }
 
+    @Test
+    @DisplayName("Should print the currencies in the system on the terminal")
+    void shouldPrintCurrenciesOnTheTerminal() {
+        // Act
+        currencyService.printCurrencies();
     }
 }

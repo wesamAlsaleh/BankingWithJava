@@ -51,7 +51,7 @@ public class CurrencyService {
     }
 
     // function to check if the input code is in the list
-    public boolean isCurrencyVerified(String currencyCode) {
+    public boolean currencyExistsInTheSystem(String currencyCode) {
         // get the currencies array
         var currencies = getCurrencies();
 
