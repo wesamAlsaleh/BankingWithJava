@@ -1,5 +1,6 @@
 package Account;
 
+import Currency.CurrencyRepository;
 import Global.Utils.Printer;
 import User.User;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 public class AccountService {
     private final AccountRepository accountRepository = new AccountRepository();
+    private final CurrencyRepository currencyRepository = new CurrencyRepository();
     private final Printer printer = new Printer();
 
     private static final String COUNTRY_CODE = "BH";
@@ -105,6 +107,9 @@ public class AccountService {
 
     // function to create account record
     public boolean createAccount(User user, AccountType accountType, String currency, String accountName) {
+        // if the currency is not in the system return false
+        if (!currencyRepository.isCurrencyAvailable(currency)) return false;
+
         // generate a unique account number
         var accountNumber = generateAccountNumber();
 

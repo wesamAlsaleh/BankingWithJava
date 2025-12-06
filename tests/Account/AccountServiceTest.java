@@ -32,66 +32,11 @@ public class AccountServiceTest {
         ); // hard coded user
     }
 
-//    @Test
-//    @DisplayName("Should generate unique account number and store it in a file")
-//    void shouldGenerateUniqueAccountNumberAndStoreItInAFile() {
-//        // Act
-//        var accountNumber = accountService.generateAccountNumber();
-//
-//        System.out.println(accountNumber);
-//
-//        // Assert
-//       assertNotNull(accountNumber);
-//    }
-
-//    @Test
-//    @DisplayName("Should generate iban number and return it as string")
-//    void shouldGenerateIbanNumberAndReturnItAsString() {
-//        // Arrange
-//        var accountNumber = accountService.generateAccountNumber();
-//        // 535438431377 for less than 10
-//
-//        // Act
-//        var checkDigit = accountService.generateCheckDigits(accountNumber);
-//
-//        // Assert
-//        assertNotNull(checkDigit);
-//    }
-
-//    @Test
-//    @DisplayName("Should generate unique iban based on the account number")
-//    void shouldGenerateUniqueIban(){
-//        // Arrange
-//        var accountNumber = accountService.generateAccountNumber();
-//
-//        // Act
-//        var iban = accountService.generateIban(accountNumber);
-//
-//        System.out.println(iban);
-//
-//        // Assert
-//        assertNotNull(iban);
-//    }
-
-//    @Test
-//    @DisplayName("Should create new account and create new record file in the db")
-//    void shouldCreateNewAccountAndCreateNewRecordFileInTheDb() {
-//        // Arrange
-//        UserRepository userRepository = new UserRepository();
-//        var user = userRepository.getUserByEmail("unittest@gmail.com");
-//
-//        // Act
-//        accountService.createAccount(user, AccountType.Checking, "BHD");
-//
-//        // Assert
-//        assertNotNull(user);
-//    }
-
     @Test
     @DisplayName("Should create an account and store it in the system")
     void shouldCreateAccountAndStoreItInTheSystemAndReturnTrue() {
         // Arrange
-        var currency = "USD"; // hard coded currency
+        var currency = "BHD"; // hard coded currency
         var accountName = "Test Account";
 
         // Act
@@ -102,11 +47,25 @@ public class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("Should return error and do not store it in the system and return false")
-    void shouldReturnErrorAndDoNotStoreItInTheSystemAndReturnFalse() {
+    @DisplayName("Should not create an account and return false if the currency is not in the system")
+    void shouldNotCreateAccountAndReturnFalseIfTheCurrencyIsNotInTheSystem() {
         // Arrange
-        var currency = "USD";
-        var accountName = "Test Account";
+        var currency = "XAF"; // not in the system
+        var accountName = "Currency not in the system";
+
+        // Act
+        var success = accountService.createAccount(user, AccountType.Savings, currency, accountName);
+
+        // Assert
+        assertFalse(success);
+    }
+
+    @Test
+    @DisplayName("Should return false when an account with same currency and type already exists")
+    void shouldReturnFalseWhenAnAccountWithSameCurrencyAndTypeAlreadyExists() {
+        // Arrange
+        var currency = "BHD";
+        var accountName = "Duplicate Account";
 
         // Act
         var success = accountService.createAccount(user, AccountType.Savings, currency, accountName);
@@ -120,6 +79,8 @@ public class AccountServiceTest {
     void shouldReturnUserAccountsInAnArray() {
         // Act
         var accountsArray = accountService.getUserAccounts(user);
+//        System.out.println(accountsArray);
+
 
         // Assert
         assertNotNull(accountsArray);
@@ -144,6 +105,7 @@ public class AccountServiceTest {
 
         // Act
         var accountsArray = accountService.getUserAccounts(newUser);
+//        System.out.println(accountsArray);
 
         // Arrange
         assertEquals(0, accountsArray.size());
