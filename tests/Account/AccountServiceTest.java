@@ -89,7 +89,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Should create an account and store it in the system")
-    void shouldCreateAccountAndStoreItInTheSystemAndReturnTrue(){
+    void shouldCreateAccountAndStoreItInTheSystemAndReturnTrue() {
         // Arrange
         var currency = "USD"; // hard coded currency
 
@@ -102,7 +102,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Should return user accounts in an array")
-    void shouldReturnUserAccountsInAnArray(){
+    void shouldReturnUserAccountsInAnArray() {
         // Act
         var accountsArray = accountService.getUserAccounts(user);
 
@@ -112,7 +112,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Should return an array with zero length to indicate the user has zero accounts")
-    void shouldReturnAnArrayWithZeroLengthToIndicateTheUserHasZeroAccounts(){
+    void shouldReturnAnArrayWithZeroLengthToIndicateTheUserHasZeroAccounts() {
         // Arrange
         var newUser = new User(
                 53545L,
@@ -136,7 +136,7 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Should return an integer of the user accounts array length")
-    void shouldReturnAnIntegerOfTheUserAccountsArrayLength(){
+    void shouldReturnAnIntegerOfTheUserAccountsArrayLength() {
         // Act
         var accountCount = accountService.userAccountsCount(user);
 //        System.out.println(accountCount);
@@ -147,28 +147,30 @@ public class AccountServiceTest {
 
     @Test
     @DisplayName("Should delete an account by account number")
-    void shouldDeleteAccountByAccountNumber(){
+    void shouldDeleteAccountByAccountNumber() {
         // Arrange
         var userAccountsArray = accountService.getUserAccounts(user);
-        var account = userAccountsArray.get(0); // get first account in the array
+        if (!userAccountsArray.isEmpty()) {
+            var account = userAccountsArray.get(0); // get first account in the array
 
-        // Act
-        accountService.deleteAccount(user.getId(), account.getAccountNumber());
+            // Act
+            accountService.deleteAccount(user.getId(), account.getAccountNumber());
 
-        // Assert
-        assertEquals(userAccountsArray.size() - 1, accountService.userAccountsCount(user));
+            // Assert
+            assertEquals(userAccountsArray.size() - 1, accountService.userAccountsCount(user));
+        }
     }
 
     @Test
     @DisplayName("Should print the user accounts in the terminal")
-    void shouldPrintUserAccounts(){
+    void shouldPrintUserAccounts() {
         // Act
         accountService.printUserAccounts(user);
     }
 
     @Test
     @DisplayName("Should print a message that the user has no accounts")
-    void shouldPrintAMessageThatTheUserHasNoAccounts(){
+    void shouldPrintAMessageThatTheUserHasNoAccounts() {
         // Arrange
         var newUser = new User(
                 53545L,

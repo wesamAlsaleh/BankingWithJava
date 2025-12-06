@@ -12,19 +12,41 @@ public class CurrenciesUserInterface {
     //    private final StartUpUserInterface startUpUserInterface = new StartUpUserInterface();
     private final CurrencyService currencyService = new CurrencyService();
 
-    // function to validate the input
+    // function to validate currency code input
+    private String validateCurrencyCode(String currencyCode) {
+        // validate the code
+        if (currencyCode == null || currencyCode.length() != 3)
+            return "Please enter a valid currency code!";
+
+        // return empty string
+        return "";
+    }
+
+    // function to validate currency exchange rate input
+    private String validateExchangeRate(double exchangeRate) {
+        // validate the code
+        if (exchangeRate <= 0) return "Please enter a valid exchange rate!";
+
+        // return empty string
+        return "";
+    }
+
+    // function to validate the input for create new currency record
     private String validateCreateCurrencyInput(String currencyCode, double exchangeRate) {
         // messages holder
         StringBuilder stringBuilder = new StringBuilder();
 
-        // if any of the input return message
-        if (currencyCode == null || currencyCode.isEmpty()) stringBuilder.append("Please enter a currency code!");
-        if (exchangeRate <= 0) stringBuilder.append("Please enter a valid exchange rate!");
-
-        // if the currency code is greater than 3 return error
+        // if there are any safety violation
+        stringBuilder.append(validateCurrencyCode(currencyCode));
+        stringBuilder.append(validateExchangeRate(exchangeRate));
 
         // return the messages
         return stringBuilder.toString();
+    }
+
+    // function to validate the input for deleting currency record
+    private String validateDeleteCurrencyInput(String currencyCode) {
+        return validateCurrencyCode(currencyCode);
     }
 
     // function to show the add currencies page
@@ -52,7 +74,7 @@ public class CurrenciesUserInterface {
                     // if the operation failed reset the loop
                     if (!success) continue; // restart the loop
 
-                    // exit the loop
+                    // exit the while loop
                     break;
                 }
             } catch (InputMismatchException e) {
@@ -69,6 +91,33 @@ public class CurrenciesUserInterface {
 
         // print the all the currencies in the system
         currencyService.printCurrencies();
+    }
+
+    // function to show delete currencies page
+    public void deleteCurrenciesPage() {
+        // init message
+        printer.printColoredTitle("Delete currencies");
+
+        // print the all the currencies in the system to help the user
+        currencyService.printCurrencies();
+
+        while (true) {
+            printer.printQuestion("What is the currency code:");
+            String currencyCode = scanner.nextLine();
+
+            // validate the input
+            var reply = validateDeleteCurrencyInput(currencyCode);
+
+            // if no errors
+            if (reply.isEmpty()) {
+                // delete the currency from the system
+                currencyService.deleteCurrency(currencyCode);
+            }
+
+            // exit the while loop to return the parent page
+            break;
+        }
+        // automatically redirected
     }
 
     // function to show the manage currencies page
@@ -98,6 +147,7 @@ public class CurrenciesUserInterface {
                     addCurrencyPage();
                     break;
                 case ("d"):
+                    deleteCurrenciesPage();
                     break;
                 case ("q"):
                     printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
