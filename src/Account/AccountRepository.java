@@ -151,4 +151,85 @@ public class AccountRepository {
         return accounts;
     }
 
+    // function to delete an account by account number
+    public void deleteAccountRecord(Long userId, String accountNumber) {
+        // get the account files
+        var files = fileHandler.getDirectoryContentAsList(dbPaths.getAccountsDirectoryPath());
+
+        // iterate over them
+        for (File file : files) {
+            // if the file starts with the provided account number delete it
+            if (file.getName().startsWith(accountNumber)) {
+                // if the account number does not belong to the user
+                if (!file.getName().endsWith("-" + userId + ".txt")) {
+                    printer.printError("Invalid account number!");
+                    break; // exit the for loop
+                }
+
+                // try to read the file
+                try (Scanner scanner = new Scanner(file)) {
+                    // while there is data
+                    while (scanner.hasNextLine()) {
+                        // get the record line
+                        String line = scanner.nextLine();
+
+                        // split the record into parts
+                        var parts = new ArrayList<>(List.of(line.split(",")));
+
+                        // iterate over the parts
+                        for (int i = 0; i < parts.size(); i++) {
+                            // get the isActive part
+                            if (parts.get(i).contains("is_active")) {
+                                // extract the value
+                                var isActive = parts.get(i).split(":")[1];
+
+                                // if the account is not active return error
+                                if (!Boolean.parseBoolean(isActive)) {
+                                    printer.printError("Disabled account can not be deleted!");
+                                    break; // exit the for loop
+                                }
+                            }
+
+                            // get the isMain part
+                            if (parts.get(i).contains("isMainAccount")) {
+                                // extract the value
+                                var isMainAccount = parts.get(i).split(":")[1];
+
+                                // if the account is the main return error
+                                if (Boolean.parseBoolean(isMainAccount)) {
+                                    System.out.println(Boolean.parseBoolean(isMainAccount));
+                                    printer.printError("Main account can not be deleted!");
+                                    break; // exit the loop
+                                }
+                            }
+
+                            // get the balance part
+                            if (parts.get(i).contains("balance")) {
+                                // extract the value
+                                var balance = parts.get(i).split(":")[1];
+
+                                // if the balance is greater than 1 return error
+                                if (Double.parseDouble(balance) > 1.0) {
+                                    printer.printError("Account contain balance can not be deleted!");
+                                    break; // exit the loop
+                                }
+                            }
+                        } // for loop end
+                    } // try end
+                } catch (FileNotFoundException e) {
+                    printer.printError("File not found!");
+                    throw new RuntimeException(e);
+                } // catch end
+
+                // try to delete it
+                if (file.delete()) {
+                    // show success message
+                    printer.printSuccessful("Account deleted successfully");
+                } else {
+                    printer.printError("Error while deleting account record!");
+                } // else end
+            } // if end
+        } // for end
+    }
+
 }

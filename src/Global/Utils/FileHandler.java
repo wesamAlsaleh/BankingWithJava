@@ -91,4 +91,9 @@ public class FileHandler {
         // if not available return false
         return false;
     }
+
+    // function to delete a file
+    public boolean delete(File file) {
+        return file.delete();
+    }
 }

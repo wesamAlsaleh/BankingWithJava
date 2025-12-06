@@ -134,14 +134,27 @@ public class AccountService {
         accountRepository.saveNewAccountRecord(fileName, account.accountRecord());
     }
 
-    // todo: function to change the main account
+    // todo: function to set a main account
 
-    // todo: function to delete account (make sure its not main and empty from money)
+    // function to delete account
+    public void deleteAccount(Long userId, String accountNumber) {
+        accountRepository.deleteAccountRecord(userId, accountNumber);
+    }
 
     // function to get user accounts
     public List<Account> getUserAccounts(User user) {
         // get all the accounts of the user
         return accountRepository.getAllAccountsByUserId(user.getId());
+    }
+
+
+    // function to get the number of the accounts belonged to the user
+    public Integer userAccountsLength(User user) {
+        // get the accounts
+        var accounts = accountRepository.getAllAccountsByUserId(user.getId());
+
+        // return the length of them
+        return accounts.size();
     }
 
     // function to format the print of the accounts
@@ -152,6 +165,7 @@ public class AccountService {
         // if no accounts
         if (userAccounts.isEmpty()) {
             printer.printColoredLine(Printer.YELLOW, "No user accounts found.");
+            System.out.println(" "); // space
         }
 
         // iterate over them and print each

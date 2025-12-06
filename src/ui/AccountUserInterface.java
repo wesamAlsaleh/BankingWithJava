@@ -107,8 +107,36 @@ public class AccountUserInterface {
         // it will redirect to the root page automatically
     }
 
-    // todo: function to show delete account page
-    private void deleteAccountPage() {
+    // function to show delete account page
+    private void deleteAccountPage(User user) {
+        // init message
+        printer.printColoredTitle("Delete account");
+
+        // print the user accounts to help choosing the account number
+        accountService.printUserAccounts(user);
+
+
+        while (true) {
+            // if no accounts found
+            if (accountService.userAccountsLength(user) == 0) {
+                break; // exit the while loop
+            }
+
+            // question
+            printer.printQuestion("What is the account number:");
+            var accountNumber = scanner.nextLine().trim();
+
+            // if account number length is not 14 return error
+            if (accountNumber.length() != 14) {
+                printer.printError("Account number should be 14 characters!");
+            }
+
+            // delete the account
+            accountService.deleteAccount(user.getId(), accountNumber);
+
+            // exit the while loop
+            break;
+        }
     }
 
     // function to show manage accounts page
@@ -137,7 +165,7 @@ public class AccountUserInterface {
                     createAccountPage(user);
                     break;
                 case ("d"):
-                    deleteAccountPage();
+                    deleteAccountPage(user);
                     break;
                 case ("q"):
                     printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
