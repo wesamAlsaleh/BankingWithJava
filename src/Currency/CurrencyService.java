@@ -37,10 +37,11 @@ public class CurrencyService {
         // iterate over them
         for (var currency : currencies) {
             // format the output
-            var c = String.format("Currency Code: %s -- Rate: %.2f", currency.getCurrencyCode(), currency.getExchangeRate());
+            var c = String.format("Currency Code: %s -- Rate: %.2f%%", currency.getCurrencyCode(), currency.getExchangeRate());
 
             // print the formated line
             System.out.println(c);
+            System.out.println(" "); // space
         }
     }
 

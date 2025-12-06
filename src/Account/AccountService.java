@@ -163,7 +163,6 @@ public class AccountService {
 
         // iterate over them and print each
         for (Account account : userAccounts) {
-            System.out.println("**************************************************************************");
             printer.printColoredLine(Printer.YELLOW, String.format("Account Number: %s, IBAN: %s, Type: %s, Balance: %.3f %s, Account Locked: %s",
                     account.getAccountNumber(),
                     account.getIban(),
@@ -172,8 +171,7 @@ public class AccountService {
                     account.getCurrency(),
                     account.isActive() ? "Yes" : "No"
             ));
-            System.out.println("**************************************************************************");
-            System.out.println(" ");
+            System.out.println(" "); // space
         }
     }
 }

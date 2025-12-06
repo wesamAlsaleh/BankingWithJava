@@ -3,6 +3,7 @@ package ui;
 import Currency.CurrencyService;
 import Global.Utils.Printer;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CurrenciesUserInterface {
@@ -12,13 +13,15 @@ public class CurrenciesUserInterface {
     private final CurrencyService currencyService = new CurrencyService();
 
     // function to validate the input
-    private String validateInput(String currencyCode, double exchangeRate) {
+    private String validateCreateCurrencyInput(String currencyCode, double exchangeRate) {
         // messages holder
         StringBuilder stringBuilder = new StringBuilder();
 
         // if any of the input return message
         if (currencyCode == null || currencyCode.isEmpty()) stringBuilder.append("Please enter a currency code!");
         if (exchangeRate <= 0) stringBuilder.append("Please enter a valid exchange rate!");
+
+        // if the currency code is greater than 3 return error
 
         // return the messages
         return stringBuilder.toString();
@@ -30,29 +33,34 @@ public class CurrenciesUserInterface {
         printer.printColoredTitle("Add new currency");
 
         while (true) {
-            System.out.println("What is the currency code:");
-            String currencyCode = scanner.nextLine();
+            try {
+                printer.printQuestion("What is the currency code:");
+                String currencyCode = scanner.nextLine();
 
-            System.out.println("What is the exchange rate of:");
-            double exchangeRate = scanner.nextDouble();
-            scanner.nextLine(); // ← ADD THIS LINE to consume the newline
+                printer.printQuestion("What is the exchange rate of:");
+                double exchangeRate = scanner.nextDouble();
+                scanner.nextLine(); // consume newline after nextDouble() !
 
-            // validate the input
-            var reply = validateInput(currencyCode, exchangeRate);
+                // validate the input
+                var reply = validateCreateCurrencyInput(currencyCode, exchangeRate);
 
-            // if no error proceed the operation
-            if (reply.isEmpty()) {
-                // add the currency to the system
-                var addCurrency = currencyService.addCurrency(currencyCode, exchangeRate);
+                // if no error proceed the operation
+                if (reply.isEmpty()) {
+                    // add the currency to the system
+                    var success = currencyService.addCurrency(currencyCode, exchangeRate);
 
-                // print successful message
-                printer.printSuccessful("The currency has been successfully added to the database!");
+                    // print successful message
+                    printer.printSuccessful("The currency has been successfully added to the database!");
 
-                // if the operation failed reset the loop
-                if (!addCurrency) continue; // restart the loop
+                    // if the operation failed reset the loop
+                    if (!success) continue; // restart the loop
 
-                // exit the loop
-                break;
+                    // exit the loop
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                printer.printError("Please enter a valid code and exchange rate!");
+                scanner.nextLine(); // flush the buffer
             }
         }
     }
