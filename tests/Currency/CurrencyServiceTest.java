@@ -32,7 +32,7 @@ class CurrencyServiceTest {
     @DisplayName("Should try to add currency to the system without duplicates and return success state (true/false) about the currency whether its added or not")
     void shouldTryToAddCurrencyToTheSystemWithoutDuplicatesAndReturnSuccessStateAboutTheCurrencyWhetherItsAddedOrNot() {
         // Arrange
-        var currencyCode = "DZD"; // ISO codes examples: IQD, KWD, JOD, SAR, AFN, DZD, ARS, ..
+        var currencyCode = "IQD"; // ISO codes examples: IQD, KWD, JOD, SAR, AFN, DZD, ARS, ..
         var exchangeRate = 0.2f;
 
         // Act
@@ -94,7 +94,7 @@ class CurrencyServiceTest {
     @DisplayName("Should delete a currency record from the currencies list file")
     void shouldDeleteACurrencyRecordFromTheCurrenciesListFile() {
         // Arrange
-        var currencyCode = "four";
+        var currencyCode = "IQD";
 
         // Act
         currencyService.deleteCurrency(currencyCode);

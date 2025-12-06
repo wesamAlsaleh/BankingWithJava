@@ -6,8 +6,6 @@ import Global.Utils.Printer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 public class CurrencyRepository {
@@ -25,7 +23,7 @@ public class CurrencyRepository {
     public void writeCurrencyRecord(String currencyRecord) {
         fileHandler.write(
                 new File(dbPaths.getCurrenciesListPath()).getPath(),
-                "\n" + currencyRecord, // for new line
+                currencyRecord + "\n", // for new line
                 "Failed to add new currency! Please try again."
         );
     }

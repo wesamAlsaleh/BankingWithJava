@@ -146,7 +146,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("Should create an account by account number")
+    @DisplayName("Should delete an account by account number")
     void shouldDeleteAccountByAccountNumber(){
         // Arrange
         var userAccountsArray = accountService.getUserAccounts(user);

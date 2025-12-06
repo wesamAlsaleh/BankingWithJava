@@ -98,7 +98,7 @@ public class FileHandler {
         return file.delete();
     }
 
-    // function to delete a line from a file
+    // function to delete a line from a file with key:value structure
     public void overwrite(File file, String key, String value) {
         // temporary buffer to store the updated data without the one to delete
         StringBuilder tempBuffer = new StringBuilder();
@@ -143,6 +143,43 @@ public class FileHandler {
                 file.getPath(),
                 tempBuffer.toString(),
                 "Failed to overwrite " + file.getName() + "!"
+        );
+    }
+
+    // function to delete a line from a file with lines structure
+    public void overwriteList(File file, String targetLine) {
+        // temporary buffer to store the updated data without the one to delete
+        StringBuilder tempBuffer = new StringBuilder();
+
+        // try to read the file
+        try (Scanner scanner = new Scanner(file)) {
+            // while there is a line
+            while (scanner.hasNextLine()) {
+                // get the record line
+                var line = scanner.nextLine();
+
+                // if the line is empty skip to next one
+                if (line.isEmpty()) continue;
+
+                System.out.println(line.equals(targetLine));
+
+                // if the line is the target skip it
+                if (line.equals(targetLine)) continue;
+
+                // add it to the buffer
+                tempBuffer.append(line).append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            printer.printError("Cannot find or read the file!");
+        }
+
+        System.out.println("Buffer: "  + tempBuffer.toString());
+
+        // overwrite the file with the buffer data
+        writeWithoutAppending(
+                file.getPath(),
+                tempBuffer.toString(),
+                "Failed to overwrite " +  file.getName() + "!"
         );
     }
 }

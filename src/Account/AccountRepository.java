@@ -22,7 +22,7 @@ public class AccountRepository {
     // function to write a new record in the account number list! file
     public void saveAccountsListFile(String accountNumber) {
         // add new record on new line
-        var contentToAppend = "\n" + accountNumber;
+        var contentToAppend = accountNumber + "\n";
 
         // try to write the account number in the file (append to true to not overwrite the number)
         fileHandler.write(
@@ -214,10 +214,11 @@ public class AccountRepository {
                     throw new RuntimeException(e);
                 } // catch end
 
+                // remove the account number from the list that contains the account numbers
+                fileHandler.overwriteList(new File(dbPaths.getAccountNumberListPath()), accountNumber);
+
                 // try to delete it
                 if (file.delete()) {
-                    // todo: remove the account from the account list file
-
                     // show success message
                     printer.printSuccessful("Account deleted successfully!");
                 } else {
@@ -226,5 +227,4 @@ public class AccountRepository {
             } // if end
         } // for end
     }
-
 }

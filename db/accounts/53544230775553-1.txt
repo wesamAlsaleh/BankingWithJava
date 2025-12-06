@@ -1,1 +1,0 @@
-user_id:1, account_number:53544230775553, iban:BH32 GAJB 5354 4230 7755 53, account_type:Savings, currency:USD, balance:0.000000, overdraft_count:0, is_active:TRUE, created_at:2025-12-06T20:55:52.727014200
