@@ -39,17 +39,44 @@ class CurrencyServiceTest {
         var availableInTheSystem = currencyService.currencyExistsInTheSystem(currencyCode);
         var success = currencyService.addCurrency(currencyCode, exchangeRate);
 
-
         // Assert
         // if available in the system the state should be not true
         assertEquals(availableInTheSystem, !success);
     }
 
     @Test
+    @DisplayName("Should return error that says can not add duplicated currencies")
+    void shouldReturnErrorThatCanNotAddDuplicatedCurrencies() {
+        // Arrange
+        var currencyCode = "DZD"; // make sure it's available!
+        var exchangeRate = 0.2f;
+
+        // Act
+        var success = currencyService.addCurrency(currencyCode, exchangeRate);
+
+        // Assert
+        assertFalse(success);
+    }
+
+    // This test is invalid because the validation is done in the ui stage!
+//    @Test
+//    @DisplayName("Should return error if the currency code is more than 3 digits")
+//    void shouldReturnErrorIfTheCurrencyCodeIsMoreThanThreeDigits() {
+//        // Arrange
+//        var currencyCode = "four";
+//        var exchangeRate = 0.2f;
+//
+//        // Act
+//        var success = currencyService.addCurrency(currencyCode, exchangeRate);
+//
+//        // Assert
+//        assertFalse(success);
+//    }
+
+
+    @Test
     @DisplayName("Should return Array of the currencies in the system")
     void shouldReturnCurrenciesAsList() {
-        // Arrange
-
         // Act
         var currencies = currencyService.getCurrencies();
 

@@ -34,14 +34,19 @@ public class CurrencyService {
         // get the currencies list
         var currencies = currencyRepository.getCurrencies();
 
+        // if no currencies print message
+        if  (currencies.isEmpty()) {
+            printer.printColoredLine(Printer.YELLOW, "No currencies available in the system!");
+        }
+
         // iterate over them
         for (var currency : currencies) {
             // format the output
-            var c = String.format("Currency Code: %s -- Rate: %.2f%%", currency.getCurrencyCode(), currency.getExchangeRate());
+            var f = String.format("Currency Code: %s -- Rate: %.2f%%", currency.getCurrencyCode(), currency.getExchangeRate());
 
             // print the formated line
-            System.out.println(c);
-            System.out.println(" "); // space
+            System.out.println(f);
+            System.out.println(" "); // space below each currency line
         }
     }
 

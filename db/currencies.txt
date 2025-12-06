@@ -8,3 +8,4 @@ Currency_Code:IQD, Exchange_Rate:0.20
 Currency_Code:KWD, Exchange_Rate:0.20
 Currency_Code:JOD, Exchange_Rate:0.20
 Currency_Code:DZD, Exchange_Rate:0.20
+Currency_Code:four, Exchange_Rate:0.20
