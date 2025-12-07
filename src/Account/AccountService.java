@@ -2,9 +2,12 @@ package Account;
 
 import Currency.CurrencyRepository;
 import Global.Utils.Printer;
+import Transaction.TransactionType;
 import User.User;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AccountService {
@@ -105,6 +108,36 @@ public class AccountService {
         return structureTheIban(checkDigits, accountNumber, " ");
     }
 
+    // function to generate deposit message (deposit/withdraw only!)
+    private void successOperationMessage(TransactionType transferType, Account account, double amount) {
+        // init
+        var operationType = "";
+
+        // set the operation type based on the input
+        switch (transferType) {
+            case DEPOSIT:
+                printer.printColoredLine(Printer.YELLOW, String.format("Success! deposit+ of %s %.2f to IBAN *****%s is completed on %s Balance %s %s",
+                        account.getCurrency(),
+                        amount,
+                        account.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                        account.getCurrency(),
+                        account.getBalance()
+                ));
+                break;
+            case WITHDRAW:
+                printer.printColoredLine(Printer.YELLOW, String.format("Success! withdraw- of %s %.2f from IBAN *****%s is completed on %s Balance %s %s",
+                        account.getCurrency(),
+                        amount,
+                        account.getIban().replaceAll("\\s+", "").substring(17), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                        account.getCurrency(),
+                        account.getBalance()
+                ));
+                break;
+        }
+    }
+
     // function to create account record
     public boolean createAccount(User user, AccountType accountType, String currency, String accountName) {
         // if the currency is not in the system return false
@@ -193,4 +226,29 @@ public class AccountService {
             System.out.println(" "); // space below each account
         }
     }
+
+    // function to perform deposit operation
+    public void deposit(Account account, double amount) {
+        // deposit the money to the account
+        account.deposit(amount);
+
+        // save the changes
+        var success = accountRepository.updateAccountRecord(account);
+
+        // send message to the user
+        if (success) {
+            successOperationMessage(TransactionType.DEPOSIT, account, amount);
+        } else {
+            printer.printError("Failed to deposit " + amount + ".");
+        }
+    }
+
+    // function to perform withdraw operation
+    public void withdraw(Account account, double amount) {
+    }
+
+    // function to perform transfer operation
+    public void transfer(Account account, double amount) {
+    }
+
 }

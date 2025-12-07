@@ -5,9 +5,11 @@ import java.util.UUID;
 
 public class Transaction {
     private UUID id;
+    private String accountName;
     private String accountNumber;
+    private String iban;
     private TransactionType transactionType;
-    private LocalDateTime transactionDate;
     private double amount;
     private double postBalance;
+    private LocalDateTime transactionDate;
 }

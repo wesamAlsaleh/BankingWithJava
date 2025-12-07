@@ -37,7 +37,7 @@ public class AccountServiceTest {
     void shouldCreateAccountAndStoreItInTheSystemAndReturnTrue() {
         // Arrange
         var currency = "BHD"; // hard coded currency
-        var accountName = "Test Account";
+        var accountName = "Wesam BHD";
 
         // Act
         var success = accountService.createAccount(user, AccountType.Savings, currency, accountName);
@@ -164,6 +164,17 @@ public class AccountServiceTest {
 
         // Act
         accountService.printUserAccounts(newUser);
+    }
+
+    @Test
+    @DisplayName("Should deposit money to the account")
+    void shouldDepositMoneyToTheAccount() {
+        // Arrange
+        var userAccount = accountService.getUserAccounts(user).get(0);
+
+        // Act
+        accountService.deposit(userAccount, 10.2);
+
     }
 
 

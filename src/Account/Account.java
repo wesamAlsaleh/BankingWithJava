@@ -42,18 +42,21 @@ public class Account implements IAccount {
         this.createdAt = createdAt;
     }
 
+
+
     @Override
     public void deposit(double amount) {
-
+        this.balance += amount; // deposit to the account
     }
 
     @Override
     public void withdraw(double amount) {
-
+        this.balance -= amount; // withdraw from the account
     }
 
     @Override
     public void transfer(String accountNumber, double amount) {
+        this.balance -= amount; // withdraw from the account
     }
 
     // getters

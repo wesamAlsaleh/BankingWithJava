@@ -229,4 +229,32 @@ public class AccountRepository {
             } // if end
         } // for end
     }
+
+    // function to update account
+    public boolean updateAccountRecord(Account account) {
+        try {
+            // get the file that starts with the account number
+            var files = fileHandler.getDirectoryContentAsList(dbPaths.getAccountsDirectoryPath());
+
+            // iterate over them
+            for (File file : files) {
+                if (file.getName().startsWith(account.getAccountNumber() + "-")) {
+                    // overwrite the file
+                    fileHandler.writeWithoutAppending(
+                            file.getPath(),
+                            account.accountRecord(),
+                            "Failed to overwrite account record file!"
+                    );
+
+                    // return success
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            printer.printError("Error while updating account record!");
+        }
+
+        // return failer
+        return false;
+    }
 }
