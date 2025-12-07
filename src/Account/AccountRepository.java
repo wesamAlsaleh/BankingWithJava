@@ -239,6 +239,11 @@ public class AccountRepository {
             // iterate over them
             for (File file : files) {
                 if (file.getName().startsWith(account.getAccountNumber() + "-")) {
+                    // validate the user (authorization required)
+                    if (!file.getName().endsWith("-" + account.getUserId() + ".txt")) {
+                        return false;
+                    }
+
                     // overwrite the file
                     fileHandler.writeWithoutAppending(
                             file.getPath(),

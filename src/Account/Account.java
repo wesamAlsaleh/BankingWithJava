@@ -100,6 +100,16 @@ public class Account implements IAccount {
         return createdAt;
     }
 
+    // setters
+    public void setOverdraftCount(int overdraftCount) {
+        this.overdraftCount = overdraftCount;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+
     // function to create account record
     public String accountRecord() {
         return String.format(

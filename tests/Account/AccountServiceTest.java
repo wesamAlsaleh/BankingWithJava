@@ -174,9 +174,17 @@ public class AccountServiceTest {
 
         // Act
         accountService.deposit(userAccount, 10.2);
-
     }
 
+    @Test
+    @DisplayName("Should withdraw money from the account")
+    void shouldWithdrawMoneyFromTheAccount() {
+        // Arrange
+        var userAccount = accountService.getUserAccounts(user).get(0);
+
+        // Act
+        accountService.withdraw(userAccount, 50);
+    }
 
     @AfterEach
     public void tearDown() {
