@@ -5,6 +5,7 @@ import Global.Utils.Printer;
 import Transaction.TransactionService;
 import Transaction.TransactionType;
 import User.User;
+import User.UserRepository;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class AccountService {
     private final AccountRepository accountRepository = new AccountRepository();
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
     private final TransactionService transactionService = new TransactionService();
+    private final UserRepository userRepository = new UserRepository();
     private final Printer printer = new Printer();
 
     private static final String COUNTRY_CODE = "BH";
@@ -131,6 +133,17 @@ public class AccountService {
                         amount,
                         account.getAccountName(),
                         account.getIban().replaceAll("\\s+", "").substring(17), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                        account.getCurrency(),
+                        account.getBalance()
+                ));
+                break;
+            case TRANSFER:
+                printer.printColoredLine(Printer.YELLOW, String.format("Success! transfer++ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
+                        account.getCurrency(),
+                        amount,
+                        account.getAccountName(),
+                        account.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
                         account.getCurrency(),
                         account.getBalance()
@@ -317,7 +330,52 @@ public class AccountService {
     }
 
     // function to perform transfer operation
-    public void transfer(Account account, double amount) {
+    public void transfer(User user, Account account, String targetAccountNumber, double amount) {
+        // check if the account is deactivated
+        if (!account.isActive()) {
+            printer.printColored(Printer.RED, "Account " + account.getAccountNumber() + " is deactivated. To reactivate the account you must resolve the negative balance and pay the overdraft fees.");
+            return; // do not do anything
+        }
+
+        // if the amount to transfer is more than the balance return error
+        if (account.getBalance() < amount) {
+            printer.printColored(Printer.RED, "Insufficient funds.");
+            return; // do not do anything
+        }
+
+        // get the account of the targeted user
+        var userAccounts = getUserAccounts(user);
+
+        // if no user accounts print error
+        if (userAccounts.isEmpty()) {
+            printer.printColored(Printer.RED, "No accounts found.");
+            return; // do not do anything
+        }
+
+        // iterate over the accounts
+        for (Account userAccount : userAccounts) {
+            if (userAccount.getAccountNumber().equals(targetAccountNumber)) {
+                // withdraw from the main account
+                account.setBalance(account.getBalance() - amount);
+
+                // deposit it into the targeted user
+                userAccount.setBalance(userAccount.getBalance() + amount);
+
+                // save the changes for both accounts
+                var senderSuccess = accountRepository.updateAccountRecord(account);
+                var receiverSuccess = accountRepository.updateAccountRecord(userAccount);
+
+                // If the sender is successfully done print success message
+                if (senderSuccess) {
+                    successOperationMessage(TransactionType.TRANSFER, account, amount);
+                }
+
+                // todo: If the receiver is successfully done put notification
+                if (receiverSuccess) {
+                    // set notification for the targeted user
+                }
+            }
+        }
     }
 
 }

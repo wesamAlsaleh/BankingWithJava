@@ -186,6 +186,17 @@ public class AccountServiceTest {
         accountService.withdraw(user, userAccount, 5);
     }
 
+    @Test
+    @DisplayName("Should transfer money between two accounts")
+    void shouldTransferMoneyBetweenTwoAccounts() {
+        // Arrange
+        var userAccount = accountService.getUserAccounts(user).get(0);
+        var userAccount2 = accountService.getUserAccounts(user).get(2);
+
+        // Act
+        accountService.transfer(user, userAccount, userAccount2.getAccountNumber(), 5);
+    }
+
     @AfterEach
     public void tearDown() {
         accountService = null;

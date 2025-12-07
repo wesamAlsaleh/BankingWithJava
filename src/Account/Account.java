@@ -109,6 +109,9 @@ public class Account implements IAccount {
         isActive = active;
     }
 
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 
     // function to create account record
     public String createAccountRecord() {
