@@ -2,6 +2,7 @@ package Account;
 
 import Currency.CurrencyRepository;
 import Global.Utils.Printer;
+import Transaction.TransactionService;
 import Transaction.TransactionType;
 import User.User;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class AccountService {
     private final AccountRepository accountRepository = new AccountRepository();
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
+    private final TransactionService transactionService = new TransactionService();
     private final Printer printer = new Printer();
 
     private static final String COUNTRY_CODE = "BH";
@@ -177,7 +179,7 @@ public class AccountService {
         }
 
         // create new record
-        return accountRepository.saveNewAccountRecord(fileName, account.accountRecord());
+        return accountRepository.saveNewAccountRecord(fileName, account.createAccountRecord());
     }
 
     // function to delete account
@@ -227,7 +229,10 @@ public class AccountService {
     }
 
     // function to perform deposit operation
-    public void deposit(Account account, double amount) {
+    public void deposit(User user, Account account, double amount) {
+        // store the post balance
+        var balance = account.getBalance();
+
         // deposit the money to the account
         account.deposit(amount);
 
@@ -242,6 +247,16 @@ public class AccountService {
 
         // send message to the user
         if (success) {
+            // create transaction record
+            transactionService.createTransaction(
+                    user,
+                    account,
+                    TransactionType.DEPOSIT,
+                    amount,
+                    balance
+            );
+
+            // print message
             successOperationMessage(TransactionType.DEPOSIT, account, amount);
         } else {
             printer.printError("Failed to deposit " + amount + ".");
@@ -249,7 +264,7 @@ public class AccountService {
     }
 
     // function to perform withdraw operation
-    public void withdraw(Account account, double amount) {
+    public void withdraw(User user, Account account, double amount) {
         // check if the account is deactivated
         if (!account.isActive()) {
             printer.printColored(Printer.RED, "Account " + account.getAccountNumber() + " is deactivated. To reactivate the account you must resolve the negative balance and pay the overdraft fees.");
@@ -267,9 +282,6 @@ public class AccountService {
                 account.withdraw(amount);
                 account.withdraw(35); // take the fees (-50 - (+35))
 
-                // send withdraw message
-                successOperationMessage(TransactionType.WITHDRAW, account, amount);
-
                 // increase the overdraft counter
                 account.setOverdraftCount(account.getOverdraftCount() + 1);
 
@@ -284,14 +296,24 @@ public class AccountService {
         } else {
             // normally withdraw from the account
             account.withdraw(amount);
-            System.out.println("again");
-
-            // send withdraw message
-            successOperationMessage(TransactionType.WITHDRAW, account, amount);
         }
 
         // save the changes
-        accountRepository.updateAccountRecord(account);
+        var success = accountRepository.updateAccountRecord(account);
+
+        if (success) {
+            // create transaction record
+            transactionService.createTransaction(
+                    user,
+                    account,
+                    TransactionType.WITHDRAW,
+                    amount,
+                    balance
+            );
+
+            /// send withdraw message
+            successOperationMessage(TransactionType.WITHDRAW, account, amount);
+        }
     }
 
     // function to perform transfer operation

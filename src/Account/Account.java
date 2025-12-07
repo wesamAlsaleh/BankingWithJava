@@ -111,7 +111,7 @@ public class Account implements IAccount {
 
 
     // function to create account record
-    public String accountRecord() {
+    public String createAccountRecord() {
         return String.format(
                 "user_id:%s, account_name:%s, account_number:%s, iban:%s, account_type:%s, currency:%s, balance:%f, overdraft_count:%d, is_active:%B, created_at:%s",
                 userId,

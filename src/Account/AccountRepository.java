@@ -247,7 +247,7 @@ public class AccountRepository {
                     // overwrite the file
                     fileHandler.writeWithoutAppending(
                             file.getPath(),
-                            account.accountRecord(),
+                            account.createAccountRecord(),
                             "Failed to overwrite account record file!"
                     );
 

@@ -173,7 +173,7 @@ public class AccountServiceTest {
         var userAccount = accountService.getUserAccounts(user).get(0);
 
         // Act
-        accountService.deposit(userAccount, 1);
+        accountService.deposit(user, userAccount, 10);
     }
 
     @Test
@@ -183,7 +183,7 @@ public class AccountServiceTest {
         var userAccount = accountService.getUserAccounts(user).get(0);
 
         // Act
-        accountService.withdraw(userAccount, 1);
+        accountService.withdraw(user, userAccount, 5);
     }
 
     @AfterEach

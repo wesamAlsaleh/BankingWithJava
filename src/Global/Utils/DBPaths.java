@@ -72,4 +72,22 @@ public class DBPaths {
                 "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/currencies.txt"
         );
     }
+
+    // function to get the path of the file that store the transactions of the system
+    public String getSystemTransactionsFilePath() {
+        return pathBasedOnOs(
+                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\systemTransactions.txt",
+                ""
+        );
+    }
+
+    // function to get the path of the transactions directory
+    public String getTransactionsDirectoryPath() {
+        return pathBasedOnOs(
+                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\transactions",
+                ""
+        );
+    }
 }
+
+
