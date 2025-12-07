@@ -43,7 +43,7 @@ public class CurrencyService {
         // iterate over them
         for (var currency : currencies) {
             // format the output
-            var f = String.format("Country: %s -- Currency Code: %s -- Rate: %.2f%%",
+            var f = String.format("Country: %s -- Currency Code: %s -- Rate: %f%%",
                     currency.country(),
                     currency.currencyCode(),
                     currency.exchangeRate()

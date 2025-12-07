@@ -12,11 +12,11 @@ public class TransactionService {
     private final Printer printer = new Printer();
 
     // function to create transaction record
-    public boolean createTransaction(User user, Account account, TransactionType transactionType, double amount, double postBalance) {
+    public boolean createTransaction(Account account, TransactionType transactionType, double amount, double postBalance) {
         // create transaction obj
         var transaction = new Transaction(
                 UUID.randomUUID(),
-                user.getId(),
+                account.getUserId(),
                 account.getAccountName(),
                 account.getAccountNumber(),
                 account.getIban(),

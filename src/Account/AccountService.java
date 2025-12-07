@@ -17,7 +17,6 @@ public class AccountService {
     private final AccountRepository accountRepository = new AccountRepository();
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
     private final TransactionService transactionService = new TransactionService();
-    private final UserRepository userRepository = new UserRepository();
     private final Printer printer = new Printer();
 
     private static final String COUNTRY_CODE = "BH";
@@ -262,8 +261,22 @@ public class AccountService {
 
     }
 
+    // function to validate account number
+    public String validateAccountNumber(String accountNumber) {
+        if (accountNumber == null || accountNumber.isEmpty()) {
+            return "Account number must not be empty.";
+        }
+
+        // if it's not 14
+        if (accountNumber.length() != 14) {
+            return "Account number must have a length of 14 characters.";
+        }
+
+        return "";
+    }
+
     // function to perform deposit operation
-    public void deposit(User user, Account account, double amount) {
+    public void deposit(Account account, double amount) {
         // store the post balance
         var balance = account.getBalance();
 
@@ -283,7 +296,6 @@ public class AccountService {
         if (success) {
             // create transaction record
             transactionService.createTransaction(
-                    user,
                     account,
                     TransactionType.DEPOSIT,
                     amount,
@@ -298,7 +310,7 @@ public class AccountService {
     }
 
     // function to perform withdraw operation
-    public void withdraw(User user, Account account, double amount) {
+    public void withdraw(Account account, double amount) {
         // check if the account is deactivated
         if (!account.isActive()) {
             printer.printColored(Printer.RED, "Account " + account.getAccountNumber() + " is deactivated. To reactivate the account you must resolve the negative balance and pay the overdraft fees.");
@@ -335,10 +347,10 @@ public class AccountService {
         // save the changes
         var success = accountRepository.updateAccountRecord(account);
 
+        // if the operation done
         if (success) {
             // create transaction record
             transactionService.createTransaction(
-                    user,
                     account,
                     TransactionType.WITHDRAW,
                     amount,
@@ -375,8 +387,11 @@ public class AccountService {
         // iterate over the accounts
         for (Account receiverAccount : receiverAccounts) {
             if (receiverAccount.getAccountNumber().equals(receiverAccountNumber)) {
+                // get the balance of the sender
+                var senderBalance = senderAccount.getBalance();
+
                 // withdraw from the main senderAccount
-                senderAccount.setBalance(senderAccount.getBalance() - amount);
+                senderAccount.setBalance(senderBalance - amount);
 
                 // get the currencies
                 var currencies = currencyRepository.getCurrencies();
@@ -399,15 +414,27 @@ public class AccountService {
                 // calculate the rate between (amount * (senderRate/receiverRate))
                 var receiverAmount = amount * (senderRate / receiverRate);
 
+                // get the balance of the receiver
+                var receiverBalance = receiverAccount.getBalance();
+
                 // deposit it into the targeted targetUser
-                receiverAccount.setBalance(receiverAccount.getBalance() + receiverAmount);
+                receiverAccount.setBalance(receiverBalance + receiverAmount);
 
                 // save the changes for both accounts
                 var senderSuccess = accountRepository.updateAccountRecord(senderAccount);
                 var receiverSuccess = accountRepository.updateAccountRecord(receiverAccount);
 
-                // If the sender is successfully done print success message
+                // If the sender is successfully done
                 if (senderSuccess) {
+                    // create transaction record
+                    transactionService.createTransaction(
+                            senderAccount,
+                            TransactionType.TRANSFER,
+                            amount,
+                            senderBalance
+                    );
+
+                    // print success message
                     successTransferMessage(
                             senderAccount,
                             receiverAccount,
@@ -415,25 +442,19 @@ public class AccountService {
                     );
                 }
 
-                // todo: If the receiver is successfully done put notification
+                // If the receiver is successfully done
                 if (receiverSuccess) {
-                    // set notification for the targeted targetUser
+                    // create transaction record
+                    transactionService.createTransaction(
+                            receiverAccount,
+                            TransactionType.TRANSFER,
+                            amount,
+                            receiverBalance
+                    );
+
+                    // todo: put notification
                 }
             }
         }
-    }
-
-    // function to validate account number
-    public String validateAccountNumber(String accountNumber) {
-        if (accountNumber == null || accountNumber.isEmpty()) {
-            return "Account number must not be empty.";
-        }
-
-        // if it's not 14
-        if (accountNumber.length() != 14) {
-            return "Account number must have a length of 14 characters.";
-        }
-
-        return "";
     }
 }
