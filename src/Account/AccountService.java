@@ -231,6 +231,12 @@ public class AccountService {
         // deposit the money to the account
         account.deposit(amount);
 
+        // if the balance is positive make the account active and overdraft count to zero
+        if (account.getBalance() >= 0) {
+            account.setActive(true); // account is active
+            account.setOverdraftCount(0); // reset count state
+        }
+
         // save the changes
         var success = accountRepository.updateAccountRecord(account);
 
