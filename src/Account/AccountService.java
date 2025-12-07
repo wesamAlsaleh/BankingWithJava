@@ -139,18 +139,20 @@ public class AccountService {
                         account.getBalance()
                 ));
                 break;
-            case TRANSFER:
-                printer.printColoredLine(Printer.YELLOW, String.format("Success! transfer++ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
-                        account.getCurrency(),
-                        amount,
-                        account.getAccountName(),
-                        account.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-                        account.getCurrency(),
-                        account.getBalance()
-                ));
-                break;
         }
+    }
+
+    // function to generate transfer message
+    private void successTransferMessage(Account senderAccount, Account receiverAccount, double amount) {
+        printer.printColoredLine(Printer.YELLOW, String.format("Success! transfer++ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
+                senderAccount.getCurrency(),
+                amount,
+                receiverAccount.getAccountName(),
+                receiverAccount.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                senderAccount.getCurrency(),
+                senderAccount.getBalance()
+        ));
     }
 
     // function to create account record
@@ -242,6 +244,24 @@ public class AccountService {
         }
     }
 
+    // function to format the print of accounts to transfer
+    public void printAccountsToTransfer(List<Account> accounts) {
+        // iterate over the accounts
+        for (Account account : accounts) {
+            var f = String.format("%s %s (%s %s)",
+                    account.getAccountName(),
+                    account.getAccountNumber(),
+                    account.getCurrency(),
+                    account.getAccountType().toString().toLowerCase()
+            );
+
+            printer.printColoredLine(Printer.YELLOW, f);
+            System.out.println(" "); // space below each account
+        }
+
+
+    }
+
     // function to perform deposit operation
     public void deposit(User user, Account account, double amount) {
         // store the post balance
@@ -331,33 +351,32 @@ public class AccountService {
     }
 
     // function to perform transfer operation
-    public void transfer(User user, Account account, String targetAccountNumber, double amount) {
-        // check if the account is deactivated
-        if (!account.isActive()) {
-            printer.printColored(Printer.RED, "Account " + account.getAccountNumber() + " is deactivated. To reactivate the account you must resolve the negative balance and pay the overdraft fees.");
+    public void transfer(
+            User receiver,
+            String receiverAccountNumber,
+            Account senderAccount,
+            double amount
+    ) {
+        // check if the senderAccount is deactivated
+        if (!senderAccount.isActive()) {
+            printer.printColored(Printer.RED, "Account " + senderAccount.getAccountNumber() + " is deactivated. To reactivate the senderAccount you must resolve the negative balance and pay the overdraft fees.");
             return; // do not do anything
         }
 
         // if the amount to transfer is more than the balance return error
-        if (account.getBalance() < amount) {
+        if (senderAccount.getBalance() < amount) {
             printer.printColored(Printer.RED, "Insufficient funds.");
             return; // do not do anything
         }
 
-        // get the account of the targeted user
-        var userAccounts = getUserAccounts(user);
-
-        // if no user accounts print error
-        if (userAccounts.isEmpty()) {
-            printer.printColored(Printer.RED, "No accounts found.");
-            return; // do not do anything
-        }
+        // get the senderAccount of the targeted targetUser
+        var receiverAccounts = getUserAccounts(receiver);
 
         // iterate over the accounts
-        for (Account userAccount : userAccounts) {
-            if (userAccount.getAccountNumber().equals(targetAccountNumber)) {
-                // withdraw from the main account
-                account.setBalance(account.getBalance() - amount);
+        for (Account receiverAccount : receiverAccounts) {
+            if (receiverAccount.getAccountNumber().equals(receiverAccountNumber)) {
+                // withdraw from the main senderAccount
+                senderAccount.setBalance(senderAccount.getBalance() - amount);
 
                 // get the currencies
                 var currencies = currencyRepository.getCurrencies();
@@ -367,12 +386,12 @@ public class AccountService {
                 // iterate over them
                 for (Currency currency : currencies) {
                     // set the sender exchange rate
-                    if (currency.currencyCode().equals(account.getCurrency())) {
+                    if (currency.currencyCode().equals(senderAccount.getCurrency())) {
                         senderRate = currency.exchangeRate();
                     }
 
                     // set the receiver exchange rate
-                    if (currency.currencyCode().equals(userAccount.getCurrency())) {
+                    if (currency.currencyCode().equals(receiverAccount.getCurrency())) {
                         receiverRate = currency.exchangeRate();
                     }
                 }
@@ -380,24 +399,41 @@ public class AccountService {
                 // calculate the rate between (amount * (senderRate/receiverRate))
                 var receiverAmount = amount * (senderRate / receiverRate);
 
-                // deposit it into the targeted user
-                userAccount.setBalance(userAccount.getBalance() + receiverAmount);
+                // deposit it into the targeted targetUser
+                receiverAccount.setBalance(receiverAccount.getBalance() + receiverAmount);
 
                 // save the changes for both accounts
-                var senderSuccess = accountRepository.updateAccountRecord(account);
-                var receiverSuccess = accountRepository.updateAccountRecord(userAccount);
+                var senderSuccess = accountRepository.updateAccountRecord(senderAccount);
+                var receiverSuccess = accountRepository.updateAccountRecord(receiverAccount);
 
                 // If the sender is successfully done print success message
                 if (senderSuccess) {
-                    successOperationMessage(TransactionType.TRANSFER, userAccount, amount); // receiver account not sender account to print the message "amount to receiver"
+                    successTransferMessage(
+                            senderAccount,
+                            receiverAccount,
+                            amount
+                    );
                 }
 
                 // todo: If the receiver is successfully done put notification
                 if (receiverSuccess) {
-                    // set notification for the targeted user
+                    // set notification for the targeted targetUser
                 }
             }
         }
     }
 
+    // function to validate account number
+    public String validateAccountNumber(String accountNumber) {
+        if (accountNumber == null || accountNumber.isEmpty()) {
+            return "Account number must not be empty.";
+        }
+
+        // if it's not 14
+        if (accountNumber.length() != 14) {
+            return "Account number must have a length of 14 characters.";
+        }
+
+        return "";
+    }
 }

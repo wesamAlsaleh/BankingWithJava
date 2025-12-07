@@ -13,6 +13,7 @@ public class StartUpUserInterface {
     private final Printer printer = new Printer();
     private final CurrenciesUserInterface currenciesUserInterface = new CurrenciesUserInterface();
     private final AccountUserInterface accountUserInterface = new AccountUserInterface();
+    private final TransferUserInterface transferUserInterface = new TransferUserInterface();
 
     // function to display a page title
     private void title(String title) {
@@ -94,6 +95,7 @@ public class StartUpUserInterface {
                 case ("with"):
                     break;
                 case ("t"):
+                    transferUserInterface.transferPage(user);
                     break;
                 case ("acc"):
                     accountUserInterface.manageAccountsPage(user);
