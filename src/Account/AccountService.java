@@ -1,5 +1,6 @@
 package Account;
 
+import Currency.Currency;
 import Currency.CurrencyRepository;
 import Global.Utils.Printer;
 import Transaction.TransactionService;
@@ -358,8 +359,29 @@ public class AccountService {
                 // withdraw from the main account
                 account.setBalance(account.getBalance() - amount);
 
+                // get the currencies
+                var currencies = currencyRepository.getCurrencies();
+                var senderRate = 0d;
+                var receiverRate = 0d;
+
+                // iterate over them
+                for (Currency currency : currencies) {
+                    // set the sender exchange rate
+                    if (currency.currencyCode().equals(account.getCurrency())) {
+                        senderRate = currency.exchangeRate();
+                    }
+
+                    // set the receiver exchange rate
+                    if (currency.currencyCode().equals(userAccount.getCurrency())) {
+                        receiverRate = currency.exchangeRate();
+                    }
+                }
+
+                // calculate the rate between (amount * (senderRate/receiverRate))
+                var receiverAmount = amount * (senderRate / receiverRate);
+
                 // deposit it into the targeted user
-                userAccount.setBalance(userAccount.getBalance() + amount);
+                userAccount.setBalance(userAccount.getBalance() + receiverAmount);
 
                 // save the changes for both accounts
                 var senderSuccess = accountRepository.updateAccountRecord(account);
@@ -367,7 +389,7 @@ public class AccountService {
 
                 // If the sender is successfully done print success message
                 if (senderSuccess) {
-                    successOperationMessage(TransactionType.TRANSFER, account, amount);
+                    successOperationMessage(TransactionType.TRANSFER, userAccount, amount); // receiver account not sender account to print the message "amount to receiver"
                 }
 
                 // todo: If the receiver is successfully done put notification

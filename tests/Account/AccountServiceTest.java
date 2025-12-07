@@ -190,11 +190,11 @@ public class AccountServiceTest {
     @DisplayName("Should transfer money between two accounts")
     void shouldTransferMoneyBetweenTwoAccounts() {
         // Arrange
-        var userAccount = accountService.getUserAccounts(user).get(0);
-        var userAccount2 = accountService.getUserAccounts(user).get(2);
+        var userAccount = accountService.getUserAccounts(user).get(2);
+        var userAccount2 = accountService.getUserAccounts(user).get(0);
 
         // Act
-        accountService.transfer(user, userAccount, userAccount2.getAccountNumber(), 5);
+        accountService.transfer(user, userAccount, userAccount2.getAccountNumber(), 1);
     }
 
     @AfterEach
