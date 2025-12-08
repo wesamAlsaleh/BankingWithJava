@@ -73,7 +73,9 @@ public class TransactionService {
     }
 
     // print the user transactions
-    public void printUserTransactions(User user) {
+    public void printUserTransactions(User user, DateFilter dateFilter) {
+        System.out.println("Im in this function");
+
         // get the user transactions
         var transactions = getUserTransactions(user);
 
@@ -83,8 +85,54 @@ public class TransactionService {
             return; // do nothing
         }
 
+        // filter date holder
+        LocalDateTime date;
+
+        System.out.println("im here 1");
+
+        // filter the transactions based on the date
+        switch (dateFilter) {
+            case TODAY:
+                date = LocalDateTime.now().toLocalDate().atStartOfDay();
+                break;
+            case YESTERDAY:
+                date = LocalDateTime.now().minusDays(1).toLocalDate().atStartOfDay();
+                break;
+            case LAST_WEEK:
+                date = LocalDateTime.now().minusDays(7).toLocalDate().atStartOfDay();
+                break;
+            case LAST_MONTH:
+                date = LocalDateTime.now().minusMonths(1).toLocalDate().atStartOfDay();
+                break;
+            case ALL:
+                date = transactions.get(0).getTransactionDate().toLocalDate().atStartOfDay(); // get the first transaction date
+            default:
+                throw new IllegalArgumentException("Unknown date filter type");
+        }
+
+        System.out.println("im here 2");
+
+
+        // filter based on the date
+        var filteredTransactions = transactions.stream()
+                .filter(t -> t.getTransactionDate().isAfter(date))
+                .toList();
+
+        System.out.println("im here 3");
+        System.out.println(filteredTransactions);
+
+
+        // if the filter result is empty show message
+        if (filteredTransactions.isEmpty()) {
+            printer.printWarning("There are no transactions in this account");
+            return; // do not print anything else
+        }
+
+        System.out.println("im here 4");
+
+
         // print the transactions
-        printer(transactions);
+        printer(filteredTransactions);
     }
 
     // function to get the system

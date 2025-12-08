@@ -6,6 +6,7 @@ import Account.AccountType;
 import Auth.AuthenticationService;
 import Currency.CurrencyService;
 import Global.Utils.Printer;
+import Transaction.DateFilter;
 import Transaction.TransactionService;
 import User.User;
 import User.UserRole;
@@ -455,9 +456,44 @@ public class UserInterfaces {
         // init message
         printer.printColoredTitle("Transactions History");
 
-        // print the transactions
-        transactionService.printUserTransactions(user);
+        // values holder
+        DateFilter dateFilter;
 
+        // date input
+        while (true) {
+            printer.printQuestion("Get transactions history after:");
+            System.out.println("[TT] Today's transactions");
+            System.out.println("[YT] Yesterday's transactions]");
+            System.out.println("[WT] Last week transactions");
+            System.out.println("[MT] Last month transactions");
+
+            // user input
+            var filter = scanner.nextLine().trim().toLowerCase();
+
+            // select the result based on the input
+            switch (filter) {
+                case "tt":
+                    dateFilter = DateFilter.TODAY;
+                    break;
+                case "yt":
+                    dateFilter = DateFilter.YESTERDAY;
+                    break;
+                case "wt":
+                    dateFilter = DateFilter.LAST_WEEK;
+                    break;
+                case "mt":
+                    dateFilter = DateFilter.LAST_MONTH;
+                    break;
+                default:
+                    printer.printWrongChoice();
+                    continue; // restart the loop
+            }
+
+            break; // exit the while loops
+        }
+
+        // print the transactions based on the filter
+        transactionService.printUserTransactions(user, dateFilter);
     }
 
     // function to show transfer to page

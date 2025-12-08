@@ -77,7 +77,7 @@ public class DBPaths {
     public String getSystemTransactionsFilePath() {
         return pathBasedOnOs(
                 "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\systemTransactions.txt",
-                ""
+                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/systemTransactions.txt"
         );
     }
 
@@ -85,7 +85,7 @@ public class DBPaths {
     public String getTransactionsDirectoryPath() {
         return pathBasedOnOs(
                 "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\transactions",
-                ""
+                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/transactions"
         );
     }
 }
