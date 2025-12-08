@@ -8,6 +8,7 @@ import Currency.CurrencyService;
 import Global.Utils.Printer;
 import Transaction.DateFilter;
 import Transaction.TransactionService;
+import Transaction.TransactionType;
 import User.User;
 import User.UserRole;
 import User.UserRepository;
@@ -458,6 +459,7 @@ public class UserInterfaces {
 
         // values holder
         DateFilter dateFilter;
+        String operation;
 
         // date input
         while (true) {
@@ -492,8 +494,41 @@ public class UserInterfaces {
             break; // exit the while loops
         }
 
-        // print the transactions based on the filter
-        transactionService.printUserTransactions(user, dateFilter);
+        // operation type input
+        while (true) {
+            printer.printQuestion("Type of transaction:");
+            System.out.println("[1] Deposits");
+            System.out.println("[2] Withdrawals");
+            System.out.println("[3] Transfers");
+            System.out.println("[4] All transactions");
+
+            // user input
+            operation = scanner.nextLine().toLowerCase().trim();
+
+            // select based on the user
+            switch (operation) {
+                case "1":
+                    operation = TransactionType.DEPOSIT.toString();
+                    break;
+                case "2":
+                    operation = TransactionType.WITHDRAW.toString();
+                    break;
+                case "3":
+                    operation = TransactionType.TRANSFER.toString();
+                    break;
+                case "4":
+                    operation = "ALL";
+                    break;
+                default:
+                    printer.printWrongChoice();
+            }
+
+            // exit the while loop
+            break;
+        }
+
+        // print the transactions based on the filter and operation type
+        transactionService.printUserTransactions(user, dateFilter, operation);
     }
 
     // function to show transfer to page

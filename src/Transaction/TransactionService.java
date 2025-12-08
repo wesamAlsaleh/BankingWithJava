@@ -60,7 +60,7 @@ public class TransactionService {
                     printer.printColored(Printer.PURPLE, "TRANSFER~~ ");
                     break;
             }
-            System.out.printf("%f into %s (%s) at %s",
+            System.out.printf("%.3f into %s (%s) at %s",
                     transaction.getAmount(),
                     transaction.getAccountName(),
                     transaction.getIban(),
@@ -73,9 +73,7 @@ public class TransactionService {
     }
 
     // print the user transactions
-    public void printUserTransactions(User user, DateFilter dateFilter) {
-        System.out.println("Im in this function");
-
+    public void printUserTransactions(User user, DateFilter dateFilter, String operation) {
         // get the user transactions
         var transactions = getUserTransactions(user);
 
@@ -87,8 +85,6 @@ public class TransactionService {
 
         // filter date holder
         LocalDateTime date;
-
-        System.out.println("im here 1");
 
         // filter the transactions based on the date
         switch (dateFilter) {
@@ -110,17 +106,10 @@ public class TransactionService {
                 throw new IllegalArgumentException("Unknown date filter type");
         }
 
-        System.out.println("im here 2");
-
-
         // filter based on the date
         var filteredTransactions = transactions.stream()
                 .filter(t -> t.getTransactionDate().isAfter(date))
                 .toList();
-
-        System.out.println("im here 3");
-        System.out.println(filteredTransactions);
-
 
         // if the filter result is empty show message
         if (filteredTransactions.isEmpty()) {
@@ -128,11 +117,24 @@ public class TransactionService {
             return; // do not print anything else
         }
 
-        System.out.println("im here 4");
+        // print all the transactions
+        if (operation.equals("ALL")) {
+            printer(filteredTransactions);
+        }
 
+        // refilter the transactions bases on the type
+        var filteredTransactions2 = filteredTransactions.stream()
+                .filter(t -> operation.equals(t.getTransactionType().toString()))
+                .toList();
 
-        // print the transactions
-        printer(filteredTransactions);
+        // if the filter result is empty show message
+        if (filteredTransactions2.isEmpty()) {
+            printer.printWarning("There are no transactions in this account");
+            return; // do not print anything else
+        }
+
+        // print them
+        printer(filteredTransactions2);
     }
 
     // function to get the system
