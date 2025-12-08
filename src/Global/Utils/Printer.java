@@ -10,9 +10,6 @@ public class Printer {
     public static final String BLUE = "\u001B[34m";
     public static final String PURPLE = "\033[0;35m";
 
-    public static final String RED_BACKGROUND = "\033[41m";
-    public static final String RED_BRIGHT = "\033[0;91m";
-
     // function to print customized one line
     public void printColoredLine(String textColor, String placeholder) {
         System.out.println(textColor + placeholder + RESET);

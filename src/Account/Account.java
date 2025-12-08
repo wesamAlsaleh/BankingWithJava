@@ -42,18 +42,21 @@ public class Account implements IAccount {
         this.createdAt = createdAt;
     }
 
+
+
     @Override
     public void deposit(double amount) {
-
+        this.balance += amount; // deposit to the account
     }
 
     @Override
     public void withdraw(double amount) {
-
+        this.balance -= amount; // withdraw from the account
     }
 
     @Override
     public void transfer(String accountNumber, double amount) {
+        this.balance -= amount; // withdraw from the account
     }
 
     // getters
@@ -97,10 +100,23 @@ public class Account implements IAccount {
         return createdAt;
     }
 
+    // setters
+    public void setOverdraftCount(int overdraftCount) {
+        this.overdraftCount = overdraftCount;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
     // function to create account record
-    public String accountRecord() {
+    public String createAccountRecord() {
         return String.format(
-                "user_id:%s, account_name:%s, account_number:%s, iban:%s, account_type:%s, currency:%s, balance:%f, overdraft_count:%d, is_active:%B, created_at:%s",
+                "user_id:%s, account_name:%s, account_number:%s, iban:%s, account_type:%s, currency:%s, balance:%.3f, overdraft_count:%d, is_active:%B, created_at:%s",
                 userId,
                 accountName,
                 accountNumber,

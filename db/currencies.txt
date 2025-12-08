@@ -1,0 +1,4 @@
+Country:Bahrain, Currency_Code:BHD, Exchange_Rate:2.650000
+Country:United States, Currency_Code:USD, Exchange_Rate:1.000000
+Country:Iraq, Currency_Code:IQD, Exchange_Rate:0.000760
+Country:United Kingdom, Currency_Code:EUR, Exchange_Rate:1.160000

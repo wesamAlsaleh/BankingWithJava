@@ -37,7 +37,7 @@ public class AccountServiceTest {
     void shouldCreateAccountAndStoreItInTheSystemAndReturnTrue() {
         // Arrange
         var currency = "BHD"; // hard coded currency
-        var accountName = "Test Account";
+        var accountName = "Wesam BHD";
 
         // Act
         var success = accountService.createAccount(user, AccountType.Savings, currency, accountName);
@@ -166,6 +166,39 @@ public class AccountServiceTest {
         accountService.printUserAccounts(newUser);
     }
 
+    @Test
+    @DisplayName("Should deposit money to the account")
+    void shouldDepositMoneyToTheAccount() {
+        // Arrange
+        var userAccount = accountService.getUserAccounts(user).get(0);
+
+        // Act
+        accountService.deposit(userAccount, 10);
+    }
+
+    @Test
+    @DisplayName("Should withdraw money from the account")
+    void shouldWithdrawMoneyFromTheAccount() {
+        // Arrange
+        var userAccount = accountService.getUserAccounts(user).get(0);
+
+        // Act
+        accountService.withdraw(userAccount, 5);
+    }
+
+    @Test
+    @DisplayName("Should transfer money between two accounts")
+    void shouldTransferMoneyBetweenTwoAccounts() {
+        // Arrange
+        var senderAccount = accountService.getUserAccounts(user).get(2);
+        var receiverAccount = accountService.getUserAccounts(user).get(0);
+
+        // Act
+        accountService.transfer(user, receiverAccount.getAccountNumber(), senderAccount, 1);
+    }
+
+    @Test
+    @DisplayName("Should transfer money from sender currency to master currency then to receiver currency")
 
     @AfterEach
     public void tearDown() {

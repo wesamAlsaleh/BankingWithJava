@@ -159,4 +159,20 @@ public class UserValidation {
         // return the errors available
         return errors.toString().trim();
     }
+
+    // function to validate user email
+    public  String validateEmailInput(String email) {
+        var errors = new StringBuilder();
+
+        // validate the email
+        var emailError = validateEmail(email);
+
+        // if there is an error add it to the string
+        if (!emailError.isEmpty()) {
+            errors.append(emailError).append("\n");
+        }
+
+        // return the errors available
+        return errors.toString().trim();
+    }
 }

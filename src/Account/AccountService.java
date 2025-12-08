@@ -1,15 +1,23 @@
 package Account;
 
+import Currency.Currency;
+import Currency.CurrencyService;
 import Currency.CurrencyRepository;
 import Global.Utils.Printer;
+import Transaction.TransactionService;
+import Transaction.TransactionType;
 import User.User;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AccountService {
     private final AccountRepository accountRepository = new AccountRepository();
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
+    private final TransactionService transactionService = new TransactionService();
+    private final CurrencyService currencyService = new CurrencyService();
     private final Printer printer = new Printer();
 
     private static final String COUNTRY_CODE = "BH";
@@ -105,6 +113,41 @@ public class AccountService {
         return structureTheIban(checkDigits, accountNumber, " ");
     }
 
+    // function to generate deposit message (deposit/withdraw only!)
+    private void successOperationMessage(TransactionType transferType, Account account, double amount) {
+        // set the operation type based on the input
+        switch (transferType) {
+            case DEPOSIT:
+                printer.printColoredLine(Printer.YELLOW, String.format("Success! DEPOSIT++ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
+                        account.getCurrency(),
+                        amount,
+                        account.getAccountName(),
+                        account.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                        account.getCurrency(),
+                        account.getBalance()
+                ));
+                break;
+            case WITHDRAW:
+                printer.printColoredLine(Printer.YELLOW, String.format("Success! WITHDRAW-- of %s %.2f from %s REF IBAN *****%s is completed on %s Balance %s %s",
+                        account.getCurrency(),
+                        amount,
+                        account.getAccountName(),
+                        account.getIban().replaceAll("\\s+", "").substring(17), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                        account.getCurrency(),
+                        account.getBalance()
+                ));
+                break;
+        }
+    }
+
+    // function to generate transfer message
+//    private void successReceiveTransferMessage(Account senderAccount, Account receiverAccount, double amount) {
+//
+//    }
+
+
     // function to create account record
     public boolean createAccount(User user, AccountType accountType, String currency, String accountName) {
         // if the currency is not in the system return false
@@ -145,7 +188,7 @@ public class AccountService {
         }
 
         // create new record
-        return accountRepository.saveNewAccountRecord(fileName, account.accountRecord());
+        return accountRepository.saveNewAccountRecord(fileName, account.createAccountRecord());
     }
 
     // function to delete account
@@ -191,6 +234,258 @@ public class AccountService {
                     account.isActive() ? "Yes" : "No"
             ));
             System.out.println(" "); // space below each account
+        }
+    }
+
+    // function to format the print of accounts to transfer
+    public void printAccountsToTransfer(List<Account> accounts) {
+        // iterate over the accounts
+        for (Account account : accounts) {
+            var f = String.format("%s %s (%s %s)",
+                    account.getAccountName(),
+                    account.getAccountNumber(),
+                    account.getCurrency(),
+                    account.getAccountType().toString().toLowerCase()
+            );
+
+            printer.printColoredLine(Printer.YELLOW, f);
+            System.out.println(" "); // space below each account
+        }
+
+
+    }
+
+    // function to validate account number
+    public String validateAccountNumber(String accountNumber) {
+        if (accountNumber == null || accountNumber.isEmpty()) {
+            return "Account number must not be empty.";
+        }
+
+        // if it's not 14
+        if (accountNumber.length() != 14) {
+            return "Account number must have a length of 14 characters.";
+        }
+
+        return "";
+    }
+
+    // function to perform deposit operation
+    public void deposit(Account account, double amount) {
+        // store the post balance
+        var balance = account.getBalance();
+
+        // deposit the money to the account
+        account.deposit(amount);
+
+        // if the balance is positive make the account active and overdraft count to zero
+        if (account.getBalance() >= 0) {
+            account.setActive(true); // account is active
+            account.setOverdraftCount(0); // reset count state
+        }
+
+        // save the changes
+        var success = accountRepository.updateAccountRecord(account);
+
+        // send message to the user
+        if (success) {
+            // create transaction record
+            transactionService.createTransaction(
+                    account,
+                    TransactionType.DEPOSIT,
+                    amount,
+                    balance
+            );
+
+            // print message
+            successOperationMessage(TransactionType.DEPOSIT, account, amount);
+
+            // todo: put notification
+        } else {
+            printer.printError("Failed to deposit " + amount + ".");
+        }
+    }
+
+    // function to perform withdraw operation
+    public void withdraw(Account account, double amount) {
+        // check if the account is deactivated
+        if (!account.isActive()) {
+            printer.printColored(Printer.RED, "Account " + account.getAccountNumber() + " is deactivated. To reactivate the account you must resolve the negative balance and pay the overdraft fees.");
+            return; // do not do anything
+        }
+
+        // get the balance of the account
+        var balance = account.getBalance();
+
+        // if the balance is negative or the amount is greater than the balance active the overdraft mechanism
+        if (balance < 0 || amount > balance) {
+            // if the amount is less than 100
+            if (amount <= 100) {
+                // withdraw with fees ( -amount -(50) + - 35 = -85)
+                account.withdraw(amount);
+                account.withdraw(35); // take the fees (-50 - (+35))
+
+                // increase the overdraft counter
+                account.setOverdraftCount(account.getOverdraftCount() + 1);
+
+                // if the overdraft is 2
+                if (account.getOverdraftCount() >= 2) {
+                    // deactivate the account
+                    account.setActive(false);
+                }
+            } else {
+                printer.printError("Account " + account.getAccountNumber() + " is not enough balance.");
+            }
+        } else {
+            // normally withdraw from the account
+            account.withdraw(amount);
+        }
+
+        // save the changes
+        var success = accountRepository.updateAccountRecord(account);
+
+        // if the operation done
+        if (success) {
+            // create transaction record
+            transactionService.createTransaction(
+                    account,
+                    TransactionType.WITHDRAW,
+                    amount,
+                    balance
+            );
+
+            /// send withdraw message
+            successOperationMessage(TransactionType.WITHDRAW, account, amount);
+
+            // todo: put notification
+        } else {
+            printer.printError("Failed to withdraw " + amount + ".");
+        }
+    }
+
+    // function to perform transfer operation
+    public void transfer(
+            User receiver,
+            String receiverAccountNumber,
+            Account senderAccount,
+            double amount
+    ) {
+        // check if the senderAccount is deactivated
+        if (!senderAccount.isActive()) {
+            printer.printColored(Printer.RED, "Account " + senderAccount.getAccountNumber() + " is deactivated. To reactivate the senderAccount you must resolve the negative balance and pay the overdraft fees.");
+            return; // do not do anything
+        }
+
+        // if the amount to transfer is more than the balance return error
+        if (amount > senderAccount.getBalance()) {
+            printer.printError("Insufficient funds.");
+            return; // do not do anything
+        }
+
+        // get the senderAccount of the targeted targetUser
+        var receiverAccounts = getUserAccounts(receiver);
+
+        // iterate over the accounts
+        for (Account receiverAccount : receiverAccounts) {
+            if (receiverAccount.getAccountNumber().equals(receiverAccountNumber)) {
+                // get the balance of the sender
+                var senderBalance = senderAccount.getBalance();
+
+                // withdraw from the main senderAccount
+                senderAccount.setBalance(senderBalance - amount);
+
+                // get the currencies
+                var currencies = currencyRepository.getCurrencies();
+                var senderFlag = false;
+                var receiverFlag = false;
+                String senderCurrency = "";
+                String receiverCurrency = "";
+
+                // iterate over them
+                for (Currency currency : currencies) {
+                    // check if the sender has an exchange rate
+                    if (currency.currencyCode().equals(senderAccount.getCurrency())) {
+                        senderFlag = true; // set to trues
+                        senderCurrency = senderAccount.getCurrency();
+                    }
+
+                    // check if the receiver has an exchange rate
+                    if (currency.currencyCode().equals(receiverAccount.getCurrency())) {
+                        receiverFlag = true; // set to trues
+                        receiverCurrency = receiverAccount.getCurrency();
+                    }
+                }
+
+                // if the currency is not in the system print message
+                if (!senderFlag) {
+                    printer.printError("Cannot transfer " + amount + " from this account in the moment.");
+                    return; // do nothing
+                }
+
+                if (!receiverFlag) {
+                    printer.printError("Cannot transfer " + amount + " to this account in the moment.");
+                    return; // do nothing
+                }
+
+                // calculate the rate between (amount * (senderRate/receiverRate)) (amount in sender currency * receiver exchange rate)
+                var receiverAmount = currencyService.convertCurrency(senderCurrency, receiverCurrency, amount);
+
+                // get the balance of the receiver
+                var receiverBalance = receiverAccount.getBalance();
+
+                // deposit it into the targeted targetUser
+                receiverAccount.setBalance(receiverBalance + receiverAmount);
+
+                // save the changes for both accounts
+                var senderSuccess = accountRepository.updateAccountRecord(senderAccount);
+                var receiverSuccess = accountRepository.updateAccountRecord(receiverAccount);
+
+                // If the sender is successfully done
+                if (senderSuccess) {
+                    // create transaction record
+                    transactionService.createTransaction(
+                            senderAccount,
+                            TransactionType.TRANSFER,
+                            amount,
+                            senderBalance
+                    );
+
+                    // print success message for the sender
+                    printer.printColoredLine(Printer.YELLOW, String.format("Success! TRANSFER~~ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
+                            senderAccount.getCurrency(),
+                            amount,
+                            receiverAccount.getAccountName(),
+                            receiverAccount.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                            senderAccount.getCurrency(),
+                            senderAccount.getBalance()
+                    ));
+
+                    // todo: put notification
+                }
+
+                // If the receiver is successfully done
+                if (receiverSuccess) {
+                    // create transaction record
+                    transactionService.createTransaction(
+                            receiverAccount,
+                            TransactionType.TRANSFER,
+                            amount,
+                            receiverBalance
+                    );
+
+                    // todo: put notification
+//                    printer.printColoredLine(Printer.YELLOW, String.format("Success! TRANSFER~~ of %s %.2f from %s to %s REF IBAN *****%s is completed on %s Balance %s %s",
+//                            senderAccount.getCurrency(),
+//                            amount,
+//                            senderAccount.getAccountName(),
+//                            receiverAccount.getAccountName(),
+//                            receiverAccount.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+//                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+//                            senderAccount.getCurrency(),
+//                            senderAccount.getBalance()
+//                    ));
+                }
+            }
         }
     }
 }

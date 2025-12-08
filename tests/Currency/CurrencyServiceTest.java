@@ -32,9 +32,9 @@ class CurrencyServiceTest {
     @DisplayName("Should try to add currency to the system without duplicates and return success state (true/false) about the currency whether its added or not")
     void shouldTryToAddCurrencyToTheSystemWithoutDuplicatesAndReturnSuccessStateAboutTheCurrencyWhetherItsAddedOrNot() {
         // Arrange
-        var country = "Kuwait";
-        var currencyCode = "KWD"; // ISO codes examples: IQD, KWD, JOD, SAR, AFN, DZD, ARS, ..
-        var exchangeRate = 0.2f;
+        var country = "Bahrain";
+        var currencyCode = "BHD"; // ISO codes examples: IQD, KWD, JOD, SAR, AFN, DZD, ARS, ..
+        var exchangeRate = 0.1f;
 
         // Act
         var availableInTheSystem = currencyService.currencyExistsInTheSystem(currencyCode);
