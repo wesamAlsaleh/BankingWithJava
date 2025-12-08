@@ -143,6 +143,8 @@ public class UserInterfaces {
                 printer.printColoredLine(Printer.PURPLE, "[SC]    See All Currencies");
                 printer.printColoredLine(Printer.PURPLE, "[AC]    Add currency");
                 printer.printColoredLine(Printer.PURPLE, "[DC]    Delete currency");
+                printer.printColoredLine(Printer.PURPLE, "[ST]    System transactions");
+
             }
             printer.printColoredLine(Printer.RED, "[Q]    Quit / Logout");
             printer.printPrompt("Your choice: ");
@@ -186,6 +188,11 @@ public class UserInterfaces {
                     userMiddleware(user.getRole().toString());
                     deleteCurrenciesPage();
                     break;
+                case ("st"):
+                    // if user not allowed this option is not available
+                    userMiddleware(user.getRole().toString());
+                    seeSystemTransactions();
+                    break;
                 case ("q"):
                     printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
                     System.exit(0); // Exit
@@ -196,6 +203,8 @@ public class UserInterfaces {
         }
     }
 
+    // *************************************************************************
+    // -------------------------------Account Pages----------------------------------
     // *************************************************************************
 
     // function to show create account page
@@ -343,6 +352,8 @@ public class UserInterfaces {
     }
 
     // *************************************************************************
+    // -------------------------------Currencies Pages----------------------------------
+    // *************************************************************************
 
     // function to show the add currencies page
     private void addCurrencyPage() {
@@ -427,6 +438,17 @@ public class UserInterfaces {
     }
 
     // *************************************************************************
+    // -------------------------------Transaction Pages----------------------------------
+    // *************************************************************************
+
+    // function to show the system transactions
+    public void seeSystemTransactions() {
+        // init message
+        printer.printColoredTitle("System transactions");
+
+        // print the transactions
+        transactionService.printSystemTransactions();
+    }
 
     // function to show the transfer history for the user page
     private void userTransferHistoryPage(User user) {

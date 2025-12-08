@@ -12,6 +12,36 @@ public class TransactionRepository {
     private final DBPaths dbPaths = new DBPaths();
     private final FileHandler fileHandler = new FileHandler();
 
+    // function to extract the data from the transaction record
+    private Transaction extractDataFromRecord(String record) {
+        // convert the record into part
+        var parts = new ArrayList<>(List.of(record.split(",")));
+
+        // extract the values
+        var uuid = parts.get(0).split(":")[1].trim();
+        var userId = parts.get(1).split(":")[1].trim();
+        var accountName = parts.get(2).split(":")[1];
+        var accountNumber = parts.get(3).split(":")[1];
+        var iban = parts.get(4).split(":")[1];
+        var transactionType = parts.get(5).split(":")[1];
+        var amount = parts.get(6).split(":")[1];
+        var postBalance = parts.get(7).split(":")[1];
+        var transactionTime = parts.get(8).substring(parts.get(8).indexOf(":") + 1);
+
+        // return the obj
+        return new Transaction(
+                uuid,
+                Long.valueOf(userId),
+                accountName,
+                String.valueOf(accountNumber),
+                iban,
+                TransactionType.valueOf(transactionType),
+                Double.parseDouble(amount),
+                Double.parseDouble(postBalance),
+                LocalDateTime.parse(transactionTime)
+        );
+    }
+
     // function to create a new transaction record
     public void saveNewTransactionRecord(Transaction transaction) {
         // prepare the file
@@ -49,32 +79,8 @@ public class TransactionRepository {
                 // get the record
                 String line = scanner.nextLine();
 
-                // convert the record into part
-                var parts = new ArrayList<>(List.of(line.split(",")));
-
-                // extract the values
-                var uuid = parts.get(0).split(":")[1].trim();
-                var userId = parts.get(1).split(":")[1].trim();
-                var accountName = parts.get(2).split(":")[1];
-                var accountNumber = parts.get(3).split(":")[1];
-                var iban = parts.get(4).split(":")[1];
-                var transactionType = parts.get(5).split(":")[1];
-                var amount = parts.get(6).split(":")[1];
-                var postBalance = parts.get(7).split(":")[1];
-                var transactionTime = parts.get(8).substring(parts.get(8).indexOf(":") + 1);
-
-                // return the obj
-                return new Transaction(
-                        uuid,
-                        Long.valueOf(userId),
-                        accountName,
-                        String.valueOf(accountNumber),
-                        iban,
-                        TransactionType.valueOf(transactionType),
-                        Double.parseDouble(amount),
-                        Double.parseDouble(postBalance),
-                        LocalDateTime.parse(transactionTime)
-                );
+                // return the object
+                return extractDataFromRecord(line);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Transaction file not found!");
@@ -108,5 +114,33 @@ public class TransactionRepository {
         return transactions;
     }
 
+    // function to get the system transactions
+    public List<Transaction> getTransactions() {
+        // get the file that contains the records
+        var file = new File(dbPaths.getSystemTransactionsFilePath());
+
+        // array holder
+        var transactions = new ArrayList<Transaction>();
+
+        // try to read it
+        try (Scanner scanner = new Scanner(file)) {
+            // while data
+            while (scanner.hasNextLine()) {
+                // get the record
+                String line = scanner.nextLine();
+
+                // get the transaction as object
+                var transaction = extractDataFromRecord(line);
+
+                // add it to the array
+                transactions.add(transaction);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Transaction file not found!");
+        }
+
+        // return the object
+        return transactions;
+    }
 
 }

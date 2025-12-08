@@ -44,17 +44,8 @@ public class TransactionService {
         return transactionRepository.getUserTransactions(user.getId());
     }
 
-    // print the user transactions
-    public void printUserTransactions(User user) {
-        // get the user transactions
-        var transactions = getUserTransactions(user);
-
-        // if no transactions return message
-        if (transactions.isEmpty()) {
-            printer.printWarning("There are no transactions in this account");
-            return; // do nothing
-        }
-
+    // function to format the printer for the transaction records
+    private void printer(List<Transaction> transactions) {
         // iterate over the transactions
         for (Transaction transaction : transactions) {
             // print the operation symbol
@@ -75,7 +66,43 @@ public class TransactionService {
                     transaction.getIban(),
                     transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
             );
-            System.out.println(" "); // space
+            System.out.println(" "); // new line
         }
+
+        System.out.println(" "); // space after last record
+    }
+
+    // print the user transactions
+    public void printUserTransactions(User user) {
+        // get the user transactions
+        var transactions = getUserTransactions(user);
+
+        // if no transactions return message
+        if (transactions.isEmpty()) {
+            printer.printWarning("There are no transactions in this account");
+            return; // do nothing
+        }
+
+        // print the transactions
+        printer(transactions);
+    }
+
+    // function to get the system
+    private List<Transaction> getSystemTransactions() {
+        return transactionRepository.getTransactions();
+    }
+
+    // function to print the system
+    public void printSystemTransactions() {
+        // get the transactions
+        var transactions = getSystemTransactions();
+
+        // if no transactions
+        if (transactions.isEmpty()) {
+            printer.printWarning("There are no transactions in the system.");
+        }
+
+        // print the transactions
+        printer(transactions);
     }
 }
