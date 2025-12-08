@@ -4,6 +4,7 @@ import Account.Account;
 import Account.AccountRepository;
 import Account.AccountService;
 import Global.Utils.Printer;
+import Transaction.TransactionService;
 import User.User;
 import User.UserRepository;
 import User.UserValidation;
@@ -15,11 +16,18 @@ public class TransferUserInterface {
     private final Scanner scanner = new Scanner(System.in);
     private final Printer printer = new Printer();
     private final AccountService accountService = new AccountService();
+    private final TransactionService transactionService = new TransactionService();
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
 
-    // function to show the transfer history page
-    private void transferHistoryPage() {
+    // function to show the transfer history for the user page
+    private void userTransferHistoryPage(User user) {
+        // init message
+        printer.printColoredTitle("Transactions History");
+
+        // print the transactions
+        transactionService.printUserTransactions(user);
+
     }
 
     // function to show transfer to page
@@ -221,6 +229,7 @@ public class TransferUserInterface {
         // based on the choice go to the next direction
         switch (choice) {
             case ("h"):
+                userTransferHistoryPage(user);
                 break;
             case ("t"):
                 transferToPage(user);

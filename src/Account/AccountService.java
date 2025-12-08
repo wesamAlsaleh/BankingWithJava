@@ -117,7 +117,7 @@ public class AccountService {
         // set the operation type based on the input
         switch (transferType) {
             case DEPOSIT:
-                printer.printColoredLine(Printer.YELLOW, String.format("Success! deposit+ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
+                printer.printColoredLine(Printer.YELLOW, String.format("Success! DEPOSIT++ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
                         account.getCurrency(),
                         amount,
                         account.getAccountName(),
@@ -128,7 +128,7 @@ public class AccountService {
                 ));
                 break;
             case WITHDRAW:
-                printer.printColoredLine(Printer.YELLOW, String.format("Success! withdraw- of %s %.2f from %s REF IBAN *****%s is completed on %s Balance %s %s",
+                printer.printColoredLine(Printer.YELLOW, String.format("Success! WITHDRAW-- of %s %.2f from %s REF IBAN *****%s is completed on %s Balance %s %s",
                         account.getCurrency(),
                         amount,
                         account.getAccountName(),
@@ -143,7 +143,7 @@ public class AccountService {
 
     // function to generate transfer message
     private void successTransferMessage(Account senderAccount, Account receiverAccount, double amount) {
-        printer.printColoredLine(Printer.YELLOW, String.format("Success! transfer++ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
+        printer.printColoredLine(Printer.YELLOW, String.format("Success! TRANSFER~~ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
                 senderAccount.getCurrency(),
                 amount,
                 receiverAccount.getAccountName(),

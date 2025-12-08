@@ -1,10 +1,9 @@
 package Transaction;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class Transaction {
-    private UUID id;
+    private String id; // uuid
     private Long userId;
     private String accountName;
     private String accountNumber;
@@ -15,7 +14,7 @@ public class Transaction {
     private LocalDateTime transactionDate;
 
     // default constructor
-    public Transaction(UUID id, Long userId, String accountName, String accountNumber, String iban, TransactionType transactionType, double amount, double postBalance, LocalDateTime transactionDate) {
+    public Transaction(String id, Long userId, String accountName, String accountNumber, String iban, TransactionType transactionType, double amount, double postBalance, LocalDateTime transactionDate) {
         this.id = id;
         this.userId = userId;
         this.accountName = accountName;
@@ -28,7 +27,7 @@ public class Transaction {
     }
 
     // getters
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -77,5 +76,20 @@ public class Transaction {
                 getPostBalance(),
                 getTransactionDate()
         );
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id='" + id + '\'' +
+                ", userId=" + userId +
+                ", accountName='" + accountName + '\'' +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", iban='" + iban + '\'' +
+                ", transactionType=" + transactionType +
+                ", amount=" + amount +
+                ", postBalance=" + postBalance +
+                ", transactionDate=" + transactionDate +
+                '}';
     }
 }
