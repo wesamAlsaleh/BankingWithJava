@@ -163,10 +163,10 @@ public class UserInterfaces {
                     deleteAccountPage(user);
                     break;
                 case ("dep"):
-                    System.out.println("TODO: deposit money");
+                    depositPage(user);
                     break;
                 case ("with"):
-                    System.out.println("TODO: withdraw money");
+                    withdrawPage(user);
                     break;
                 case ("t"):
                     transferToPage(user);
@@ -444,7 +444,7 @@ public class UserInterfaces {
     // function to show the system transactions
     public void seeSystemTransactions() {
         // init message
-        printer.printColoredTitle("System transactions");
+        printer.printColoredTitle("System transactions (Ascending)");
 
         // print the transactions
         transactionService.printSystemTransactions();
@@ -640,6 +640,164 @@ public class UserInterfaces {
             );
 
             // exit the loop
+            break;
+        }
+    }
+
+    // function to show deposit page
+    private void depositPage(User user) {
+        // init message
+        printer.printColoredTitle("Deposit to account");
+
+        // holders
+        Account account = null;
+        double amount;
+
+        while (true) {
+            // get the user accounts
+            var userAccounts = accountService.getUserAccounts(user);
+
+            // if the user has no accounts show message
+            if (userAccounts.isEmpty()) {
+                printer.printError("No user accounts found!");
+                break; // exit the while loop
+            }
+
+            // print the accounts to help selecting
+            accountService.printUserAccounts(user);
+
+            // account selector
+            while (true) {
+                // question
+                printer.printQuestion("Select the account to deposit:");
+                printer.printPrompt("Account number to deposit: ");
+
+                // user input
+                var accountNumber = scanner.nextLine().trim();
+
+                // flag to check if the account number belon to the user
+                var flag = false;
+
+                // if the account number do not belong to the user send error
+                for (Account userAccount : userAccounts) {
+                    // if it belongs to the user
+                    if (userAccount.getAccountNumber().equals(accountNumber)) {
+                        flag = true; // set the flag to true
+                        account = userAccount; // set the account
+                        break; // no need to check the others
+                    }
+                }
+
+                // if the account number does not belong to the user send error
+                if (!flag) {
+                    printer.printError("Invalid account number!");
+                    continue; // restart the loop
+                }
+
+                // exit the nested while loop
+                break;
+            }
+
+            // amount input
+            while (true) {
+                printer.printQuestion("Enter amount to transfer:");
+
+                // user input
+                amount = Double.parseDouble(scanner.nextLine().trim());
+
+                // validate the number
+                if (amount <= 0) {
+                    printer.printError("Invalid amount!");
+                    continue; // restart the loop
+                }
+
+                // exit the nested while loop
+                break;
+            }
+
+            // perform the deposit
+            accountService.deposit(account, amount);
+
+            // exit the while loop after the operation
+            break;
+        }
+    }
+
+    // function to show withdraw page
+    private void withdrawPage(User user) {
+        // init message
+        printer.printColoredTitle("Withdraw from account");
+
+        // holders
+        Account account = null;
+        double amount;
+
+        while (true) {
+            // get the user accounts
+            var userAccounts = accountService.getUserAccounts(user);
+
+            // if the user has no accounts show message
+            if (userAccounts.isEmpty()) {
+                printer.printError("No user accounts found!");
+                break; // exit the while loop
+            }
+
+            // print the accounts to help selecting
+            accountService.printUserAccounts(user);
+
+            // account selector
+            while (true) {
+                // question
+                printer.printQuestion("Select the account to withdraw:");
+                printer.printPrompt("Account number to withdraw: ");
+
+                // user input
+                var accountNumber = scanner.nextLine().trim();
+
+                // flag to check if the account number belong to the user
+                var flag = false;
+
+                // if the account number do not belong to the user send error
+                for (Account userAccount : userAccounts) {
+                    // if it belongs to the user
+                    if (userAccount.getAccountNumber().equals(accountNumber)) {
+                        flag = true; // set the flag to true
+                        account = userAccount; // set the account
+                        break; // no need to check the others
+                    }
+                }
+
+                // if the account number does not belong to the user send error
+                if (!flag) {
+                    printer.printError("Invalid account number!");
+                    continue; // restart the loop
+                }
+
+                // exit the nested while loop
+                break;
+            }
+
+            // amount input
+            while (true) {
+                printer.printQuestion("Enter amount to transfer:");
+
+                // user input
+                amount = Double.parseDouble(scanner.nextLine().trim());
+
+                // validate the number
+                if (amount <= 0) {
+                    printer.printError("Invalid amount!");
+                    continue; // restart the loop
+                }
+
+                // exit the nested while loop
+                break;
+            }
+
+            // perform the deposit
+            accountService.withdraw(account, amount);
+
+            // exit the while loop after the operation
             break;
         }
     }

@@ -1,0 +1,1 @@
+UUID:006703b4-a1c6-46fb-a15f-a0343315b630, User_Id:1, Account_Name:esam iraqi, Account_Number:53546365406622, Iban:BH92 GAJB 5354 6365 4066 22, Transaction_Type:DEPOSIT, Transaction_Amount:3000.000, Post_Balance:17241.38, Transaction_Date:2025-12-08T06:11:37.203617600
