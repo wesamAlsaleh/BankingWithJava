@@ -52,23 +52,36 @@ public class TransactionService {
             switch (transaction.getTransactionType()) {
                 case DEPOSIT:
                     printer.printColored(Printer.GREEN, "DEPOSIT++ ");
+                    System.out.printf("%.3f into %s REF %s at %s",
+                            transaction.getAmount(),
+                            transaction.getAccountName(),
+                            transaction.getIban(),
+                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    );
+                    System.out.println(" "); // new line
                     break;
                 case WITHDRAW:
                     printer.printColored(Printer.RED, "WITHDRAW-- ");
+                    System.out.printf("%.3f from %s REF %s at %s",
+                            transaction.getAmount(),
+                            transaction.getAccountName(),
+                            transaction.getIban(),
+                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    );
+                    System.out.println(" "); // new line
                     break;
                 case TRANSFER:
                     printer.printColored(Printer.PURPLE, "TRANSFER~~ ");
+                    System.out.printf("%.3f from %s REF %s at %s",
+                            transaction.getAmount(),
+                            transaction.getAccountName(),
+                            transaction.getIban(),
+                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    );
+                    System.out.println(" "); // new line
                     break;
             }
-            System.out.printf("%.3f into %s (%s) at %s",
-                    transaction.getAmount(),
-                    transaction.getAccountName(),
-                    transaction.getIban(),
-                    transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
-            );
-            System.out.println(" "); // new line
         }
-
         System.out.println(" "); // space after last record
     }
 
