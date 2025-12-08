@@ -8,6 +8,52 @@ public class CurrencyService {
     private final Printer printer = new Printer();
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
 
+    // function to convert from sender to receiver currency
+    public double convertCurrency(String senderCurrency, String receiverCurrency, double amount) {
+        // get the currencies
+        var currencies = currencyRepository.getCurrencies();
+
+        // if no currencies print error
+        if (currencies.isEmpty()) {
+            printer.printError("No currencies found!");
+            return 0; // failer
+        }
+
+        // availability flags
+        var senderFlag = false;
+        var receiverFlag = false;
+        var senderExchangeRate = 0d;
+        var receiverExchangeRate = 0d;
+
+        // check both currencies in the system
+        for (var currency : currencies) {
+            if (currency.currencyCode().equals(senderCurrency)) {
+                senderFlag = true;
+                senderExchangeRate = currency.exchangeRate();
+            }
+
+            if (currency.currencyCode().equals(receiverCurrency)) {
+                receiverFlag = true;
+                receiverExchangeRate = currency.exchangeRate();
+            }
+        }
+
+        // if one of the currencies is not available return failer
+        if (!senderFlag || !receiverFlag) {
+            printer.printError(String.format("Cannot transfer money from %s to %s accounts due to currency rate issues.", senderCurrency, receiverCurrency));
+            return 0;
+        }
+
+        // get the amount in USD
+        var usd = amount * senderExchangeRate; // senderExchangeRate muse relate to USD!
+
+        System.out.println("USD: " + usd);
+        System.out.println("receiver: " + usd / receiverExchangeRate);
+
+        // get the amount in the receiver currency
+        return usd / receiverExchangeRate;
+    }
+
     // function to add currency to the system
     public boolean addCurrency(String country, String currencyCode, double exchangeRate) {
         // create currency object

@@ -138,14 +138,14 @@ public class UserInterfaces {
             System.out.println("[DEP]  Deposit money");
             System.out.println("[WITH] Withdraw money");
             System.out.println("[T]    Transfer money");
-            System.out.println("[TH]    Transfer history");
+            System.out.println("[TH]   Transfer history");
             System.out.println("[CARD] Manage my cards");
             // options requires to pass the middleware
             if (user.getRole().equals(UserRole.Banker)) {
-                printer.printColoredLine(Printer.PURPLE, "[SC]    See All Currencies");
-                printer.printColoredLine(Printer.PURPLE, "[AC]    Add currency");
-                printer.printColoredLine(Printer.PURPLE, "[DC]    Delete currency");
-                printer.printColoredLine(Printer.PURPLE, "[ST]    System transactions");
+                printer.printColoredLine(Printer.PURPLE, "[SC]   See All Currencies");
+                printer.printColoredLine(Printer.PURPLE, "[AC]   Add currency");
+                printer.printColoredLine(Printer.PURPLE, "[DC]   Delete currency");
+                printer.printColoredLine(Printer.PURPLE, "[ST]   System transactions");
 
             }
             printer.printColoredLine(Printer.RED, "[Q]    Quit / Logout");
@@ -172,6 +172,7 @@ public class UserInterfaces {
                     break;
                 case ("t"):
                     transferToPage(user);
+                    break;
                 case ("th"):
                     userTransferHistoryPage(user);
                     break;
@@ -373,7 +374,8 @@ public class UserInterfaces {
                 String currencyCode = scanner.nextLine();
 
                 // exchange rate input as double!
-                printer.printQuestion("What is the exchange rate of:");
+                printer.printQuestion("What is the exchange rate of: ");
+                printer.printColored(Printer.YELLOW, "The currency rate must relative to USD: ");
                 double exchangeRate = scanner.nextDouble();
                 scanner.nextLine(); // consume newline after nextDouble() !
 

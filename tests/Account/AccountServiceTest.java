@@ -173,7 +173,7 @@ public class AccountServiceTest {
         var userAccount = accountService.getUserAccounts(user).get(0);
 
         // Act
-        accountService.deposit(user, userAccount, 10);
+        accountService.deposit(userAccount, 10);
     }
 
     @Test
@@ -183,19 +183,22 @@ public class AccountServiceTest {
         var userAccount = accountService.getUserAccounts(user).get(0);
 
         // Act
-        accountService.withdraw(user, userAccount, 5);
+        accountService.withdraw(userAccount, 5);
     }
 
     @Test
     @DisplayName("Should transfer money between two accounts")
     void shouldTransferMoneyBetweenTwoAccounts() {
         // Arrange
-        var userAccount = accountService.getUserAccounts(user).get(2);
-        var userAccount2 = accountService.getUserAccounts(user).get(0);
+        var senderAccount = accountService.getUserAccounts(user).get(2);
+        var receiverAccount = accountService.getUserAccounts(user).get(0);
 
         // Act
-        accountService.transfer(user, userAccount, userAccount2.getAccountNumber(), 1);
+        accountService.transfer(user, receiverAccount.getAccountNumber(), senderAccount, 1);
     }
+
+    @Test
+    @DisplayName("Should transfer money from sender currency to master currency then to receiver currency")
 
     @AfterEach
     public void tearDown() {

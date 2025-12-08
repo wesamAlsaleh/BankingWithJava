@@ -1,12 +1,12 @@
 package Account;
 
 import Currency.Currency;
+import Currency.CurrencyService;
 import Currency.CurrencyRepository;
 import Global.Utils.Printer;
 import Transaction.TransactionService;
 import Transaction.TransactionType;
 import User.User;
-import User.UserRepository;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -17,6 +17,7 @@ public class AccountService {
     private final AccountRepository accountRepository = new AccountRepository();
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
     private final TransactionService transactionService = new TransactionService();
+    private final CurrencyService currencyService = new CurrencyService();
     private final Printer printer = new Printer();
 
     private static final String COUNTRY_CODE = "BH";
@@ -142,17 +143,10 @@ public class AccountService {
     }
 
     // function to generate transfer message
-    private void successTransferMessage(Account senderAccount, Account receiverAccount, double amount) {
-        printer.printColoredLine(Printer.YELLOW, String.format("Success! TRANSFER~~ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
-                senderAccount.getCurrency(),
-                amount,
-                receiverAccount.getAccountName(),
-                receiverAccount.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-                senderAccount.getCurrency(),
-                senderAccount.getBalance()
-        ));
-    }
+//    private void successReceiveTransferMessage(Account senderAccount, Account receiverAccount, double amount) {
+//
+//    }
+
 
     // function to create account record
     public boolean createAccount(User user, AccountType accountType, String currency, String accountName) {
@@ -304,6 +298,8 @@ public class AccountService {
 
             // print message
             successOperationMessage(TransactionType.DEPOSIT, account, amount);
+
+            // todo: put notification
         } else {
             printer.printError("Failed to deposit " + amount + ".");
         }
@@ -359,6 +355,10 @@ public class AccountService {
 
             /// send withdraw message
             successOperationMessage(TransactionType.WITHDRAW, account, amount);
+
+            // todo: put notification
+        } else {
+            printer.printError("Failed to withdraw " + amount + ".");
         }
     }
 
@@ -395,24 +395,39 @@ public class AccountService {
 
                 // get the currencies
                 var currencies = currencyRepository.getCurrencies();
-                var senderRate = 0d;
-                var receiverRate = 0d;
+                var senderFlag = false;
+                var receiverFlag = false;
+                String senderCurrency = "";
+                String receiverCurrency = "";
 
                 // iterate over them
                 for (Currency currency : currencies) {
-                    // set the sender exchange rate
+                    // check if the sender has an exchange rate
                     if (currency.currencyCode().equals(senderAccount.getCurrency())) {
-                        senderRate = currency.exchangeRate();
+                        senderFlag = true; // set to trues
+                        senderCurrency = senderAccount.getCurrency();
                     }
 
-                    // set the receiver exchange rate
+                    // check if the receiver has an exchange rate
                     if (currency.currencyCode().equals(receiverAccount.getCurrency())) {
-                        receiverRate = currency.exchangeRate();
+                        receiverFlag = true; // set to trues
+                        receiverCurrency = receiverAccount.getCurrency();
                     }
                 }
 
-                // calculate the rate between (amount * (senderRate/receiverRate))
-                var receiverAmount = amount * (senderRate / receiverRate);
+                // if the currency is not in the system print message
+                if (!senderFlag) {
+                    printer.printError("Cannot transfer " + amount + " from this account in the moment.");
+                    return; // do nothing
+                }
+
+                if (!receiverFlag) {
+                    printer.printError("Cannot transfer " + amount + " to this account in the moment.");
+                    return; // do nothing
+                }
+
+                // calculate the rate between (amount * (senderRate/receiverRate)) (amount in sender currency * receiver exchange rate)
+                var receiverAmount = currencyService.convertCurrency(senderCurrency, receiverCurrency, amount);
 
                 // get the balance of the receiver
                 var receiverBalance = receiverAccount.getBalance();
@@ -434,12 +449,18 @@ public class AccountService {
                             senderBalance
                     );
 
-                    // print success message
-                    successTransferMessage(
-                            senderAccount,
-                            receiverAccount,
-                            amount
-                    );
+                    // print success message for the sender
+                    printer.printColoredLine(Printer.YELLOW, String.format("Success! TRANSFER~~ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
+                            senderAccount.getCurrency(),
+                            amount,
+                            receiverAccount.getAccountName(),
+                            receiverAccount.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                            senderAccount.getCurrency(),
+                            senderAccount.getBalance()
+                    ));
+
+                    // todo: put notification
                 }
 
                 // If the receiver is successfully done
@@ -453,6 +474,16 @@ public class AccountService {
                     );
 
                     // todo: put notification
+//                    printer.printColoredLine(Printer.YELLOW, String.format("Success! TRANSFER~~ of %s %.2f from %s to %s REF IBAN *****%s is completed on %s Balance %s %s",
+//                            senderAccount.getCurrency(),
+//                            amount,
+//                            senderAccount.getAccountName(),
+//                            receiverAccount.getAccountName(),
+//                            receiverAccount.getIban().substring(21).replaceAll("\\s+", ""), // last 5 digits in the Iban (\\s removes white spaces, while the + mean one or more)
+//                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+//                            senderAccount.getCurrency(),
+//                            senderAccount.getBalance()
+//                    ));
                 }
             }
         }
