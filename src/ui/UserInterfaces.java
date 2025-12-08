@@ -136,6 +136,7 @@ public class UserInterfaces {
             System.out.println("[DEP]  Deposit money");
             System.out.println("[WITH] Withdraw money");
             System.out.println("[T]    Transfer money");
+            System.out.println("[TH]    Transfer history");
             System.out.println("[CARD] Manage my cards");
             // options requires to pass the middleware
             if (user.getRole().equals(UserRole.Banker)) {
@@ -167,6 +168,8 @@ public class UserInterfaces {
                     break;
                 case ("t"):
                     transferToPage(user);
+                case ("th"):
+                    userTransferHistoryPage(user);
                     break;
                 case ("sc"):
                     // if user not allowed this option is not available
