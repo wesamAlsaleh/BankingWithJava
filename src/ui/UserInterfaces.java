@@ -1,0 +1,624 @@
+package ui;
+
+import Account.Account;
+import Account.AccountService;
+import Account.AccountType;
+import Auth.AuthenticationService;
+import Currency.CurrencyService;
+import Global.Utils.Printer;
+import Transaction.TransactionService;
+import User.User;
+import User.UserRole;
+import User.UserRepository;
+import User.UserValidation;
+
+
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
+public class UserInterfaces {
+    private final Scanner scanner = new Scanner(System.in);
+    private final Printer printer = new Printer();
+    private final AuthenticationService authenticationService = new AuthenticationService();
+    private final AccountService accountService = new AccountService();
+    private final CurrencyService currencyService = new CurrencyService();
+    private final TransactionService transactionService = new TransactionService();
+    private final UserRepository userRepository = new UserRepository();
+    private final UserValidation userValidation = new UserValidation();
+
+    // function to validate the country
+    private String validateCountry(String country) {
+        // if the name is empty
+        if (country.isBlank()) {
+            return "Country is required!";
+        }
+
+        // if the country is less than 4 characters return error
+        if (country.length() < 4) {
+            return "Country must be at least 4 characters!";
+        }
+
+        return "";
+    }
+
+    // function to validate currency code input
+    private String validateCurrencyCode(String currencyCode) {
+        // validate the code
+        if (currencyCode == null || currencyCode.length() != 3)
+            return "Please enter a valid currency code!";
+
+        // return empty string
+        return "";
+    }
+
+    // function to validate currency exchange rate input
+    private String validateExchangeRate(double exchangeRate) {
+        // validate the code
+        if (exchangeRate <= 0) return "Please enter a valid exchange rate!";
+
+        // return empty string
+        return "";
+    }
+
+    // function to validate the input for create new currency record
+    private String validateCreateCurrencyInput(String country, String currencyCode, double exchangeRate) {
+        // messages holder
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // if there are any safety violation
+        stringBuilder.append(validateCountry(country));
+        stringBuilder.append(validateCurrencyCode(currencyCode));
+        stringBuilder.append(validateExchangeRate(exchangeRate));
+
+        // return the messages
+        return stringBuilder.toString();
+    }
+
+    // function to validate the input for deleting currency record
+    private String validateDeleteCurrencyInput(String currencyCode) {
+        return validateCurrencyCode(currencyCode);
+    }
+
+    // function to handle role violation
+    private void userMiddleware(String userRole) {
+        if (userRole.equals(UserRole.Customer.toString())) {
+            printer.printWrongChoice();
+        }
+    }
+
+    // function to display the startup page
+    public void startApplication() {
+        // StartUp Message
+        printer.printColoredTitle("Welcome to GA01 Bank");
+
+        // wait for user to chose
+        while (true) {
+            // options message
+            printer.printColoredLine(Printer.BLUE, "Please choose an option:");
+            System.out.println("[R] Register a new account");
+            System.out.println("[L] Login to your account");
+            System.out.println("[Q] Quit the application");
+            printer.printPrompt("Your choice: ");
+
+            // input from the user
+            var choice = scanner.nextLine().toLowerCase().trim();
+
+            // based on the choice go to the next direction
+            switch (choice) {
+                case ("r"):
+                    authenticationService.register();
+                    break;
+                case ("l"):
+                    authenticationService.login();
+                    break;
+                case ("q"):
+                    printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
+                    break;
+                default:
+                    printer.printWrongChoice();
+            }
+        }
+    }
+
+    // function to display the home page
+    public void homePage(User user) {
+        // title
+        printer.printColoredTitle("Welcome back, " + user.getFullName());
+
+        // wait for user to chose
+        while (true) {
+            // options message
+            printer.printColoredLine(Printer.BLUE, "Please choose an option:");
+            System.out.println("[S]    See all my Accounts");
+            System.out.println("[C]    Create new account");
+            System.out.println("[D]    Delete account");
+            System.out.println("[DEP]  Deposit money");
+            System.out.println("[WITH] Withdraw money");
+            System.out.println("[T]    Transfer money");
+            System.out.println("[CARD] Manage my cards");
+            // options requires to pass the middleware
+            if (user.getRole().equals(UserRole.Banker)) {
+                printer.printColoredLine(Printer.PURPLE, "[SC]    See All Currencies");
+                printer.printColoredLine(Printer.PURPLE, "[AC]    Add currency");
+                printer.printColoredLine(Printer.PURPLE, "[DC]    Delete currency");
+            }
+            printer.printColoredLine(Printer.RED, "[Q]    Quit / Logout");
+            printer.printPrompt("Your choice: ");
+
+            // input from the user
+            var choice = scanner.nextLine().toLowerCase().trim();
+
+            switch (choice) {
+                case ("s"):
+                    accountsListPage(user);
+                    break;
+                case ("c"):
+                    createAccountPage(user);
+                    break;
+                case ("d"):
+                    deleteAccountPage(user);
+                    break;
+                case ("dep"):
+                    System.out.println("TODO: deposit money");
+                    break;
+                case ("with"):
+                    System.out.println("TODO: withdraw money");
+                    break;
+                case ("t"):
+                    transferToPage(user);
+                    break;
+                case ("sc"):
+                    // if user not allowed this option is not available
+                    userMiddleware(user.getRole().toString());
+                    seeAllCurrenciesPage();
+                    break;
+                case ("ac"):
+                    // if user not allowed this option is not available
+                    userMiddleware(user.getRole().toString());
+                    addCurrencyPage();
+                    break;
+                case ("dc"):
+                    // if user not allowed this option is not available
+                    userMiddleware(user.getRole().toString());
+                    deleteCurrenciesPage();
+                    break;
+                case ("q"):
+                    printer.printSuccessful("Thank you for using GA01 Bank. Goodbye!");
+                    System.exit(0); // Exit
+                    break;
+                default:
+                    printer.printWrongChoice();
+            }
+        }
+    }
+
+    // *************************************************************************
+
+    // function to show create account page
+    private void createAccountPage(User user) {
+        // init message
+        printer.printColoredTitle("Create new account");
+
+        while (true) {
+            // selected choices holder
+            AccountType accountType;
+            String currencyCode;
+            String accountName;
+
+            // loop to select account type
+            while (true) {
+                // select message
+                printer.printQuestion("What is the type of your new account:");
+                System.out.println("[1] Saving Account");
+                System.out.println("[2] Checking Account");
+                printer.printPrompt("Account type: ");
+
+                // user input
+                var typeNumber = scanner.nextLine().trim();
+
+                // set the type based on the selected choice
+                switch (typeNumber) {
+                    case "1":
+                        accountType = AccountType.Savings;
+                        break; // exit the nested while loop
+                    case "2":
+                        accountType = AccountType.Checking;
+                        break; // exit the nested while loop
+                    default:
+                        printer.printWrongChoice();
+                        continue; // restart the loop
+                }
+
+                break; // exit the nested while loop
+            }
+
+            // list all the currencies available in the system
+            currencyService.printCurrencies();
+
+            // loop to select currency
+            while (true) {
+                // currency input
+                printer.printQuestion("What is currency of your new account:");
+                var providedCurrencyCode = scanner.nextLine().trim().toUpperCase();
+
+                // if the provided currency code is more than 3 digits return error
+                if (providedCurrencyCode.length() != 3) {
+                    printer.printWrongChoice();
+                    continue; // restart the loop
+                }
+
+                // if the selected currency code is not in the system print error
+                if (!currencyService.currencyExistsInTheSystem(providedCurrencyCode)) {
+                    printer.printWrongChoice();
+                    continue; // restart the loop
+                }
+
+                // set the code
+                currencyCode = providedCurrencyCode;
+
+                // exit the nested loop
+                break;
+            }
+
+            // loop to select account name
+            while (true) {
+                // account name input
+                printer.printQuestion("What is the account name?");
+                var name = scanner.nextLine().trim();
+
+                // if the name length is too short return error and repeat the question
+                if (name.length() < 3) {
+                    printer.printError("The account name is too short!");
+                    continue; // restart the loop
+                }
+
+                // set the name
+                accountName = name;
+
+                // exit the nested loop
+                break;
+            }
+
+            // create the account record
+            var success = accountService.createAccount(
+                    user,
+                    accountType,
+                    currencyCode,
+                    accountName
+            );
+
+            // if the operation failed reset the loop
+            if (!success) continue; // restart the while loop
+
+            // exit the while loop
+            break;
+        }
+        // it will redirect to the root page automatically
+    }
+
+    // function to show accounts list page
+    private void accountsListPage(User user) {
+        // init message
+        printer.printColoredTitle("My accounts");
+
+        // print the accounts
+        accountService.printUserAccounts(user);
+    }
+
+    // function to show delete account page
+    private void deleteAccountPage(User user) {
+        // init message
+        printer.printColoredTitle("Delete account");
+
+        // print the user accounts to help choosing the account number
+        accountService.printUserAccounts(user);
+
+        while (true) {
+            // if no accounts found
+            if (accountService.userAccountsCount(user) == 0) {
+                break; // exit the while loop
+            }
+
+            // question
+            printer.printQuestion("What is the account number:");
+            printer.printPrompt("Account number: ");
+            var accountNumber = scanner.nextLine().trim();
+
+            // if account number length is not 14 return error
+            if (accountNumber.length() != 14) {
+                printer.printError("Account number should be 14 characters!");
+                continue; // restart the loop
+            }
+
+            // delete the account
+            accountService.deleteAccount(user.getId(), accountNumber);
+
+            // exit the while loop
+            break;
+        }
+    }
+
+    // *************************************************************************
+
+    // function to show the add currencies page
+    private void addCurrencyPage() {
+        // init message
+        printer.printColoredTitle("Add new currency");
+
+        while (true) {
+            try {
+                // country name input
+                printer.printQuestion("What is the country:");
+                String country = scanner.nextLine();
+
+                // currency code input
+                printer.printQuestion("What is the currency code:");
+                String currencyCode = scanner.nextLine();
+
+                // exchange rate input as double!
+                printer.printQuestion("What is the exchange rate of:");
+                double exchangeRate = scanner.nextDouble();
+                scanner.nextLine(); // consume newline after nextDouble() !
+
+                // validate the input
+                var reply = validateCreateCurrencyInput(country, currencyCode, exchangeRate);
+
+                // if no error proceed the operation
+                if (reply.isEmpty()) {
+                    // add the currency to the system
+                    var success = currencyService.addCurrency(country, currencyCode, exchangeRate);
+
+                    // if the operation failed reset the loop
+                    if (!success) continue; // restart the loop
+
+                    // exit the while loop
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                printer.printError("Please enter a valid code and exchange rate!");
+                scanner.nextLine(); // flush the buffer
+            }
+        }
+    }
+
+    // function to show see all currencies page
+    private void seeAllCurrenciesPage() {
+        // init message
+        printer.printColoredTitle("See all currencies");
+
+        // print the all the currencies in the system
+        currencyService.printCurrencies();
+    }
+
+    // function to show delete currencies page
+    public void deleteCurrenciesPage() {
+        // init message
+        printer.printColoredTitle("Delete currencies");
+
+        // print the all the currencies in the system to help the user
+        currencyService.printCurrencies();
+
+        while (true) {
+            // if no currencies found
+            if (currencyService.getCurrencies().isEmpty()) {
+                break; // exit the while loop
+            }
+
+            printer.printQuestion("What is the currency code:");
+            String currencyCode = scanner.nextLine();
+
+            // validate the input
+            var reply = validateDeleteCurrencyInput(currencyCode);
+
+            // if no errors
+            if (reply.isEmpty()) {
+                // delete the currency from the system
+                currencyService.deleteCurrency(currencyCode);
+            }
+
+            // exit the while loop to return the parent page
+            break;
+        }
+        // automatically redirected
+    }
+
+    // *************************************************************************
+
+    // function to show the transfer history for the user page
+    private void userTransferHistoryPage(User user) {
+        // init message
+        printer.printColoredTitle("Transactions History");
+
+        // print the transactions
+        transactionService.printUserTransactions(user);
+
+    }
+
+    // function to show transfer to page
+    private void transferToPage(User sender) {
+        // init message
+        printer.printColoredTitle("Transfer Account");
+
+        // values holder
+        User receiver;
+        String receiverAccountNumber;
+        List<Account> receiverAccounts;
+        Account receiverAccount = null; // null for type safety
+        Account senderAccount = null; // null for type safety
+        double amount;
+
+        while (true) {
+            // sender account number input
+            while (true) {
+                // print the sender accounts
+                accountService.printUserAccounts(sender);
+
+                // question
+                printer.printQuestion("Choose your account:");
+                printer.printPrompt("My account number: ");
+
+                // user input
+                var accountNumber = scanner.nextLine().trim();
+
+                // validate the account number
+                var reply = accountService.validateAccountNumber(accountNumber);
+
+                // if there are errors show message
+                if (!reply.isEmpty()) {
+                    printer.printError("Invalid account number!");
+                    continue; // restart the loop
+                }
+
+                // get the sender accounts for validation
+                var senderAccounts = accountService.getUserAccounts(sender);
+
+                // if no accounts show message
+                if (senderAccounts.isEmpty()) {
+                    printer.printError("No user accounts found!");
+                    continue; // restart the loop
+                }
+
+                // flag to check if the account belong to the user
+                var accountBelongToTheUser = false;
+
+                // iterate over the accounts
+                for (Account account : senderAccounts) {
+
+                    if (account.getAccountNumber().equals(accountNumber)) {
+                        accountBelongToTheUser = true; // set to true
+                        senderAccount = account; // set the sender account holder
+                        break; // no need to check the others
+                    }
+                }
+
+                //  if the account number does not belong to the sender user send error
+                if (!accountBelongToTheUser) {
+                    printer.printError("Invalid account number!");
+                    continue; // restart the loop
+                }
+
+                // exit the nested while
+                break;
+            }
+
+            // email input
+            while (true) {
+                printer.printQuestion("Enter user email:");
+                printer.printPrompt("Email to transfer: ");
+
+                // input from the user
+                var email = scanner.nextLine().trim();
+
+                // validate the email
+                var reply = userValidation.validateEmailInput(email);
+
+                // if there is error
+                if (!reply.isEmpty()) {
+                    // show error message
+                    printer.printError("Invalid email address!");
+                    continue; // restart the while loop
+                }
+
+                // get the user by his email
+                receiver = userRepository.getUserByEmail(email);
+
+                // if the user in not available return error
+                if (receiver == null) {
+                    printer.printError("User with email " + email + " not found!");
+                    continue; // restart the while loop
+                }
+
+                // get the user accounts
+                receiverAccounts = accountService.getUserAccounts(receiver);
+
+                // if no user account print message
+                if (receiverAccounts.isEmpty()) {
+                    printer.printError("This user does not have any account!");
+                    continue; // restart
+                }
+
+                // print them
+                accountService.printAccountsToTransfer(receiverAccounts);
+
+                // exit the nested while loop
+                break;
+            }
+
+            // receiver account number input
+            while (true) {
+                printer.printQuestion("Enter account number:");
+                printer.printPrompt("Account number to transfer: ");
+
+                // user input
+                receiverAccountNumber = scanner.nextLine().trim();
+
+                // validate the account number
+                var accNumError = accountService.validateAccountNumber(receiverAccountNumber);
+
+                // if there is errors
+                if (!accNumError.isEmpty()) {
+                    printer.printError("Invalid account number!");
+                    continue; // restart the while loop
+                }
+
+                // flag to check if the account belong to the user
+                var accountBelongToTheUser = false;
+
+                // iterate the user accounts
+                for (Account account : receiverAccounts) {
+                    // if the account number belong to the user set the flag
+                    if (account.getAccountNumber().equals(receiverAccountNumber)) {
+                        accountBelongToTheUser = true; // set belong to flag
+                        receiverAccount = account; // set the account
+                        break; // no need to check the others
+                    }
+                }
+
+                // if the account number provided does not belong to the user return error
+                if (!accountBelongToTheUser) {
+                    printer.printError("Wrong account number!");
+                    continue; // restart the loop
+                }
+
+                // exit the nested while loop
+                break;
+            }
+
+            // amount to pay input
+            while (true) {
+                printer.printQuestion("Enter amount to transfer:");
+                printer.printPrompt(String.format("Amount to transfer (%s -> %s): ",
+                        senderAccount.getCurrency(),
+                        receiverAccount.getCurrency())
+                );
+
+                // user input
+                amount = Double.parseDouble(scanner.nextLine().trim());
+
+                // validate the number
+                if (amount <= 0) {
+                    printer.printError("Invalid amount!");
+                    continue; // restart the loop
+                }
+
+                // exit the nested while loop
+                break;
+            }
+
+            // transfer money from sender to receiver
+            accountService.transfer(
+                    receiver,
+                    receiverAccountNumber,
+                    senderAccount,
+                    amount
+            );
+
+            // exit the loop
+            break;
+        }
+    }
+
+    // *************************************************************************
+
+}

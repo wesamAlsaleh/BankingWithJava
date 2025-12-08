@@ -376,8 +376,8 @@ public class AccountService {
         }
 
         // if the amount to transfer is more than the balance return error
-        if (senderAccount.getBalance() < amount) {
-            printer.printColored(Printer.RED, "Insufficient funds.");
+        if (amount > senderAccount.getBalance()) {
+            printer.printError("Insufficient funds.");
             return; // do not do anything
         }
 

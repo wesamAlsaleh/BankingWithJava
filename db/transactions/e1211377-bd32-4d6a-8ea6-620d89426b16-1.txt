@@ -1,1 +1,0 @@
-UUID:e1211377-bd32-4d6a-8ea6-620d89426b16, User_Id:1, Account_Name:Wesam Iraqi, Account_Number:53546763456222, Iban:BH59 GAJB 5354 6763 4562 22, Transaction_Type:TRANSFER, Transaction_Amount:1.000, Post_Balance:0.00, Transaction_Date:2025-12-08T02:51:52.418725800

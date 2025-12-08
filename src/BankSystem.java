@@ -1,10 +1,10 @@
 
 // This class is the entry point for the bank project
 
-import ui.StartUpUserInterface;
+import ui.UserInterfaces;
 
 public class BankSystem {
-    private static final StartUpUserInterface ui = new StartUpUserInterface();
+    private static final UserInterfaces ui = new UserInterfaces();
 
     public static void main(String[] args) {
         ui.startApplication();

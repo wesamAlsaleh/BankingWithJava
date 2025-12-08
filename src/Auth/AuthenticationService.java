@@ -4,7 +4,7 @@ import Global.Utils.Printer;
 import User.User;
 import User.UserRepository;
 import User.UserValidation;
-import ui.StartUpUserInterface;
+import ui.UserInterfaces;
 
 import java.util.Scanner;
 
@@ -14,7 +14,7 @@ public class AuthenticationService {
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
     private static final Printer printer = new Printer();
-    private static final StartUpUserInterface ui = new StartUpUserInterface();
+    private static final UserInterfaces ui = new UserInterfaces();
 
     // function to register a new user
     public void register() {

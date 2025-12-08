@@ -1,1 +1,0 @@
-user_id:1, account_name:Wesam Iraqi, account_number:53546763456222, iban:BH59 GAJB 5354 6763 4562 22, account_type:Checking, currency:IQD, balance:3448.275862, overdraft_count:0, is_active:TRUE, created_at:2025-12-08T02:51:07.576026
