@@ -1,1 +1,0 @@
-UUID:a909d758-e5d8-47c9-9f78-5ebd8182a799, User_Id:1, Account_Number:53542834803291, Card_Number:9161911092027038, Transaction_Type:WITHDRAW, Transaction_Amount_USD:26.500, Transaction_Date:2025-12-10T00:07:05.964764

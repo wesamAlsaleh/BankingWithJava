@@ -47,9 +47,6 @@ public class CurrencyService {
         // get the amount in USD
         var usd = amount * senderExchangeRate; // senderExchangeRate muse relate to USD!
 
-        System.out.println("USD: " + usd);
-        System.out.println("receiver: " + usd / receiverExchangeRate);
-
         // get the amount in the receiver currency
         return usd / receiverExchangeRate;
     }

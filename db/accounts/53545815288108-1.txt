@@ -1,1 +1,0 @@
-user_id:1, account_name:Wesam BHD, account_number:53545815288108, iban:BH86 GAJB 5354 5815 2881 08, account_type:Savings, currency:BHD, balance:-13.416, overdraft_count:1, is_active:TRUE, created_at:2025-12-09T18:42:58.936033900

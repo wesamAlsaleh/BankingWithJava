@@ -1,1 +1,0 @@
-UUID:8bae03a5-e025-40bd-ad92-76a0086fc2cc, User_Id:1, Account_Name:wesam bhd, Account_Number:53542834803291, Iban:BH03 GAJB 5354 2834 8032 91, Transaction_Type:TRANSFER, Transaction_Amount:7.000, Post_Balance:34.58, Transaction_Date:2025-12-09T23:16:15.570174100

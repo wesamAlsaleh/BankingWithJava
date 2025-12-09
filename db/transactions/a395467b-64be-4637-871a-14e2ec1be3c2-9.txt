@@ -1,1 +1,0 @@
-UUID:a395467b-64be-4637-871a-14e2ec1be3c2, User_Id:9, Account_Name:new usd, Account_Number:53548838089986, Iban:BH97 GAJB 5354 8838 0899 86, Transaction_Type:DEPOSIT, Transaction_Amount:100.000, Post_Balance:0.00, Transaction_Date:2025-12-10T02:16:32.735140100

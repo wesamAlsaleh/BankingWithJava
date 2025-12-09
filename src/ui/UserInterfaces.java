@@ -5,6 +5,7 @@ import Account.AccountService;
 import Account.AccountType;
 import Auth.AuthenticationService;
 import Card.DebitCardService;
+import Card.DebitCardType;
 import Currency.CurrencyService;
 import Global.Utils.Printer;
 import Transaction.DateFilter;
@@ -232,6 +233,7 @@ public class UserInterfaces {
             AccountType accountType;
             String currencyCode;
             String accountName;
+            DebitCardType debitCardType = DebitCardType.MASTERCARD;
 
             // loop to select account type
             while (true) {
@@ -307,16 +309,51 @@ public class UserInterfaces {
                 break;
             }
 
+            // select debit card type
+            while (true) {
+                // question
+                printer.printQuestion("What is the type of the debit card:");
+                System.out.println("[1] Mastercard");
+                System.out.println("[2] Mastercard Titanium");
+                System.out.println("[3] Mastercard Platinum");
+                printer.printPrompt("Debit card type: ");
+
+                // user input
+                var type = scanner.nextLine().trim();
+
+                // select based on the input
+                switch (type) {
+                    case "1":
+                        debitCardType = DebitCardType.MASTERCARD;
+                        break;
+                    case "2":
+                        debitCardType = DebitCardType.TITANIUM;
+                        break;
+                    case "3":
+                        debitCardType = DebitCardType.PLATINUM;
+                        break;
+                    default:
+                        printer.printWrongChoice();
+                }
+
+                // exit the nested while loop
+                break;
+            }
+
             // create the account record
-            var success = accountService.createAccount(
+            var account = accountService.createAccount(
                     user,
                     accountType,
                     currencyCode,
                     accountName
             );
 
-            // if the operation failed reset the loop
-            if (!success) continue; // restart the while loop
+            // create the debit card record
+            debitCardService.createDebitCard(
+                    user.getId(),
+                    account.getAccountNumber(),
+                    debitCardType
+            );
 
             // exit the while loop
             break;
@@ -897,7 +934,7 @@ public class UserInterfaces {
         printer.printColoredTitle("Transaction using debit card");
 
         // values holder
-        String cardNumber;
+        String cardNumber = "";
         String operation;
 
         // transfer values
@@ -913,6 +950,11 @@ public class UserInterfaces {
             while (true) {
                 // print the debit cards for the user
                 debitCardService.printUserCards(user.getId());
+
+                // if the user does not have a card return
+                if (debitCardService.getUserCards(user.getId()).isEmpty()) {
+                    return; // exit the whole function
+                }
 
                 // question
                 printer.printQuestion("Chose what debit card to use:");

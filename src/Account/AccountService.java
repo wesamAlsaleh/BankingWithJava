@@ -143,9 +143,9 @@ public class AccountService {
     }
 
     // function to create account record
-    public boolean createAccount(User user, AccountType accountType, String currency, String accountName) {
+    public Account createAccount(User user, AccountType accountType, String currency, String accountName) {
         // if the currency is not in the system return false
-        if (!currencyRepository.isCurrencyAvailable(currency)) return false;
+        if (!currencyRepository.isCurrencyAvailable(currency)) return null;
 
         // generate a unique account number
         var accountNumber = generateAccountNumber();
@@ -177,12 +177,15 @@ public class AccountService {
                 printer.printError("Account with the same currency already exists.");
 
                 // return false
-                return false;
+                return null;
             }
         }
 
         // create new record
-        return accountRepository.saveNewAccountRecord(fileName, account.createAccountRecord());
+        accountRepository.saveNewAccountRecord(fileName, account.createAccountRecord());
+
+        // return the account
+        return account;
     }
 
     // function to delete account

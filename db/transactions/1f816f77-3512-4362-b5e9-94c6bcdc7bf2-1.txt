@@ -1,1 +1,0 @@
-UUID:1f816f77-3512-4362-b5e9-94c6bcdc7bf2, User_Id:1, Account_Name:wesam iqd, Account_Number:53548751376371, Iban:BH42 GAJB 5354 8751 3763 71, Transaction_Type:TRANSFER, Transaction_Amount:1.000, Post_Balance:14407.89, Transaction_Date:2025-12-10T00:20:08.472416400
