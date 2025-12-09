@@ -316,13 +316,50 @@ public class AccountService {
         // get the balance of the account
         var balance = account.getBalance();
 
+        System.out.println("Balance: " + balance);
+
+        // get the USD exchange rate
+        var usdExchangeRate = currencyService.getUsdRate(account.getCurrency());
+
+        // if usd rate not available return error
+        if (usdExchangeRate == 0) {
+            printer.printError("Currency " + account.getAccountNumber() + " does not exist.");
+        }
+
+        // get the amount in usd
+        var amountInUSD = amount * usdExchangeRate;
+
+        // get the currencies
+        var currencies = currencyService.getCurrencies();
+
+        // exchange rate holder
+        double exchangeRate = 0;
+
+        // iterate over the currencies
+        for (Currency currency : currencies) {
+            if (currency.currencyCode().equals(account.getCurrency())) {
+                // get the account currency exchange rate to USD
+                exchangeRate = currency.exchangeRate();
+                break; // no need to check
+            }
+        }
+
+        // if account rate not available return error
+        if (exchangeRate == 0) {
+            printer.printError("Currency " + account.getAccountNumber() + " does not exist.");
+            return; // do nothing
+        }
+
+        // get the overdraft fees (35$) based on the account rate to USD
+        var fees = 35 / exchangeRate;
+
         // if the balance is negative or the amount is greater than the balance active the overdraft mechanism
         if (balance < 0 || amount > balance) {
-            // if the amount is less than 100
-            if (amount <= 100) {
-                // withdraw with fees ( -amount -(50) + - 35 = -85)
-                account.withdraw(amount);
-                account.withdraw(35); // take the fees (-50 - (+35))
+            // if the amount in USD is less than 100$ perform the overdraft mechanism
+            if (amountInUSD <= 100) {
+                // withdraw with fees
+                account.withdraw(amount); // ex: 0 - 25 = -25
+                account.withdraw(fees); // ex: -25 - 13 = - 38
 
                 // increase the overdraft counter
                 account.setOverdraftCount(account.getOverdraftCount() + 1);
@@ -333,7 +370,7 @@ public class AccountService {
                     account.setActive(false);
                 }
             } else {
-                printer.printError("Account " + account.getAccountNumber() + " is not enough balance.");
+                printer.printError("Your balance is too low.");
             }
         } else {
             // normally withdraw from the account

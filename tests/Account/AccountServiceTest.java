@@ -180,10 +180,12 @@ public class AccountServiceTest {
     @DisplayName("Should withdraw money from the account")
     void shouldWithdrawMoneyFromTheAccount() {
         // Arrange
-        var userAccount = accountService.getUserAccounts(user).get(0);
+//        var userAccount = accountService.getUserAccounts(user).get(0);
+
+        var userAccount = accountService.getAccountByAccountNumber("53542834803291");
 
         // Act
-        accountService.withdraw(userAccount, 5);
+        accountService.withdraw(userAccount, 38);
     }
 
     @Test
