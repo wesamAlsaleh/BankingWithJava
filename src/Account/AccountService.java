@@ -118,7 +118,7 @@ public class AccountService {
         // set the operation type based on the input
         switch (transferType) {
             case DEPOSIT:
-                printer.printColoredLine(Printer.YELLOW, String.format("Success! DEPOSIT++ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
+                printer.printColoredLine(Printer.YELLOW, String.format("Success! DEPOSIT++ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %.2f",
                         account.getCurrency(),
                         amount,
                         account.getAccountName(),
@@ -129,7 +129,7 @@ public class AccountService {
                 ));
                 break;
             case WITHDRAW:
-                printer.printColoredLine(Printer.YELLOW, String.format("Success! WITHDRAW-- of %s %.2f from %s REF IBAN *****%s is completed on %s Balance %s %s",
+                printer.printColoredLine(Printer.YELLOW, String.format("Success! WITHDRAW-- of %s %.2f from %s REF IBAN *****%s is completed on %s Balance %s %.2f",
                         account.getCurrency(),
                         amount,
                         account.getAccountName(),
@@ -141,12 +141,6 @@ public class AccountService {
                 break;
         }
     }
-
-    // function to generate transfer message
-//    private void successReceiveTransferMessage(Account senderAccount, Account receiverAccount, double amount) {
-//
-//    }
-
 
     // function to create account record
     public boolean createAccount(User user, AccountType accountType, String currency, String accountName) {
@@ -327,7 +321,8 @@ public class AccountService {
         }
 
         // get the amount in usd
-        var amountInUSD = amount * usdExchangeRate;
+        var amountInUSD = (balance - amount) * usdExchangeRate;
+        amountInUSD = Math.abs(amountInUSD); // make it positive
 
         // get the currencies
         var currencies = currencyService.getCurrencies();
@@ -351,11 +346,11 @@ public class AccountService {
         }
 
         // get the overdraft fees (35$) based on the account rate to USD
-        var fees = 35 / exchangeRate;
+        var fees = 35 / exchangeRate; // ~13BHD
 
-        // if the balance is negative or the amount is greater than the balance active the overdraft mechanism
-        if (balance < 0 || amount > balance) {
-            // if the amount in USD is less than 100$ perform the overdraft mechanism
+        // if the amount is greater than the balance active the overdraft mechanism
+        if (amount > balance) {
+            // if the amount needed in USD is less than 100$ perform the overdraft mechanism
             if (amountInUSD <= 100) {
                 // withdraw with fees
                 account.withdraw(amount); // ex: 0 - 25 = -25
@@ -371,6 +366,7 @@ public class AccountService {
                 }
             } else {
                 printer.printError("Your balance is too low.");
+                return false; // return failer
             }
         } else {
             // normally withdraw from the account
@@ -466,7 +462,7 @@ public class AccountService {
                     return false; // do nothing
                 }
 
-                // todo: calculate the rate between
+                // calculate the rate between
                 var receiverAmount = currencyService.convertCurrency(senderCurrency, receiverCurrency, amount);
 
                 // get the balance of the receiver
@@ -490,7 +486,7 @@ public class AccountService {
                     );
 
                     // print success message for the sender
-                    printer.printColoredLine(Printer.YELLOW, String.format("Success! TRANSFER~~ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %s",
+                    printer.printColoredLine(Printer.YELLOW, String.format("Success! TRANSFER~~ of %s %.2f to %s REF IBAN *****%s is completed on %s Balance %s %.2f",
                             senderAccount.getCurrency(),
                             amount,
                             receiverAccount.getAccountName(),

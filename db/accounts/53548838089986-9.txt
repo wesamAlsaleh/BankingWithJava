@@ -1,0 +1,1 @@
+user_id:9, account_name:new usd, account_number:53548838089986, iban:BH97 GAJB 5354 8838 0899 86, account_type:Checking, currency:USD, balance:126.500, overdraft_count:0, is_active:TRUE, created_at:2025-12-10T02:16:19.408570
