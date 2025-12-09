@@ -40,10 +40,6 @@ public class TransactionService {
         }
     }
 
-    // function to create debit card transaction record
-//    public boolean createDebitCardTransaction(Account account, TransactionType transactionType, double amount) {
-//    }
-
     // function to get user transactions records
     private List<Transaction> getUserTransactions(User user) {
         return transactionRepository.getUserTransactions(user.getId());

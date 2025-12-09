@@ -132,4 +132,20 @@ public class CurrencyService {
         // delete the currency
         currencyRepository.deleteCurrency(currencyCode);
     }
+
+    // function to return usd rate based on the currency
+    public double getUsdRate(String currencyCode){
+        // get the currencies
+        var currencies = getCurrencies();
+
+        // iterate over them
+        for (var currency : currencies) {
+            if (currency.currencyCode().equals(currencyCode)) {
+                return currency.exchangeRate();
+            }
+        }
+
+        // if zero not found!
+        return 0;
+    }
 }

@@ -69,15 +69,13 @@ public class DebitCardRepository {
         var accountNumber = parts.get(1).split(":")[1];
         var cardNumber = parts.get(2).split(":")[1];
         var cardType = parts.get(3).split(":")[1];
-        var cashBackRate = parts.get(4).split(":")[1];
 
         // create obj
         return new DebitCard(
                 Long.valueOf(userId),
                 accountNumber,
                 cardNumber,
-                DebitCardType.valueOf(cardType),
-                Double.parseDouble(cashBackRate)
+                DebitCardType.valueOf(cardType)
         );
     }
 
@@ -121,4 +119,21 @@ public class DebitCardRepository {
         // return the list
         return userCards;
     }
+
+    // function to get the debit card by card number
+    public DebitCard getDebitCardByCardNumber(String cardNumber) {
+        // get the system debit cards
+        var files = fileHandler.getDirectoryContentAsList(dbPaths.getCardsDirectoryPath());
+
+        // iterate over them
+        for (File file : files) {
+            if (file.getName().startsWith(cardNumber + "-")) {
+                return readCard(file);
+            }
+        }
+
+        // not found
+        return null;
+    }
+
 }

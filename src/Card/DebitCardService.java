@@ -2,6 +2,8 @@ package Card;
 
 import Global.Utils.Printer;
 
+import java.util.List;
+
 public class DebitCardService {
     private final DebitCardRepository debitCardRepository = new DebitCardRepository();
     private final Printer printer = new Printer();
@@ -48,8 +50,7 @@ public class DebitCardService {
                 userId,
                 accountNumber,
                 cardNumber,
-                type,
-                0.05
+                type
         );
 
         // save the card in the system
@@ -78,13 +79,22 @@ public class DebitCardService {
 
         // format the print
         for (DebitCard card : userCards) {
-            printer.printColoredLine(Printer.YELLOW, String.format("Card number: %s -- Card type: %s -- Cash back rate: %s for account: %s",
+            printer.printColoredLine(Printer.YELLOW, String.format("Card number: %s (%s) linked to account number: %s",
                     card.getCardNumber(),
                     card.getType().toString().toLowerCase(),
-                    card.getCashBackRate(),
                     card.getAccountNumber()
             ));
             System.out.println(" "); // line after each
         }
+    }
+
+    // function to get the user cards
+    public List<DebitCard> getUserCards(Long userId) {
+        return debitCardRepository.getUserCards(userId);
+    }
+
+    // function to get card details by card number
+    public DebitCard getDebitCardByCardNumber(String cardNumber) {
+        return debitCardRepository.getDebitCardByCardNumber(cardNumber);
     }
 }

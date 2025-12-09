@@ -9,25 +9,22 @@ public class DebitCard {
     private String accountNumber;
     private String cardNumber;
     private DebitCardType type;
-    private double cashBackRate;
 
     // default constructor
-    public DebitCard(Long userId, String accountNumber, String cardNumber, DebitCardType type, double cashBackRate) {
+    public DebitCard(Long userId, String accountNumber, String cardNumber, DebitCardType type) {
         this.userId = userId;
         this.accountNumber = accountNumber;
         this.cardNumber = cardNumber;
         this.type = type;
-        this.cashBackRate = cashBackRate;
     }
 
     // function to create a debit card record
     public String createDebitCardRecord() {
-        return String.format("User_Id:%s, Account_Number:%s, Card_Number:%s, Card_Type:%s, Card_Cash_Back_Rate:%s",
+        return String.format("User_Id:%s, Account_Number:%s, Card_Number:%s, Card_Type:%s",
                 userId,
                 accountNumber,
                 cardNumber,
-                type,
-                cashBackRate
+                type
         );
     }
 
@@ -78,7 +75,13 @@ public class DebitCard {
         return accountNumber;
     }
 
-    public double getCashBackRate() {
-        return cashBackRate;
+    @Override
+    public String toString() {
+        return "DebitCard{" +
+                "userId=" + userId +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", type=" + type +
+                '}';
     }
 }

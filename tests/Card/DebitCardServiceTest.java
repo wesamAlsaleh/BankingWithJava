@@ -65,6 +65,28 @@ class DebitCardServiceTest {
         );
     }
 
+    @Test
+    @DisplayName("Should print user debit cards")
+    void printUserDebitCards() {
+        // Arrange
+
+        // Act
+        debitCardService.printUserCards(user.getId());
+    }
+
+    @Test
+    @DisplayName("Should return user card by card number")
+    void getUserCardByCardNumber() {
+        // Arrange
+        var cardNumber = debitCardService.getUserCards(user.getId()).get(0).getCardNumber();
+
+        // Act
+        var userCard = debitCardService.getDebitCardByCardNumber(cardNumber);
+
+        // Assert
+        assertNotNull(userCard);
+    }
+
     @AfterEach
     void tearDown() {
         debitCardService = null;

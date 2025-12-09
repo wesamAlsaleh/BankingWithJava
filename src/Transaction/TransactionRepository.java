@@ -70,8 +70,6 @@ public class TransactionRepository {
         );
     }
 
-    // function to create a new debit card transaction record
-
     // function to extract transaction record into object
     public Transaction getTransaction(File recordFile) {
         // try to read the file

@@ -488,4 +488,9 @@ public class AccountService {
             }
         }
     }
+
+    // function to get the account by account number
+    public Account getAccountByAccountNumber(String accountNumber) {
+        return accountRepository.getAccountByAccountNumber(accountNumber);
+    }
 }
