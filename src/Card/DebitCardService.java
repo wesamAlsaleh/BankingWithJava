@@ -319,4 +319,23 @@ public class DebitCardService {
             generateDebitCardTransaction(receiverAccount, amount, cardNumber, transactionType);
         }
     }
+
+    // function to validate card number
+    public String validateCardNumber(String cardNumber) {
+        // if the card number is not 14 return error
+        if (cardNumber.length() != 16) {
+            return "Invalid card number, it must be of length 16";
+        }
+
+        // if card number contains letters return error
+        for (char c : cardNumber.toCharArray()) {
+            // if the character is digit return error
+            if (!Character.isDigit(c)) {
+                return "Invalid card number";
+            }
+        }
+
+        // pass
+        return "";
+    }
 }
