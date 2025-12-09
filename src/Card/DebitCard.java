@@ -29,32 +29,32 @@ public class DebitCard {
     }
 
     // card limit configuration [[MASTERCARD:[[WITHDRAW:5k, TRANSFER:10000]...]], [TITANIUM:[[],[]...]], [PLATINUM:[[],[]...]]]
-    private static final Map<DebitCardType, Map<CardOperationType, Integer>> CARD_LIMITS = Map.of(
+    private static final Map<DebitCardType, Map<TransactionType, Double>> CARD_LIMITS = Map.of(
             DebitCardType.MASTERCARD, Map.of(
-                    CardOperationType.WITHDRAW, 5000,
-                    CardOperationType.TRANSFER, 10000,
-                    CardOperationType.TRANSFER_OWN, 20000,
-                    CardOperationType.DEPOSIT, 100000,
-                    CardOperationType.DEPOSIT_OWN, 200000
+                    TransactionType.WITHDRAW, 5000.0,
+                    TransactionType.TRANSFER, 10000.0,
+                    TransactionType.TRANSFER_OWN, 20000.0,
+                    TransactionType.DEPOSIT, 100000.0,
+                    TransactionType.DEPOSIT_OWN, 200000.0
             ),
             DebitCardType.TITANIUM, Map.of(
-                    CardOperationType.WITHDRAW, 10000,
-                    CardOperationType.TRANSFER, 20000,
-                    CardOperationType.TRANSFER_OWN, 40000,
-                    CardOperationType.DEPOSIT, 100000,
-                    CardOperationType.DEPOSIT_OWN, 200000
+                    TransactionType.WITHDRAW, 10000.0,
+                    TransactionType.TRANSFER, 20000.0,
+                    TransactionType.TRANSFER_OWN, 40000.0,
+                    TransactionType.DEPOSIT, 100000.0,
+                    TransactionType.DEPOSIT_OWN, 200000.0
             ),
             DebitCardType.PLATINUM, Map.of(
-                    CardOperationType.WITHDRAW, 20000,
-                    CardOperationType.TRANSFER, 40000,
-                    CardOperationType.TRANSFER_OWN, 80000,
-                    CardOperationType.DEPOSIT, 100000,
-                    CardOperationType.DEPOSIT_OWN, 200000
+                    TransactionType.WITHDRAW, 20000.0,
+                    TransactionType.TRANSFER, 40000.0,
+                    TransactionType.TRANSFER_OWN, 80000.0,
+                    TransactionType.DEPOSIT, 100000.0,
+                    TransactionType.DEPOSIT_OWN, 200000.0
             )
     );
 
     // function to get the card limit
-    public int getLimit(CardOperationType operationType) {
+    public double getLimit(TransactionType operationType) {
         return CARD_LIMITS.get(this.type).get(operationType);
     }
 

@@ -63,6 +63,47 @@ public class DebitCardService {
         );
     }
 
+    // function to check if the card exceeded its limit
+    private boolean exceededTheLimit(DebitCard debitCard, Account consumerAccount, TransactionType transactionType, double amount) {
+        // get the limit of this operation of this type of cards
+        var limit = debitCard.getLimit(transactionType);
+
+        // convert the amount to usd
+        var usdExchangeRate = currencyService.getUsdRate(consumerAccount.getCurrency());
+
+        // if the usd exchange rate is 0 return error
+        if (usdExchangeRate == 0) {
+            printer.printError("Cannot deposit to this account due to currency exchange rate");
+            return false;
+        }
+
+        // convert the amount to usd
+        amount = amount * usdExchangeRate;
+
+        System.out.println("Amount in USD " + amount);
+
+        // calculate the available limit
+        var availableLimit = limit - amount;
+
+        System.out.println("Limit is " + limit + " and availableLimit is " + availableLimit);
+
+        // get the card total spent today
+        var sumAmount = debitCardTransactionService.getAmountSpentInUSD(debitCard);
+
+        System.out.println("Sum amount is " + sumAmount);
+
+        // if the sum amount is less than the limit (return false to mean ok)
+        if (sumAmount < limit) { // both usd!
+            // if the amount to pay is less or equal the available (return false to mean ok)
+            if (amount <= availableLimit) {
+                return false;
+            }
+        }
+
+        // return exceeded
+        return true;
+    }
+
     // function to create a debit card
     public void createDebitCard(Long userId, String accountNumber, DebitCardType type) {
         // generate card number
@@ -143,15 +184,22 @@ public class DebitCardService {
             return;
         }
 
-        // todo: check card limitation
-
-        // get the account for the account number
+        // get the account by the account number
         var account = accountService.getAccountByAccountNumber(debitCard.getAccountNumber());
 
         // if account not found return error
         if (account == null) {
             printer.printError("Account does not exist");
             return;
+        }
+
+        // check card limitation
+        var exceededTheLimit = exceededTheLimit(debitCard, account, TransactionType.DEPOSIT, amount);
+
+        // if the usage exceeded the limit return error
+        if (exceededTheLimit) {
+            printer.printError("Debit card amount exceeded the limit");
+            return; // do nothing
         }
 
         // deposit to the account
@@ -175,9 +223,6 @@ public class DebitCardService {
             return;
         }
 
-        // todo: check card limitation
-
-
         // get the account to withdraw
         var account = accountService.getAccountByAccountNumber(debitCard.getAccountNumber());
 
@@ -185,6 +230,15 @@ public class DebitCardService {
         if (account == null) {
             printer.printError("Account does not exist");
             return;
+        }
+
+        // check card limitation
+        var exceededTheLimit = exceededTheLimit(debitCard, account, TransactionType.DEPOSIT, amount);
+
+        // if the usage exceeded the limit return error
+        if (exceededTheLimit) {
+            printer.printError("Debit card amount exceeded the limit");
+            return; // do nothing
         }
 
         // withdraw the money
@@ -217,8 +271,8 @@ public class DebitCardService {
             return;
         }
 
-        // todo: check card limitations
-        TransactionType transactionType = TransactionType.TRANSFER; // default is normal transfer
+        // set the operation
+        TransactionType transactionType = TransactionType.TRANSFER;
 
         // get the receiver account by accountNumber
         var receiverAccount = accountService.getAccountByAccountNumber(receiverAccountNumber);
@@ -241,6 +295,15 @@ public class DebitCardService {
         if (userToReceive.getId().equals(senderAccount.getUserId())) {
             // set the operation type to self transfer
             transactionType = TransactionType.TRANSFER_OWN;
+        }
+
+        // check card limitation
+        var exceededTheLimit = exceededTheLimit(debitCard, senderAccount, transactionType, amount);
+
+        // if the usage exceeded the limit return error
+        if (exceededTheLimit) {
+            printer.printError("Debit card amount exceeded the limit");
+            return; // do nothing
         }
 
         // perform the operation

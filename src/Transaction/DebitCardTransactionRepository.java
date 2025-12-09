@@ -1,5 +1,6 @@
 package Transaction;
 
+import Card.DebitCard;
 import Global.Utils.DBPaths;
 import Global.Utils.FileHandler;
 
@@ -108,4 +109,47 @@ public class DebitCardTransactionRepository {
         return transactions;
     }
 
+    // function to get the total sum of the debit card
+    public double debitCardTodayTransactionsSum(DebitCard card) {
+        // get the files
+        var files = fileHandler.getDirectoryContentAsList(dbPaths.getDebitCardTransactionsDirectoryPath());
+
+        // array holder
+        List<DebitCardTransaction> transactions = new ArrayList<>();
+
+        // counter holder
+        double counter = 0;
+
+        // iterate over
+        for (File file : files) {
+            // read the file
+            try (Scanner scanner = new Scanner(file)) {
+                // while data
+                while (scanner.hasNextLine()) {
+                    // get the line
+                    String line = scanner.nextLine();
+
+                    // get the transaction as object
+                    var transaction = extractDataFromRecord(line);
+
+                    // if the transaction date is today
+                    if (transaction.getTransactionDate().isAfter(LocalDateTime.now().toLocalDate().atStartOfDay())) {
+                        // add the transaction
+                        transactions.add(transaction);
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("Transaction file not found!");
+
+            }
+        }
+
+        // calculate the amount spent today
+        for (DebitCardTransaction transaction : transactions) {
+            counter += transaction.getAmountInUsd();
+        }
+
+        // return the number
+        return counter;
+    }
 }

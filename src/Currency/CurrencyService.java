@@ -8,7 +8,7 @@ public class CurrencyService {
     private final Printer printer = new Printer();
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
 
-    // function to convert from sender to receiver currency
+    // todo: function to convert from sender to receiver currency
     public double convertCurrency(String senderCurrency, String receiverCurrency, double amount) {
         // get the currencies
         var currencies = currencyRepository.getCurrencies();

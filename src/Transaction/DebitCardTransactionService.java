@@ -1,6 +1,7 @@
 package Transaction;
 
 import Account.Account;
+import Card.DebitCard;
 import Card.DebitCardService;
 import Currency.CurrencyService;
 import Global.Utils.Printer;
@@ -41,6 +42,11 @@ public class DebitCardTransactionService {
     // function to get user debit card transactions records
     private List<DebitCardTransaction> getUserDebitCardTransactions(User user) {
         return debitCardTransactionRepository.getUserDebitCardTransactions(user.getId());
+    }
+
+    // function to get the amount spent using the debit card on one day
+    public double getAmountSpentInUSD(DebitCard debitCard){
+        return debitCardTransactionRepository.debitCardTodayTransactionsSum(debitCard);
     }
 
     //todo:  function to format the printer for the transaction records

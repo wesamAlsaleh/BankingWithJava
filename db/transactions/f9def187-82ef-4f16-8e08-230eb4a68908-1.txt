@@ -1,1 +1,0 @@
-UUID:f9def187-82ef-4f16-8e08-230eb4a68908, User_Id:1, Account_Name:wesam eu, Account_Number:53544478796084, Iban:BH66 GAJB 5354 4478 7960 84, Transaction_Type:TRANSFER, Transaction_Amount:7.000, Post_Balance:0.00, Transaction_Date:2025-12-09T22:05:49.518332900

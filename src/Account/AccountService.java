@@ -466,7 +466,7 @@ public class AccountService {
                     return false; // do nothing
                 }
 
-                // calculate the rate between (amount * (senderRate/receiverRate)) (amount in sender currency * receiver exchange rate)
+                // todo: calculate the rate between
                 var receiverAmount = currencyService.convertCurrency(senderCurrency, receiverCurrency, amount);
 
                 // get the balance of the receiver
