@@ -1,0 +1,1 @@
+UUID:a0d2b445-9479-400a-b96d-0bc66314a2c3, User_Id:1, Account_Number:53548751376371, Card_Number:9161911092027038, Transaction_Type:TRANSFER_OWN, Transaction_Amount_USD:0.001, Transaction_Date:2025-12-10T00:20:08.473936700

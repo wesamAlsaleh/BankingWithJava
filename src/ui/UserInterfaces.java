@@ -4,6 +4,7 @@ import Account.Account;
 import Account.AccountService;
 import Account.AccountType;
 import Auth.AuthenticationService;
+import Card.DebitCardService;
 import Currency.CurrencyService;
 import Global.Utils.Printer;
 import Transaction.DateFilter;
@@ -28,6 +29,7 @@ public class UserInterfaces {
     private final TransactionService transactionService = new TransactionService();
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
+    private final DebitCardService debitCardService = new DebitCardService();
 
     // function to validate the country
     private String validateCountry(String country) {
@@ -139,7 +141,9 @@ public class UserInterfaces {
             System.out.println("[WITH] Withdraw money");
             System.out.println("[T]    Transfer money");
             System.out.println("[TH]   Transfer history");
-            System.out.println("[CARD] Manage my cards");
+            System.out.println("[PB]   Pay by debit card");
+            System.out.println("[DBTH] Debit card transactions history");
+
             // options requires to pass the middleware
             if (user.getRole().equals(UserRole.Banker)) {
                 printer.printColoredLine(Printer.PURPLE, "[SC]   See All Currencies");
@@ -175,6 +179,11 @@ public class UserInterfaces {
                     break;
                 case ("th"):
                     userTransferHistoryPage(user);
+                    break;
+                case "pb":
+                    payByDebitCardPage(user);
+                    break;
+                case "dbth":
                     break;
                 case ("sc"):
                     // if user not allowed this option is not available
@@ -533,18 +542,23 @@ public class UserInterfaces {
         transactionService.printUserTransactions(user, dateFilter, operation);
     }
 
+    // function to show the transfer page questions
+    private void showReceiverQuestions(User receiver, String receiverAccountNumber, List<Account> receiverAccounts, Account receiverAccount, Account senderAccount, double amount) {
+
+    }
+
     // function to show transfer to page
     private void transferToPage(User sender) {
         // init message
         printer.printColoredTitle("Transfer Account");
 
         // values holder
-        User receiver;
-        String receiverAccountNumber;
-        List<Account> receiverAccounts;
+        User receiver = null;
+        String receiverAccountNumber = "";
+        List<Account> receiverAccounts = List.of();
         Account receiverAccount = null; // null for type safety
         Account senderAccount = null; // null for type safety
-        double amount;
+        double amount = 0;
 
         while (true) {
             // sender account number input
@@ -876,5 +890,250 @@ public class UserInterfaces {
     }
 
     // *************************************************************************
+    // -------------------------------Debit Card Pages----------------------------------
+    // *************************************************************************
+
+    // function to show debit card page
+    public void payByDebitCardPage(User user) {
+        // init message
+        printer.printColoredTitle("Transaction using debit card");
+
+        // values holder
+        String cardNumber;
+        String operation;
+
+        // transfer values
+        User receiver;
+        String receiverAccountNumber = "";
+        List<Account> receiverAccounts;
+        Account receiverAccount = null; // null for type safety
+        Account senderAccount = null; // null for type safety
+        double amount;
+
+        while (true) {
+            // select card to use
+            while (true) {
+                // print the debit cards for the user
+                debitCardService.printUserCards(user.getId());
+
+                // question
+                printer.printQuestion("Chose what debit card to use:");
+                printer.printPrompt("Card number: ");
+
+                // user input
+                cardNumber = scanner.nextLine().trim();
+
+                // validate the number
+                var reply = debitCardService.validateCardNumber(cardNumber);
+
+                // if errors retry
+                if (!reply.isEmpty()) {
+                    printer.printError(reply);
+                    continue; // restart the loop
+                }
+
+                // exit nested while loop
+                break;
+            }
+
+            // select the operation to do
+            while (true) {
+                // question
+                printer.printQuestion("What operation would you like to do: ");
+                System.out.println("[1] Deposit");
+                System.out.println("[2] Withdraw");
+                System.out.println("[3] Transfer");
+                printer.printPrompt("Operation: ");
+
+                // user input
+                operation = scanner.nextLine().trim();
+
+                // set the operation based on the input
+                switch (operation) {
+                    case "1":
+                        operation = TransactionType.DEPOSIT.toString();
+                        break;
+                    case "2":
+                        operation = TransactionType.WITHDRAW.toString();
+                        break;
+                    case "3":
+                        operation = TransactionType.TRANSFER.toString();
+                        break;
+                    default:
+                        printer.printWrongChoice();
+                        continue; // restart the question
+                }
+
+                // exit the nested while loop
+                break;
+            }
+
+            // show the next question based on the operation
+            if (operation.equals(TransactionType.TRANSFER.toString())) {
+                // get the account linked to the card
+                var debitCard = debitCardService.getDebitCardByCardNumber(cardNumber);
+
+                // if the debit card in not found
+                if (debitCard == null) {
+                    printer.printError("Debit card not found!");
+                    continue; // restart the loop, should not happen in the first place!
+                }
+
+                // get the account linked to the debit card
+                var linkedAccount = accountService.getAccountByAccountNumber(debitCard.getAccountNumber());
+
+                // if the account in not found
+                if (linkedAccount == null) {
+                    printer.printError("Account not found!");
+                    continue; // restart the loop, should not happen in the first place!
+                }
+
+                // set the sender account
+                senderAccount = linkedAccount;
+
+                // email input
+                while (true) {
+                    printer.printQuestion("Enter user email:");
+                    printer.printPrompt("Email to transfer: ");
+
+                    // input from the user
+                    var email = scanner.nextLine().trim();
+
+                    // validate the email
+                    var reply = userValidation.validateEmailInput(email);
+
+                    // if there is error
+                    if (!reply.isEmpty()) {
+                        // show error message
+                        printer.printError("Invalid email address!");
+                        continue; // restart the while loop
+                    }
+
+                    // get the user by his email
+                    receiver = userRepository.getUserByEmail(email);
+
+                    // if the user in not available return error
+                    if (receiver == null) {
+                        printer.printError("User with email " + email + " not found!");
+                        continue; // restart the while loop
+                    }
+
+                    // get the user accounts
+                    receiverAccounts = accountService.getUserAccounts(receiver);
+
+                    // if no user account print message
+                    if (receiverAccounts.isEmpty()) {
+                        printer.printError("This user does not have any account!");
+                        continue; // restart
+                    }
+
+                    // print them
+                    accountService.printAccountsToTransfer(receiverAccounts);
+
+                    // exit the nested while loop
+                    break;
+                }
+
+                // receiver account number input
+                while (true) {
+                    printer.printQuestion("Enter account number:");
+                    printer.printPrompt("Account number to transfer: ");
+
+                    // user input
+                    receiverAccountNumber = scanner.nextLine().trim();
+
+                    // validate the account number
+                    var accNumError = accountService.validateAccountNumber(receiverAccountNumber);
+
+                    // if there is errors
+                    if (!accNumError.isEmpty()) {
+                        printer.printError("Invalid account number!");
+                        continue; // restart the while loop
+                    }
+
+                    // flag to check if the account belong to the user
+                    var accountBelongToTheUser = false;
+
+                    // iterate the user accounts
+                    for (Account account : receiverAccounts) {
+                        // if the account number belong to the user set the flag
+                        if (account.getAccountNumber().equals(receiverAccountNumber)) {
+                            accountBelongToTheUser = true; // set belong to flag
+                            receiverAccount = account; // set the account
+                            break; // no need to check the others
+                        }
+                    }
+
+                    // if the account number provided does not belong to the user return error
+                    if (!accountBelongToTheUser) {
+                        printer.printError("Wrong account number!");
+                        continue; // restart the loop
+                    }
+
+                    // exit the nested while loop
+                    break;
+                }
+
+                // amount to pay input
+                while (true) {
+                    printer.printQuestion("Enter amount to transfer:");
+                    printer.printPrompt(String.format("Amount to transfer (%s -> %s): ",
+                            senderAccount.getCurrency(),
+                            receiverAccount.getCurrency())
+                    );
+
+                    // user input
+                    amount = Double.parseDouble(scanner.nextLine().trim());
+
+                    // validate the number
+                    if (amount <= 0) {
+                        printer.printError("Invalid amount!");
+                        continue; // restart the loop
+                    }
+
+                    // exit the nested while loop
+                    break;
+                }
+            } else {
+                // select the amount
+                while (true) {
+                    printer.printQuestion("Enter amount: ");
+
+                    // user input
+                    amount = Double.parseDouble(scanner.nextLine().trim());
+
+                    // validate the number
+                    if (amount <= 0) {
+                        printer.printError("Invalid amount!");
+                        continue; // restart the loop
+                    }
+
+                    // exit the nested while loop
+                    break;
+                }
+            }
+
+            // do the operation based on the selected value
+            switch (operation) {
+                case "DEPOSIT":
+                    debitCardService.depositMoney(cardNumber, amount);
+                    break;
+                case "WITHDRAW":
+                    debitCardService.withdrawMoney(cardNumber, amount);
+                    break;
+                case "TRANSFER":
+                    debitCardService.transferMoney(cardNumber, receiverAccountNumber, amount);
+                    break;
+                default:
+                    printer.printWarning("Invalid operation!");
+                    continue;
+            }
+
+            // exit the while to go to the home page
+            break;
+        }
+    }
+
+    // function to show the transaction history
 
 }

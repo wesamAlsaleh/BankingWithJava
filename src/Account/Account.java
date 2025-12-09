@@ -42,8 +42,6 @@ public class Account implements IAccount {
         this.createdAt = createdAt;
     }
 
-
-
     @Override
     public void deposit(double amount) {
         this.balance += amount; // deposit to the account

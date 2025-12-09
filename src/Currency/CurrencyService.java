@@ -8,7 +8,7 @@ public class CurrencyService {
     private final Printer printer = new Printer();
     private final CurrencyRepository currencyRepository = new CurrencyRepository();
 
-    // function to convert from sender to receiver currency
+    // todo: function to convert from sender to receiver currency
     public double convertCurrency(String senderCurrency, String receiverCurrency, double amount) {
         // get the currencies
         var currencies = currencyRepository.getCurrencies();
@@ -131,5 +131,21 @@ public class CurrencyService {
         }
         // delete the currency
         currencyRepository.deleteCurrency(currencyCode);
+    }
+
+    // function to return usd rate based on the currency
+    public double getUsdRate(String currencyCode){
+        // get the currencies
+        var currencies = getCurrencies();
+
+        // iterate over them
+        for (var currency : currencies) {
+            if (currency.currencyCode().equals(currencyCode)) {
+                return currency.exchangeRate();
+            }
+        }
+
+        // if zero not found!
+        return 0;
     }
 }

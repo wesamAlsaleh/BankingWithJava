@@ -270,7 +270,7 @@ public class AccountService {
     }
 
     // function to perform deposit operation
-    public void deposit(Account account, double amount) {
+    public boolean deposit(Account account, double amount) {
         // store the post balance
         var balance = account.getBalance();
 
@@ -303,26 +303,63 @@ public class AccountService {
         } else {
             printer.printError("Failed to deposit " + amount + ".");
         }
+
+        return success;
     }
 
     // function to perform withdraw operation
-    public void withdraw(Account account, double amount) {
+    public boolean withdraw(Account account, double amount) {
         // check if the account is deactivated
         if (!account.isActive()) {
             printer.printColored(Printer.RED, "Account " + account.getAccountNumber() + " is deactivated. To reactivate the account you must resolve the negative balance and pay the overdraft fees.");
-            return; // do not do anything
+            return false; // do not do anything
         }
 
         // get the balance of the account
         var balance = account.getBalance();
 
+        // get the USD exchange rate
+        var usdExchangeRate = currencyService.getUsdRate(account.getCurrency());
+
+        // if usd rate not available return error
+        if (usdExchangeRate == 0) {
+            printer.printError("Currency " + account.getAccountNumber() + " does not exist.");
+        }
+
+        // get the amount in usd
+        var amountInUSD = amount * usdExchangeRate;
+
+        // get the currencies
+        var currencies = currencyService.getCurrencies();
+
+        // exchange rate holder
+        double exchangeRate = 0;
+
+        // iterate over the currencies
+        for (Currency currency : currencies) {
+            if (currency.currencyCode().equals(account.getCurrency())) {
+                // get the account currency exchange rate to USD
+                exchangeRate = currency.exchangeRate();
+                break; // no need to check
+            }
+        }
+
+        // if account rate not available return error
+        if (exchangeRate == 0) {
+            printer.printError("Currency " + account.getAccountNumber() + " does not exist.");
+            return false; // do nothing
+        }
+
+        // get the overdraft fees (35$) based on the account rate to USD
+        var fees = 35 / exchangeRate;
+
         // if the balance is negative or the amount is greater than the balance active the overdraft mechanism
         if (balance < 0 || amount > balance) {
-            // if the amount is less than 100
-            if (amount <= 100) {
-                // withdraw with fees ( -amount -(50) + - 35 = -85)
-                account.withdraw(amount);
-                account.withdraw(35); // take the fees (-50 - (+35))
+            // if the amount in USD is less than 100$ perform the overdraft mechanism
+            if (amountInUSD <= 100) {
+                // withdraw with fees
+                account.withdraw(amount); // ex: 0 - 25 = -25
+                account.withdraw(fees); // ex: -25 - 13 = - 38
 
                 // increase the overdraft counter
                 account.setOverdraftCount(account.getOverdraftCount() + 1);
@@ -333,7 +370,7 @@ public class AccountService {
                     account.setActive(false);
                 }
             } else {
-                printer.printError("Account " + account.getAccountNumber() + " is not enough balance.");
+                printer.printError("Your balance is too low.");
             }
         } else {
             // normally withdraw from the account
@@ -360,10 +397,13 @@ public class AccountService {
         } else {
             printer.printError("Failed to withdraw " + amount + ".");
         }
+
+        // return success
+        return success;
     }
 
     // function to perform transfer operation
-    public void transfer(
+    public boolean transfer(
             User receiver,
             String receiverAccountNumber,
             Account senderAccount,
@@ -372,13 +412,13 @@ public class AccountService {
         // check if the senderAccount is deactivated
         if (!senderAccount.isActive()) {
             printer.printColored(Printer.RED, "Account " + senderAccount.getAccountNumber() + " is deactivated. To reactivate the senderAccount you must resolve the negative balance and pay the overdraft fees.");
-            return; // do not do anything
+            return false; // do not do anything
         }
 
         // if the amount to transfer is more than the balance return error
         if (amount > senderAccount.getBalance()) {
             printer.printError("Insufficient funds.");
-            return; // do not do anything
+            return false; // do not do anything
         }
 
         // get the senderAccount of the targeted targetUser
@@ -418,15 +458,15 @@ public class AccountService {
                 // if the currency is not in the system print message
                 if (!senderFlag) {
                     printer.printError("Cannot transfer " + amount + " from this account in the moment.");
-                    return; // do nothing
+                    return false; // do nothing
                 }
 
                 if (!receiverFlag) {
                     printer.printError("Cannot transfer " + amount + " to this account in the moment.");
-                    return; // do nothing
+                    return false; // do nothing
                 }
 
-                // calculate the rate between (amount * (senderRate/receiverRate)) (amount in sender currency * receiver exchange rate)
+                // todo: calculate the rate between
                 var receiverAmount = currencyService.convertCurrency(senderCurrency, receiverCurrency, amount);
 
                 // get the balance of the receiver
@@ -487,5 +527,13 @@ public class AccountService {
                 }
             }
         }
+
+        // return success
+        return true;
+    }
+
+    // function to get the account by account number
+    public Account getAccountByAccountNumber(String accountNumber) {
+        return accountRepository.getAccountByAccountNumber(accountNumber);
     }
 }

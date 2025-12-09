@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class AccountRepository {
@@ -17,7 +18,36 @@ public class AccountRepository {
     private final Printer printer = new Printer();
 
     // function to extract record to account object
-//    private Account recordToAccount(String recordLine) {}
+    private Account recordToAccount(String recordLine) {
+        // get the record as parts
+        var parts = new ArrayList<>(List.of(recordLine.split(",")));
+
+        // extract the values
+        var id = parts.get(0).split(":")[1];
+        var accountName = parts.get(1).split(":")[1];
+        var accountNumber = parts.get(2).split(":")[1];
+        var iban = parts.get(3).split(":")[1];
+        var accountType = parts.get(4).split(":")[1];
+        var accountCurrency = parts.get(5).split(":")[1];
+        var balance = parts.get(6).split(":")[1];
+        var overdraftCount = parts.get(7).split(":")[1];
+        var isActive = parts.get(8).split(":")[1];
+        var createdAt = parts.get(9).substring(parts.get(9).indexOf(":") + 1);
+
+        // create account object
+        return new Account(
+                Long.valueOf(id),
+                accountNumber,
+                iban,
+                accountName,
+                AccountType.valueOf(accountType),
+                accountCurrency,
+                Double.parseDouble(balance),
+                Integer.parseInt(overdraftCount),
+                Boolean.parseBoolean(isActive),
+                LocalDateTime.parse(createdAt)
+        );
+    }
 
     // function to write a new record in the account number list! file
     public void saveAccountsListFile(String accountNumber) {
@@ -117,34 +147,8 @@ public class AccountRepository {
                         // get the record line
                         String line = scanner.nextLine();
 
-                        // get the record as parts
-                        var parts = new ArrayList<>(List.of(line.split(",")));
-
-                        // extract the values
-                        var id = parts.get(0).split(":")[1];
-                        var accountName = parts.get(1).split(":")[1];
-                        var accountNumber = parts.get(2).split(":")[1];
-                        var iban = parts.get(3).split(":")[1];
-                        var accountType = parts.get(4).split(":")[1];
-                        var accountCurrency = parts.get(5).split(":")[1];
-                        var balance = parts.get(6).split(":")[1];
-                        var overdraftCount = parts.get(7).split(":")[1];
-                        var isActive = parts.get(8).split(":")[1];
-                        var createdAt = parts.get(9).substring(parts.get(9).indexOf(":") + 1);
-
-                        // create account object
-                        var account = new Account(
-                                Long.valueOf(id),
-                                accountNumber,
-                                iban,
-                                accountName,
-                                AccountType.valueOf(accountType),
-                                accountCurrency,
-                                Double.parseDouble(balance),
-                                Integer.parseInt(overdraftCount),
-                                Boolean.parseBoolean(isActive),
-                                LocalDateTime.parse(createdAt)
-                        );
+                        // get the account as obj
+                        var account = recordToAccount(line);
 
                         // add the account to the list
                         accounts.add(account);
@@ -261,5 +265,29 @@ public class AccountRepository {
 
         // return failer
         return false;
+    }
+
+    // function to get the account by account number
+    public Account getAccountByAccountNumber(String accountNumber) {
+        // get the accounts directory files
+        var files = fileHandler.getDirectoryContentAsList(dbPaths.getAccountsDirectoryPath());
+
+        // get the accounts in the system
+        for (File file : files) {
+            if (file.getName().startsWith(accountNumber + "-")) {
+                // read the file
+                try (Scanner scanner = new Scanner(file)) {
+                    while (scanner.hasNextLine()) {
+                        return recordToAccount(scanner.nextLine());
+                    }
+                } catch (FileNotFoundException e) {
+                    printer.printError("File not found!");
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        // if not found
+        return null;
     }
 }
