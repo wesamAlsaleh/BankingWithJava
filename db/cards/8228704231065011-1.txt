@@ -1,0 +1,1 @@
+User_Id:1, Account_Number:53542834803291, Card_Number:8228704231065011, Card_Type:MASTERCARD, Card_Cash_Back_Rate:0.05

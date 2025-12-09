@@ -1,6 +1,7 @@
 package Transaction;
 
 import Account.Account;
+import Card.CardOperationType;
 import Global.Utils.Printer;
 import User.User;
 
@@ -38,6 +39,10 @@ public class TransactionService {
             return false; // return failer
         }
     }
+
+    // function to create debit card transaction record
+//    public boolean createDebitCardTransaction(Account account, TransactionType transactionType, double amount) {
+//    }
 
     // function to get user transactions records
     private List<Transaction> getUserTransactions(User user) {

@@ -88,6 +88,30 @@ public class DBPaths {
                 "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/transactions"
         );
     }
+
+    // function to get the card numbers list
+    public String getCardNumbersFilePath() {
+        return pathBasedOnOs(
+                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\card_numbers_list.txt",
+                ""
+        );
+    }
+
+    // function to get the path of the cards directory
+    public String getCardsDirectoryPath() {
+        return pathBasedOnOs(
+                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\cards",
+                ""
+        );
+    }
+
+    // function to get the path of the debit cards transactions
+    public String getDebitCardTransactionsDirectoryPath() {
+        return pathBasedOnOs(
+                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\debit_card_transactions",
+                ""
+        );
+    }
 }
 
 

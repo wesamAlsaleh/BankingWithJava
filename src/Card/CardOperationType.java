@@ -1,6 +1,6 @@
-package Transaction;
+package Card;
 
-public enum TransactionType {
+public enum CardOperationType {
     DEPOSIT,
     DEPOSIT_OWN,
     WITHDRAW,
