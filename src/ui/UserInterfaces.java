@@ -16,7 +16,6 @@ import User.UserRepository;
 import User.UserValidation;
 
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -143,6 +142,7 @@ public class UserInterfaces {
             System.out.println("[T]    Transfer money");
             System.out.println("[TH]   Transfer history");
             System.out.println("[PB]   Pay by debit card");
+            System.out.println("[DBTH] Debit card transactions history");
 
             // options requires to pass the middleware
             if (user.getRole().equals(UserRole.Banker)) {
@@ -182,6 +182,8 @@ public class UserInterfaces {
                     break;
                 case "pb":
                     payByDebitCardPage(user);
+                    break;
+                case "dbth":
                     break;
                 case ("sc"):
                     // if user not allowed this option is not available
@@ -1131,5 +1133,7 @@ public class UserInterfaces {
             break;
         }
     }
+
+    // function to show the transaction history
 
 }
