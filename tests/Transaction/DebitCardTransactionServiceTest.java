@@ -4,9 +4,9 @@ import Account.AccountService;
 import Card.DebitCardService;
 import User.User;
 import User.UserRole;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,6 +39,10 @@ class DebitCardTransactionServiceTest {
                 LocalDateTime.now()
         ); // hard coded user
     }
+
+    @Test
+    @DisplayName("Should print user transactions with date and operation filter")
+    void printUserTransactionsWithDateAndOperationFilter() {}
 
 
 

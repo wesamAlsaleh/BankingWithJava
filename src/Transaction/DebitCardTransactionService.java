@@ -45,114 +45,124 @@ public class DebitCardTransactionService {
     }
 
     // function to get the amount spent using the debit card on one day
-    public double getAmountSpentInUSD(DebitCard debitCard){
+    public double getAmountSpentInUSD(DebitCard debitCard) {
         return debitCardTransactionRepository.debitCardTodayTransactionsSum(debitCard);
     }
 
-    //todo:  function to format the printer for the transaction records
-//    private void printer(List<DebitCardTransaction> transactions) {
-//        // iterate over the transactions
-//        for (DebitCardTransaction transaction : transactions) {
-//            // print the operation symbol
-//            switch (transaction.getTransactionType()) {
-//                case DEPOSIT:
-//                    printer.printColored(Printer.GREEN, "DEPOSIT++ ");
-//                    System.out.printf("%.3f into %s REF %s at %s",
-//                            transaction.getAmount(),
-//                            transaction.getAccountName(),
-//                            transaction.getIban(),
-//                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
-//                    );
-//                    System.out.println(" "); // new line
-//                    break;
-//                case WITHDRAW:
-//                    printer.printColored(Printer.RED, "WITHDRAW-- ");
-//                    System.out.printf("%.3f from %s REF %s at %s",
-//                            transaction.getAmount(),
-//                            transaction.getAccountName(),
-//                            transaction.getIban(),
-//                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
-//                    );
-//                    System.out.println(" "); // new line
-//                    break;
-//                case TRANSFER:
-//                    printer.printColored(Printer.PURPLE, "TRANSFER~~ ");
-//                    System.out.printf("%.3f from %s REF %s at %s",
-//                            transaction.getAmount(),
-//                            transaction.getAccountName(),
-//                            transaction.getIban(),
-//                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
-//                    );
-//                    System.out.println(" "); // new line
-//                    break;
-//            }
-//        }
-//        System.out.println(" "); // space after last record
-//    }
+    // function to format the printer for the transaction records
+    private void printer(List<DebitCardTransaction> transactions) {
+        // iterate over the transactions
+        for (DebitCardTransaction transaction : transactions) {
+            // print the operation symbol
+            switch (transaction.getTransactionType()) {
+                case DEPOSIT:
+                    // UUID:95541453-bd93-4434-81bd-a9240a2d9cf7, User_Id:1, Account_Number:53542834803291, Card_Number:9161911092027038, Transaction_Type:WITHDRAW, Transaction_Amount_USD:26.500, Transaction_Date:2025-12-09T23:16:09.870033500
+                    printer.printColored(Printer.GREEN, "DEPOSIT++ ");
+                    System.out.printf("%.2f$ using %s (linked to account number: %s) at %s",
+                            transaction.getAmountInUsd(),
+                            transaction.getCardNumber(),
+                            transaction.getAccountNumber(),
+                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    );
+                    System.out.println(" "); // new line
+                    break;
+                case WITHDRAW:
+                    printer.printColored(Printer.RED, "WITHDRAW-- ");
+                    System.out.printf("%.2f$ using %s (linked to account number: %s) at %s",
+                            transaction.getAmountInUsd(),
+                            transaction.getCardNumber(),
+                            transaction.getAccountNumber(),
+                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    );
+                    System.out.println(" "); // new line
+                    break;
+                case TRANSFER:
+                    printer.printColored(Printer.PURPLE, "TRANSFER~~ ");
+                    System.out.printf("%.2f$ using %s (linked to account number: %s) at %s",
+                            transaction.getAmountInUsd(),
+                            transaction.getCardNumber(),
+                            transaction.getAccountNumber(),
+                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    );
+                    System.out.println(" "); // new line
+                    break;
+                case TRANSFER_OWN:
+                    printer.printColored(Printer.BLUE, "OWN TRANSFER~~ ");
+                    System.out.printf("%.2f$ using %s (linked to account number: %s) at %s",
+                            transaction.getAmountInUsd(),
+                            transaction.getCardNumber(),
+                            transaction.getAccountNumber(),
+                            transaction.getTransactionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    );
+                    System.out.println(" "); // new line
+                    break;
+            }
+        }
+        System.out.println(" "); // space after last record
+    }
 
-    //todo:  print the user debit card transactions
-//    public void printUserDebitCardTransactions(User user, DateFilter dateFilter, String operation) {
-//        // get the user transactions
-//        var transactions = getUserTransactions(user);
-//
-//        // if no transactions return message
-//        if (transactions.isEmpty()) {
-//            printer.printWarning("There are no transactions in this account");
-//            return; // do nothing
-//        }
-//
-//        // filter date holder
-//        LocalDateTime date;
-//
-//        // filter the transactions based on the date
-//        switch (dateFilter) {
-//            case TODAY:
-//                date = LocalDateTime.now().toLocalDate().atStartOfDay();
-//                break;
-//            case YESTERDAY:
-//                date = LocalDateTime.now().minusDays(1).toLocalDate().atStartOfDay();
-//                break;
-//            case LAST_WEEK:
-//                date = LocalDateTime.now().minusDays(7).toLocalDate().atStartOfDay();
-//                break;
-//            case LAST_MONTH:
-//                date = LocalDateTime.now().minusMonths(1).toLocalDate().atStartOfDay();
-//                break;
-//            case ALL:
-//                date = transactions.get(0).getTransactionDate().toLocalDate().atStartOfDay(); // get the first transaction date
-//            default:
-//                throw new IllegalArgumentException("Unknown date filter type");
-//        }
-//
-//        // filter based on the date
-//        var filteredTransactions = transactions.stream()
-//                .filter(t -> t.getTransactionDate().isAfter(date))
-//                .toList();
-//
-//        // if the filter result is empty show message
-//        if (filteredTransactions.isEmpty()) {
-//            printer.printWarning("There are no transactions in this account");
-//            return; // do not print anything else
-//        }
-//
-//        // print all the transactions
-//        if (operation.equals("ALL")) {
-//            printer(filteredTransactions);
-//        }
-//
-//        // refilter the transactions bases on the type
-//        var filteredTransactions2 = filteredTransactions.stream()
-//                .filter(t -> operation.equals(t.getTransactionType().toString()))
-//                .toList();
-//
-//        // if the filter result is empty show message
-//        if (filteredTransactions2.isEmpty()) {
-//            printer.printWarning("There are no transactions in this account");
-//            return; // do not print anything else
-//        }
-//
-//        // print them
-//        printer(filteredTransactions2);
-//    }
+    // print the user debit card transactions
+    public void printUserDebitCardTransactions(User user, DateFilter dateFilter, TransactionType operation) {
+        // get the user transactions
+        var transactions = getUserDebitCardTransactions(user);
 
+        // if no transactions return message
+        if (transactions.isEmpty()) {
+            printer.printWarning("There are no transactions in this account");
+            return; // do nothing
+        }
+
+        // filter date holder
+        LocalDateTime date;
+
+        // filter the transactions based on the date
+        switch (dateFilter) {
+            case TODAY:
+                date = LocalDateTime.now().toLocalDate().atStartOfDay();
+                break;
+            case YESTERDAY:
+                date = LocalDateTime.now().minusDays(1).toLocalDate().atStartOfDay();
+                break;
+            case LAST_WEEK:
+                date = LocalDateTime.now().minusDays(7).toLocalDate().atStartOfDay();
+                break;
+            case LAST_MONTH:
+                date = LocalDateTime.now().minusMonths(1).toLocalDate().atStartOfDay();
+                break;
+            case ALL:
+                date = transactions.get(0).getTransactionDate().toLocalDate().atStartOfDay(); // get the first transaction date
+            default:
+                throw new IllegalArgumentException("Unknown date filter type");
+        }
+
+        // filter based on the date
+        var filteredTransactions = transactions.stream()
+                .filter(t -> t.getTransactionDate().isAfter(date))
+                .toList();
+
+        // if the filter result is empty show message
+        if (filteredTransactions.isEmpty()) {
+            printer.printWarning("There are no transactions in this account");
+            return; // do not print anything else
+        }
+
+        // print all the transactions
+        if (operation.toString().equals("ALL")) {
+            printer(filteredTransactions);
+        }
+
+        // refilter the transactions bases on the type
+        var filteredTransactions2 = filteredTransactions.stream()
+                .filter(t -> operation.toString().equals(t.getTransactionType().toString()))
+                .toList();
+
+        // if the filter result is empty show message
+        if (filteredTransactions2.isEmpty()) {
+            printer.printWarning("There are no transactions in this account");
+            return; // do not print anything else
+        }
+
+        // print them
+        printer(filteredTransactions2);
+    }
 }

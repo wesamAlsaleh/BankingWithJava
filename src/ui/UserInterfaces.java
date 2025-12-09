@@ -8,6 +8,7 @@ import Card.DebitCardService;
 import Currency.CurrencyService;
 import Global.Utils.Printer;
 import Transaction.DateFilter;
+import Transaction.DebitCardTransactionService;
 import Transaction.TransactionService;
 import Transaction.TransactionType;
 import User.User;
@@ -30,6 +31,7 @@ public class UserInterfaces {
     private final UserRepository userRepository = new UserRepository();
     private final UserValidation userValidation = new UserValidation();
     private final DebitCardService debitCardService = new DebitCardService();
+    private final DebitCardTransactionService debitCardTransactionService = new DebitCardTransactionService();
 
     // function to validate the country
     private String validateCountry(String country) {
@@ -184,6 +186,7 @@ public class UserInterfaces {
                     payByDebitCardPage(user);
                     break;
                 case "dbth":
+                    userDebitCardTransferHistoryPage(user);
                     break;
                 case ("sc"):
                     // if user not allowed this option is not available
@@ -540,11 +543,6 @@ public class UserInterfaces {
 
         // print the transactions based on the filter and operation type
         transactionService.printUserTransactions(user, dateFilter, operation);
-    }
-
-    // function to show the transfer page questions
-    private void showReceiverQuestions(User receiver, String receiverAccountNumber, List<Account> receiverAccounts, Account receiverAccount, Account senderAccount, double amount) {
-
     }
 
     // function to show transfer to page
@@ -1134,6 +1132,83 @@ public class UserInterfaces {
         }
     }
 
-    // function to show the transaction history
+    // function to show the debit card transfer history for the user page
+    private void userDebitCardTransferHistoryPage(User user) {
+        // init message
+        printer.printColoredTitle("Debit Card Transactions History");
+
+        // values holder
+        DateFilter dateFilter;
+        String operation;
+
+        // date input
+        while (true) {
+            printer.printQuestion("Get transactions history after:");
+            System.out.println("[TT] Today's transactions");
+            System.out.println("[YT] Yesterday's transactions]");
+            System.out.println("[WT] Last week transactions");
+            System.out.println("[MT] Last month transactions");
+
+            // user input
+            var filter = scanner.nextLine().trim().toLowerCase();
+
+            // select the result based on the input
+            switch (filter) {
+                case "tt":
+                    dateFilter = DateFilter.TODAY;
+                    break;
+                case "yt":
+                    dateFilter = DateFilter.YESTERDAY;
+                    break;
+                case "wt":
+                    dateFilter = DateFilter.LAST_WEEK;
+                    break;
+                case "mt":
+                    dateFilter = DateFilter.LAST_MONTH;
+                    break;
+                default:
+                    printer.printWrongChoice();
+                    continue; // restart the loop
+            }
+
+            break; // exit the while loops
+        }
+
+        // operation type input
+        while (true) {
+            printer.printQuestion("Type of transaction:");
+            System.out.println("[1] Deposits");
+            System.out.println("[2] Withdrawals");
+            System.out.println("[3] Transfers");
+            System.out.println("[4] Own transfers");
+
+            // user input
+            operation = scanner.nextLine().toLowerCase().trim();
+
+            // select based on the user
+            switch (operation) {
+                case "1":
+                    operation = TransactionType.DEPOSIT.toString();
+                    break;
+                case "2":
+                    operation = TransactionType.WITHDRAW.toString();
+                    break;
+                case "3":
+                    operation = TransactionType.TRANSFER.toString();
+                    break;
+                case "4":
+                    operation = TransactionType.TRANSFER_OWN.toString();
+                    break;
+                default:
+                    printer.printWrongChoice();
+            }
+
+            // exit the while loop
+            break;
+        }
+
+        // print the transactions based on the filter and operation type
+        debitCardTransactionService.printUserDebitCardTransactions(user, dateFilter, TransactionType.valueOf(operation));
+    }
 
 }
