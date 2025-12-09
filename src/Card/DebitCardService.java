@@ -7,6 +7,7 @@ import Global.Utils.Printer;
 import Transaction.DebitCardTransaction;
 import Transaction.DebitCardTransactionService;
 import Transaction.TransactionType;
+import User.UserRepository;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class DebitCardService {
     private final AccountService accountService = new AccountService();
     private final CurrencyService currencyService = new CurrencyService();
     private final DebitCardTransactionService debitCardTransactionService = new DebitCardTransactionService();
+    private final UserRepository userRepository = new UserRepository();
 
     // function to generate card number
     private String generateCardNumber() {
@@ -132,8 +134,6 @@ public class DebitCardService {
 
     // function to deposit money using debit card
     public void depositMoney(String cardNumber, double amount) {
-        // todo: check card limitation
-
         // get the debit card
         var debitCard = getDebitCardByCardNumber(cardNumber);
 
@@ -142,6 +142,8 @@ public class DebitCardService {
             printer.printError("Debit card does not exist");
             return;
         }
+
+        // todo: check card limitation
 
         // get the account for the account number
         var account = accountService.getAccountByAccountNumber(debitCard.getAccountNumber());
@@ -173,6 +175,9 @@ public class DebitCardService {
             return;
         }
 
+        // todo: check card limitation
+
+
         // get the account to withdraw
         var account = accountService.getAccountByAccountNumber(debitCard.getAccountNumber());
 
@@ -189,6 +194,66 @@ public class DebitCardService {
         if (success) {
             // create transaction record
             generateDebitCardTransaction(account, amount, cardNumber, TransactionType.WITHDRAW);
+        }
+    }
+
+    // function transfer money from account to account using debit card
+    public void transferMoney(String cardNumber, String receiverAccountNumber, double amount) {
+        // get the sender card details
+        var debitCard = getDebitCardByCardNumber(cardNumber);
+
+        // if the card is not available return error
+        if (debitCard == null) {
+            printer.printError("Debit card does not exist");
+            return;
+        }
+
+        // get the sender account using the card number
+        var senderAccount = accountService.getAccountByAccountNumber(debitCard.getAccountNumber());
+
+        // if the account is not available return error
+        if (senderAccount == null) {
+            printer.printError("Sender account does not exist");
+            return;
+        }
+
+        // todo: check card limitations
+        TransactionType transactionType = TransactionType.TRANSFER; // default is normal transfer
+
+        // get the receiver account by accountNumber
+        var receiverAccount = accountService.getAccountByAccountNumber(receiverAccountNumber);
+
+        // if the account is not available return error
+        if (receiverAccount == null) {
+            printer.printError("Receiver account does not exist");
+        }
+
+        // get the user to receive money
+        var userToReceive = userRepository.getUserById(receiverAccount.getUserId());
+
+        // if the user is not available return error
+        if (userToReceive == null) {
+            printer.printError("Receiver user does not exist");
+            return;
+        }
+
+        // check if the user id is the same as sender user id
+        if (userToReceive.getId().equals(senderAccount.getUserId())) {
+            // set the operation type to self transfer
+            transactionType = TransactionType.TRANSFER_OWN;
+        }
+
+        // perform the operation
+        var success = accountService.transfer(
+                userToReceive,
+                receiverAccount.getAccountNumber(),
+                senderAccount,
+                amount
+        );
+
+        // if successfully generate debit card transaction record
+        if (success) {
+            generateDebitCardTransaction(receiverAccount, amount, cardNumber, transactionType);
         }
     }
 }

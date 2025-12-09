@@ -113,6 +113,19 @@ class DebitCardServiceTest {
         debitCardService.withdrawMoney(userCard.getCardNumber(), amountToWithdraw);
     }
 
+    @Test
+    @DisplayName("Should transfer money from account to account")
+    void transferMoneyFromAccountToAccount() {
+        // Arrange
+        var senderAccount = accountService.getUserAccounts(user).get(0);
+        var senderCard = debitCardService.getUserCards(senderAccount.getUserId()).get(0);
+        var receiverAccount = accountService.getUserAccounts(user).get(1);
+        var amountToTransfer = 7.0; // 7BHD -> 18.57USD
+
+        // Act
+        debitCardService.transferMoney(senderCard.getCardNumber(), receiverAccount.getAccountNumber(), amountToTransfer);
+    }
+
     @AfterEach
     void tearDown() {
         debitCardService = null;

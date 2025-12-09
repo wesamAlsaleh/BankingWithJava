@@ -403,7 +403,7 @@ public class AccountService {
     }
 
     // function to perform transfer operation
-    public void transfer(
+    public boolean transfer(
             User receiver,
             String receiverAccountNumber,
             Account senderAccount,
@@ -412,13 +412,13 @@ public class AccountService {
         // check if the senderAccount is deactivated
         if (!senderAccount.isActive()) {
             printer.printColored(Printer.RED, "Account " + senderAccount.getAccountNumber() + " is deactivated. To reactivate the senderAccount you must resolve the negative balance and pay the overdraft fees.");
-            return; // do not do anything
+            return false; // do not do anything
         }
 
         // if the amount to transfer is more than the balance return error
         if (amount > senderAccount.getBalance()) {
             printer.printError("Insufficient funds.");
-            return; // do not do anything
+            return false; // do not do anything
         }
 
         // get the senderAccount of the targeted targetUser
@@ -458,12 +458,12 @@ public class AccountService {
                 // if the currency is not in the system print message
                 if (!senderFlag) {
                     printer.printError("Cannot transfer " + amount + " from this account in the moment.");
-                    return; // do nothing
+                    return false; // do nothing
                 }
 
                 if (!receiverFlag) {
                     printer.printError("Cannot transfer " + amount + " to this account in the moment.");
-                    return; // do nothing
+                    return false; // do nothing
                 }
 
                 // calculate the rate between (amount * (senderRate/receiverRate)) (amount in sender currency * receiver exchange rate)
@@ -527,6 +527,9 @@ public class AccountService {
                 }
             }
         }
+
+        // return success
+        return true;
     }
 
     // function to get the account by account number
