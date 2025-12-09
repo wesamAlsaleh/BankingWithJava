@@ -14,9 +14,6 @@ import java.util.UUID;
 
 public class DebitCardTransactionService {
     private final DebitCardTransactionRepository debitCardTransactionRepository = new DebitCardTransactionRepository();
-    private final AccountService accountService = new AccountService();
-    private final CurrencyService currencyService = new CurrencyService();
-    private final DebitCardService debitCardService = new DebitCardService();
     private final Printer printer = new Printer();
 
     // function to create debit card transaction record
@@ -44,52 +41,6 @@ public class DebitCardTransactionService {
     // function to get user debit card transactions records
     private List<DebitCardTransaction> getUserDebitCardTransactions(User user) {
         return debitCardTransactionRepository.getUserDebitCardTransactions(user.getId());
-    }
-
-    // function to deposit money using debit card
-    public void depositMoney(String cardNumber, double amount) {
-        // todo: check card limitation
-
-        // get the debit card
-        var debitCard = debitCardService.getDebitCardByCardNumber(cardNumber);
-
-        // if not found in the system return error
-        if (debitCard == null) {
-            printer.printError("Debit card does not exist");
-            return;
-        }
-
-        // get the account for the account number
-        var account = accountService.getAccountByAccountNumber(debitCard.getAccountNumber());
-
-        // if account not found return error
-        if (account == null) {
-            printer.printError("Account does not exist");
-            return;
-        }
-
-        // deposit to the account
-        accountService.deposit(account, amount);
-
-        // get usd exchange rate for the account currency
-        var usdExchangeRate = currencyService.getUsdRate(account.getCurrency());
-
-        // if the currency not available return error
-        if (usdExchangeRate == 0) {
-            printer.printError("Cannot deposit to this account due to currency exchange rate");
-            return; // do nothing
-        }
-
-        // convert the amount to usd
-        var amountInUsd = amount * usdExchangeRate;
-
-        // create debit card transaction record
-        createDebitCardTransaction(
-                account,
-                cardNumber,
-                TransactionType.DEPOSIT,
-                amountInUsd
-        );
     }
 
     //todo:  function to format the printer for the transaction records

@@ -87,6 +87,32 @@ class DebitCardServiceTest {
         assertNotNull(userCard);
     }
 
+    @Test
+    @DisplayName("Should deposit money to account by debit card")
+    void shouldDepositMoneyToAccountByDebitCard() {
+        // Arrange
+        var accountToDeposit = accountService.getUserAccounts(user).get(0);
+        var userCard = debitCardService.getUserCards(accountToDeposit.getUserId()).get(0);
+        var amountToDeposit = 10.0; // 10BHD -> 26.53USD
+
+
+        // Act
+        debitCardService.depositMoney(userCard.getCardNumber(), amountToDeposit);
+    }
+
+    @Test
+    @DisplayName("Should withdraw money from an account by debit card")
+    void shouldWithdrawMoneyFromAccountByDebitCard() {
+        // Arrange
+        var accountToWithdraw = accountService.getUserAccounts(user).get(0);
+        var userCard = debitCardService.getUserCards(accountToWithdraw.getUserId()).get(0);
+        var amountToWithdraw = 10.0; // 10BHD -> 26.53USD
+
+
+        // Act
+        debitCardService.withdrawMoney(userCard.getCardNumber(), amountToWithdraw);
+    }
+
     @AfterEach
     void tearDown() {
         debitCardService = null;

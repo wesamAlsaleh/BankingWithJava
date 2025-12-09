@@ -1,12 +1,21 @@
 package Card;
 
+import Account.Account;
+import Account.AccountService;
+import Currency.CurrencyService;
 import Global.Utils.Printer;
+import Transaction.DebitCardTransaction;
+import Transaction.DebitCardTransactionService;
+import Transaction.TransactionType;
 
 import java.util.List;
 
 public class DebitCardService {
     private final DebitCardRepository debitCardRepository = new DebitCardRepository();
     private final Printer printer = new Printer();
+    private final AccountService accountService = new AccountService();
+    private final CurrencyService currencyService = new CurrencyService();
+    private final DebitCardTransactionService debitCardTransactionService = new DebitCardTransactionService();
 
     // function to generate card number
     private String generateCardNumber() {
@@ -27,6 +36,29 @@ public class DebitCardService {
 
         // return the number
         return cardNumber.toString();
+    }
+
+    // function to generate debit card transaction record
+    private void generateDebitCardTransaction(Account account, double amount, String cardNumber, TransactionType transactionType) {
+        // get usd exchange rate for the account currency
+        var usdExchangeRate = currencyService.getUsdRate(account.getCurrency());
+
+        // if the currency not available return error
+        if (usdExchangeRate == 0) {
+            printer.printError("Cannot deposit to this account due to currency exchange rate");
+            return; // do nothing
+        }
+
+        // convert the amount to usd
+        var amountInUsd = amount * usdExchangeRate;
+
+        // create debit card transaction record
+        debitCardTransactionService.createDebitCardTransaction(
+                account,
+                cardNumber,
+                transactionType,
+                amountInUsd
+        );
     }
 
     // function to create a debit card
@@ -96,5 +128,67 @@ public class DebitCardService {
     // function to get card details by card number
     public DebitCard getDebitCardByCardNumber(String cardNumber) {
         return debitCardRepository.getDebitCardByCardNumber(cardNumber);
+    }
+
+    // function to deposit money using debit card
+    public void depositMoney(String cardNumber, double amount) {
+        // todo: check card limitation
+
+        // get the debit card
+        var debitCard = getDebitCardByCardNumber(cardNumber);
+
+        // if not found in the system return error
+        if (debitCard == null) {
+            printer.printError("Debit card does not exist");
+            return;
+        }
+
+        // get the account for the account number
+        var account = accountService.getAccountByAccountNumber(debitCard.getAccountNumber());
+
+        // if account not found return error
+        if (account == null) {
+            printer.printError("Account does not exist");
+            return;
+        }
+
+        // deposit to the account
+        var success = accountService.deposit(account, amount);
+
+        // generate the record only when the operation is success
+        if (success) {
+            // create transaction record
+            generateDebitCardTransaction(account, amount, cardNumber, TransactionType.DEPOSIT);
+        }
+    }
+
+    // function to withdraw money using debit card
+    public void withdrawMoney(String cardNumber, double amount) {
+        // get the card details
+        var debitCard = getDebitCardByCardNumber(cardNumber);
+
+        // if the card is not available return error
+        if (debitCard == null) {
+            printer.printError("Debit card does not exist");
+            return;
+        }
+
+        // get the account to withdraw
+        var account = accountService.getAccountByAccountNumber(debitCard.getAccountNumber());
+
+        // if the account is not available return error
+        if (account == null) {
+            printer.printError("Account does not exist");
+            return;
+        }
+
+        // withdraw the money
+        var success = accountService.withdraw(account, amount);
+
+        // generate the record only when the operation is success
+        if (success) {
+            // create transaction record
+            generateDebitCardTransaction(account, amount, cardNumber, TransactionType.WITHDRAW);
+        }
     }
 }

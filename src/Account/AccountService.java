@@ -270,7 +270,7 @@ public class AccountService {
     }
 
     // function to perform deposit operation
-    public void deposit(Account account, double amount) {
+    public boolean deposit(Account account, double amount) {
         // store the post balance
         var balance = account.getBalance();
 
@@ -303,20 +303,20 @@ public class AccountService {
         } else {
             printer.printError("Failed to deposit " + amount + ".");
         }
+
+        return success;
     }
 
     // function to perform withdraw operation
-    public void withdraw(Account account, double amount) {
+    public boolean withdraw(Account account, double amount) {
         // check if the account is deactivated
         if (!account.isActive()) {
             printer.printColored(Printer.RED, "Account " + account.getAccountNumber() + " is deactivated. To reactivate the account you must resolve the negative balance and pay the overdraft fees.");
-            return; // do not do anything
+            return false; // do not do anything
         }
 
         // get the balance of the account
         var balance = account.getBalance();
-
-        System.out.println("Balance: " + balance);
 
         // get the USD exchange rate
         var usdExchangeRate = currencyService.getUsdRate(account.getCurrency());
@@ -347,7 +347,7 @@ public class AccountService {
         // if account rate not available return error
         if (exchangeRate == 0) {
             printer.printError("Currency " + account.getAccountNumber() + " does not exist.");
-            return; // do nothing
+            return false; // do nothing
         }
 
         // get the overdraft fees (35$) based on the account rate to USD
@@ -397,6 +397,9 @@ public class AccountService {
         } else {
             printer.printError("Failed to withdraw " + amount + ".");
         }
+
+        // return success
+        return success;
     }
 
     // function to perform transfer operation
