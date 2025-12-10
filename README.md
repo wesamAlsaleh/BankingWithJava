@@ -35,6 +35,18 @@ You will need the following software installed on your machine:
 3.  **Run the Main Application:**
     Locate the main class (`BankSystem.java`) and run it from your IDE or the command line.
 
+---
+
+## 🏗️ System Design: Entity Relationship Diagram (ERD)
+
+The following diagram illustrates the key entities (tables/data models) in the banking system and the relationships between them.
+
+*(**ACTION REQUIRED:** Replace the URL below with the public link to your `ERD.png` file on GitHub or an image host.)*
+
+![Entity Relationship Diagram (ERD)](<link_to_your_ERD.png_file_here>)
+
+---
+
 ## 📂 Project Structure
 
 The key components of the project are organized as follows:
