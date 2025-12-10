@@ -198,7 +198,7 @@ public class AccountRepository {
                                 // if the account is not active return error
                                 if (!Boolean.parseBoolean(isActive)) {
                                     printer.printError("Disabled account can not be deleted!");
-                                    break; // exit the for loop
+                                    return; // exit the function
                                 }
                             }
 
@@ -210,7 +210,7 @@ public class AccountRepository {
                                 // if the balance is greater than 1 return error
                                 if (Double.parseDouble(balance) > 1.0) {
                                     printer.printError("Account contain balance can not be deleted!");
-                                    break; // exit the loop
+                                    return; // exit the function
                                 }
                             }
                         } // for loop end

@@ -1,0 +1,1 @@
+User_Id:1, Account_Number:53540462998986, Card_Number:9400494857210467, Card_Type:MASTERCARD
