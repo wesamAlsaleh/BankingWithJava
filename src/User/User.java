@@ -28,7 +28,7 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // custom constructor
+    // custom constructors
     public User(Long id, String firstName, String lastName, String email, String password, UserRole role, int fraudAttemptsCount, LocalDateTime lockUntil, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
@@ -40,6 +40,19 @@ public class User {
         this.lockUntil = lockUntil;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public User(Long id, String firstName, String lastName, String email, String password, UserRole role) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.fraudAttemptsCount = 0;
+        this.lockUntil = null;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     // getters
