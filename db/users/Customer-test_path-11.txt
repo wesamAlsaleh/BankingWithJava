@@ -1,0 +1,1 @@
+First_Name:test, Last_Name:path, Email:path@gmail.com, Password: $2a$10$cEwUh..USOAIxni5iNkfueAWNZP19lWGK91Q7WulC7F.Q5UDVof0e, Role: Customer, fraud_Attempts_Count: 0, LockUntil: null, Created_At: 2025-12-11T23:13:47.202492, Updated_At: 2025-12-11T23:13:47.202492
