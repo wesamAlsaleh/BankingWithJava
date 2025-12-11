@@ -80,17 +80,11 @@ public class DebitCardService {
         // convert the amount to usd
         amount = amount * usdExchangeRate;
 
-        System.out.println("Amount in USD " + amount);
-
         // calculate the available limit
         var availableLimit = limit - amount;
 
-        System.out.println("Limit is " + limit + " and availableLimit is " + availableLimit);
-
         // get the card total spent today
         var sumAmount = debitCardTransactionService.getAmountSpentInUSD(debitCard);
-
-        System.out.println("Sum amount is " + sumAmount);
 
         // if the sum amount is less than the limit (return false to mean ok)
         if (sumAmount < limit) { // both usd!
@@ -154,12 +148,21 @@ public class DebitCardService {
 
         // format the print
         for (DebitCard card : userCards) {
-            printer.printColoredLine(Printer.YELLOW, String.format("Card number: %s (%s) linked to account number: %s",
-                    card.getCardNumber(),
-                    card.getType().toString().toLowerCase(),
-                    card.getAccountNumber()
-            ));
-            System.out.println(" "); // line after each
+            // get the account details
+            var account = accountService.getAccountByAccountNumber(card.getAccountNumber());
+
+            // if the account is available print the details
+            if (account != null) {
+                printer.printColoredLine(Printer.YELLOW, String.format("Card number: %s (%s) linked to account: %s (%s) with balance %s %.3f",
+                        card.getCardNumber(),
+                        card.getType().toString().toLowerCase(),
+                        account.getIban(),
+                        account.getAccountName(),
+                        account.getCurrency(),
+                        account.getBalance()
+                ));
+                System.out.println(" "); // line after each
+            }
         }
     }
 

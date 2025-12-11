@@ -25,7 +25,7 @@ purposes.
 You will need the following software installed on your machine:
 
 * **Java Development Kit (JDK):** Version 17 or higher (Recommended).
-* **An IDE:** IntelliJ IDEA, VS Code, or Eclipse.
+* **An IDE:** Must use IntelliJ IDEA.
 
 ### Installation
 
@@ -48,42 +48,6 @@ The following diagram illustrates the key entities (tables/data models) in the b
 between them.
 
 ![Entity Relationship Diagram (ERD)](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/ERD.png)
-
----
-
-## 📸 Screenshots
-
-Here are some screenshots showcasing the user interface and key functionalities of the banking application:
-
-### 1. Account Creation and Login
-
-*(**ACTION REQUIRED:** Replace the URLs below with the public links to the corresponding files.)*
-
-| Description              | Screenshot                                                                                                   |
-|:-------------------------|:-------------------------------------------------------------------------------------------------------------|
-| **Startup / Login Page** | ![Login Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/startup.png)      |
-| **Create Account Page**  | ![Create Account](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/register.png) |
-
-### 2. User Dashboards and Transactions
-
-| Description                       | Screenshot                                                                                                                                |
-|:----------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------|
-| **Customer Homepage**             | ![Customer Homepage](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/customer_homepage.png)                  |
-| **See All Accounts**              | ![See All Accounts](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/see_all_acounts_page.png)                |
-| **Deposit Page**                  | ![Deposit Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/deposit_page.png)                            |
-| **Withdrawal Page**               | ![Withdrawal Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/withdraw_page.png)                        |
-| **Select Debit Card Page**        | ![Select Debit Card Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/use_debit_cards_page.png)          |
-| **Deposit using Debit Card Page** | ![Deposit Using Debit Card Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/deposit_using_dc_page.png)  |
-| **Withdrawal Page**               | ![Withdrawal Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/withdraw_page.png)                        |
-| **User Transaction History**      | ![Transaction History](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/user_transactions_history_page_2.png) |
-
-### 3. Banker Views
-
-| Description                    | Screenshot                                                                                                                          |
-|:-------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| **Banker Homepage**            | ![Banker Homepage](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/banker_homepage.png)                | |
-| **See All Currencies**         | ![See All Accounts](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/see_currencies_page.png)           |
-| **System Transaction Tracker** | ![System Tracker](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/screenshots/system_transaction_tracker_page.png) |
 
 ---
 
@@ -114,6 +78,37 @@ The project successfully implements the following core business requirements:
 ## 🤝 Contribution
 
 This project was developed solely as part of the GA Java Bootcamp curriculum.
+
+## 📸 Screenshots
+
+Here are some screenshots showcasing the user interface and key functionalities of the banking application:
+
+### 1. Account Creation and Login
+
+| Description      | Screenshot                                                                                                                               |
+|:-----------------|:-----------------------------------------------------------------------------------------------------------------------------------------|
+| **Startup Page** | ![Startup Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/start-up-page.png) |
+| **Login Page**   | ![Login Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/login-page.png)      |
+
+### 2. User Dashboards and Transactions
+
+| Description                  | Screenshot                                                                                                                                                         |
+|:-----------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Customer Homepage**        | ![Customer Homepage](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/customer-page.png)                      |
+| **See All Accounts**         | ![See All Accounts](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/account-page.png)                        |
+| **Deposit Page**             | ![Deposit Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/deposit-page.png)                            |
+| **Withdrawal Page**          | ![Withdrawal Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/withdraw-page.png)                        |
+| **Select Debit Card Page**   | ![Select Debit Card Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/select-debit-card-to-use-page.png) |
+| **User Transaction History** | ![Transaction History](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/user-transactions-history-page.png)   |
+
+### 3. Banker Views
+
+| Description            | Screenshot                                                                                                                                          |
+|:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Banker Homepage**    | ![Banker Homepage](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/banker-page.png)           | |
+| **See All Currencies** | ![See All Accounts](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/currencies-list-page.png) |
+---
+
 
 ## 👨‍💻 Author
 

@@ -1,6 +1,13 @@
 package Global.Utils;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class DBPaths {
+
+    // define the db root path
+    private static final Path DB_ROOT = Paths.get("db");
+
     // function to get the operating system
     private static String getOS() {
         // get the OS
@@ -33,84 +40,53 @@ public class DBPaths {
 
     // function to get the path of the file that handle the id counter "user_index.txt"
     public String getUserIndexPath() {
-        // return the path of file "user_index.txt" based on the OS
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\user_index.txt",
-                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/user_index.txt"
-        );
+        return DB_ROOT.resolve("User_Index.txt").toString();
     }
 
     // function to get the path of the directory that contains the users files
     public String getUsersDirectoryPath() {
-        // return the path of the users directory based on the OS
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\users",
-                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/users"
-        );
+        return DB_ROOT.resolve("users").toString();
     }
 
     // function to get the path of the directory that contains the customers account files
     public String getAccountsDirectoryPath() {
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\accounts",
-                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/accounts"
-        );
+        return DB_ROOT.resolve("accounts").toString();
     }
 
     // function to get the path of the file that store all the account numbers
     public String getAccountNumberListPath() {
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\account_number_list.txt",
-                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/account_number_list.txt"
-        );
+        return DB_ROOT.resolve("account_number_list.txt").toString();
     }
 
     // function to get the path of the file that store the currencies list
     public String getCurrenciesListPath() {
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\currencies.txt",
-                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/currencies.txt"
-        );
+        return DB_ROOT.resolve("currencies.txt").toString();
+
     }
 
     // function to get the path of the file that store the transactions of the system
     public String getSystemTransactionsFilePath() {
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\systemTransactions.txt",
-                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/systemTransactions.txt"
-        );
+        return DB_ROOT.resolve("systemTransactions.txt").toString();
     }
 
     // function to get the path of the transactions directory
     public String getTransactionsDirectoryPath() {
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\transactions",
-                "/Users/wesammuneer/IdeaProjects/BankingWithJava/db/transactions"
-        );
+        return DB_ROOT.resolve("transactions").toString();
     }
 
     // function to get the card numbers list
     public String getCardNumbersFilePath() {
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\card_numbers_list.txt",
-                ""
-        );
+        return DB_ROOT.resolve("card_numbers_list.txt").toString();
     }
 
     // function to get the path of the cards directory
     public String getCardsDirectoryPath() {
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\cards",
-                ""
-        );
+        return DB_ROOT.resolve("cards").toString();
     }
 
     // function to get the path of the debit cards transactions
     public String getDebitCardTransactionsDirectoryPath() {
-        return pathBasedOnOs(
-                "C:\\Users\\wesam\\Desktop\\GA\\BankingWithJava\\db\\debit_card_transactions",
-                ""
-        );
+        return DB_ROOT.resolve("debit_card_transactions").toString();
     }
 }
 
