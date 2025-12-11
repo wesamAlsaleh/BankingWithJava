@@ -1,1 +1,0 @@
-UUID:14f4bf00-3a50-480b-8473-9170860e1068, User_Id:1, Account_Number:53549437066802, Card_Number:4616910031750663, Transaction_Type:TRANSFER, Transaction_Amount_USD:116.000, Transaction_Date:2025-12-12T00:21:28.775697600

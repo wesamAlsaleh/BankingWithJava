@@ -1,0 +1,1 @@
+First_Name:customer, Last_Name:user, Email:customer@gmail.com, Password: $2a$10$TEiM6tDAKn/nK8517dt8g.FKVwCfMznXyv3Q31HhvhcGqKabhu6qe, Role: Customer, fraud_Attempts_Count: 0, LockUntil: null, Created_At: 2025-12-12T00:26:28.003219800, Updated_At: 2025-12-12T00:26:28.003219800

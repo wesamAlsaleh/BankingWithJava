@@ -1,1 +1,0 @@
-UUID:06761644-e88d-4513-b424-0d0852932640, User_Id:9, Account_Name:new saving, Account_Number:53546575195703, Iban:BH11 GAJB 5354 6575 1957 03, Transaction_Type:TRANSFER, Transaction_Amount:0.100, Post_Balance:370.00, Transaction_Date:2025-12-10T03:02:32.043983300

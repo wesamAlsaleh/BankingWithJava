@@ -88,15 +88,15 @@ Here are some screenshots showcasing the user interface and key functionalities 
 
 ### 2. User Dashboards and Transactions
 
-| Description                        | Screenshot                                                                                                                                                         |
-|:-----------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Customer Homepage**              | ![Customer Homepage](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/customer-page.png)                      |
-| **See All Accounts**               | ![See All Accounts](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/account-page.png)                        |
-| **Deposit Page**                   | ![Deposit Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/deposit-page.png)                            |
-| **Withdrawal Page**                | ![Withdrawal Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/withdraw-page.png)                        |
-| **Select Debit Card Page**         | ![Select Debit Card Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/select-debit-card-to-use-page.png) |
-| **Transfer Using Debit Card Page** | ![Select Debit Card Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/feature/add-banker-users/assets/screenshots/transfer-using-debit-card-page) |
-| **User Transaction History**       | ![Transaction History](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/user-transactions-history-page.png)   |
+| Description                        | Screenshot                                                                                                                                                             |
+|:-----------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Customer Homepage**              | ![Customer Homepage](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/customer-page.png)                          |
+| **See All Accounts**               | ![See All Accounts](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/account-page.png)                            |
+| **Deposit Page**                   | ![Deposit Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/deposit-page.png)                                |
+| **Withdrawal Page**                | ![Withdrawal Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/withdraw-page.png)                            |
+| **Select Debit Card Page**         | ![Select Debit Card Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/select-debit-card-to-use-page.png)     |
+| **Transfer Using Debit Card Page** | ![Transfer Using Debit Card Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/feature/add-banker-users/assets/screenshots/transfer-using-debit-card-page.png) |
+| **User Transaction History**       | ![Transaction History](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/user-transactions-history-page.png)       |
 
 ### 3. Banker Views
 
