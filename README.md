@@ -40,17 +40,6 @@ You will need the following software installed on your machine:
 3. **Run the Main Application:**
    Locate the main class (`BankSystem.java`) and run it from your IDE or the command line.
 
----
-
-## 🏗️ System Design: Entity Relationship Diagram (ERD)
-
-The following diagram illustrates the key entities (tables/data models) in the banking system and the relationships
-between them.
-
-![Entity Relationship Diagram (ERD)](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/ERD.png)
-
----
-
 ## 📂 Project Structure
 
 The key components of the project are organized as follows:
@@ -74,6 +63,28 @@ The project successfully implements the following core business requirements:
 * **Account Deactivation:** An account is automatically **deactivated** after reaching **2 overdrafts**.
 * **Reactivation:** The system includes logic to reactivate a deactivated account once the customer resolves the
   negative balance (by depositing funds to bring the balance to $\ge 0$).
+
+## 💡 Development Process
+This section documents the planning, tracking, and iterative development approach used to complete the project.
+
+**Planning and Tracking**
+
+* All features, tasks, and bugs were managed using Atlassian Jira.
+* Jira allowed for clear task prioritization, scope management, and transparent progress tracking.
+* Jira Board Link (User Stories and Planning): [Jira Board Link](https://wesamalsaleh23-1764554049477.atlassian.net/jira/software/projects/GA01/boards/1?atlOrigin=eyJpIjoiNmU3NDJkNGYxMjg0NDg0NWEyNWY2NmM4YmI0MzA0NWEiLCJwIjoiaiJ9)
+
+
+
+---
+
+## 🏗️ System Design: Entity Relationship Diagram (ERD)
+
+The following diagram illustrates the key entities (tables/data models) in the banking system and the relationships
+between them.
+
+![Entity Relationship Diagram (ERD)](https://github.com/wesamAlsaleh/BankingWithJava/blob/main/assets/ERD.png)
+
+---
 
 ## 📸 Screenshots
 
