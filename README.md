@@ -65,15 +65,7 @@ The project successfully implements the following core business requirements:
   negative balance (by depositing funds to bring the balance to $\ge 0$).
 
 ## 💡 Development Process
-This section documents the planning, tracking, and iterative development approach used to complete the project.
-
-**Planning and Tracking**
-
-* All features, tasks, and bugs were managed using Atlassian Jira.
-* Jira allowed for clear task prioritization, scope management, and transparent progress tracking.
 * Jira Board Link (User Stories and Planning): [Jira Board Link](https://wesamalsaleh23-1764554049477.atlassian.net/jira/software/projects/GA01/boards/1?atlOrigin=eyJpIjoiNmU3NDJkNGYxMjg0NDg0NWEyNWY2NmM4YmI0MzA0NWEiLCJwIjoiaiJ9)
-
-
 
 ---
 
