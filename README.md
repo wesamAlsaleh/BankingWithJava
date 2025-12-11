@@ -85,10 +85,10 @@ Here are some screenshots showcasing the user interface and key functionalities 
 
 ### 1. Account Creation and Login
 
-| Description      | Screenshot                                                                                                                              |
-|:-----------------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| **Startup Page** | ![Login Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/start-up-page.png)  |
-| **Login Page**   | ![Create Account](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/login-page.png) |
+| Description      | Screenshot                                                                                                                               |
+|:-----------------|:-----------------------------------------------------------------------------------------------------------------------------------------|
+| **Startup Page** | ![Startup Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/start-up-page.png) |
+| **Login Page**   | ![Login Page](https://github.com/wesamAlsaleh/BankingWithJava/blob/improvement/refactor-db-paths/assets/screenshots/login-page.png)      |
 
 ### 2. User Dashboards and Transactions
 
