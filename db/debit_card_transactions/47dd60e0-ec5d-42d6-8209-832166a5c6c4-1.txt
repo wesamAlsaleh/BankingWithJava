@@ -1,0 +1,1 @@
+UUID:47dd60e0-ec5d-42d6-8209-832166a5c6c4, User_Id:1, Account_Number:53547006573588, Card_Number:3449925215725172, Transaction_Type:DEPOSIT, Transaction_Amount_USD:61.501, Transaction_Date:2025-12-12T16:05:26.331553200

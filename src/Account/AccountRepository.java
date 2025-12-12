@@ -83,12 +83,8 @@ public class AccountRepository {
     // function to write a new account record in the accounts directory
     public boolean saveNewAccountRecord(String fileName, String accountRecord) {
         try {
-            System.out.println("save account record");
-
             // get the path of the parent directory
             var rootDirectory = dbPaths.getAccountsDirectoryPath();
-
-            System.out.println("root dir " + rootDirectory);
 
             // prepare the path of the new file
             var newFile = new File(rootDirectory, fileName); // this will handle the path
