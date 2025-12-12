@@ -149,6 +149,7 @@ public class DebitCardTransactionService {
         // print all the transactions
         if (operation.toString().equals("ALL")) {
             printer(filteredTransactions);
+            return; // exit the function
         }
 
         // refilter the transactions bases on the type

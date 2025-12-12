@@ -134,6 +134,7 @@ public class TransactionService {
         // print all the transactions
         if (operation.equals("ALL")) {
             printer(filteredTransactions);
+            return; // exit the function
         }
 
         // refilter the transactions bases on the type

@@ -1,0 +1,1 @@
+UUID:ebd6f413-7a56-47ec-9342-6db0b6a69834, User_Id:1, Account_Name:saving acc, Account_Number:53547006573588, Iban:BH45 GAJB 5354 7006 5735 88, Transaction_Type:WITHDRAW, Transaction_Amount:10.000, Post_Balance:20.00, Transaction_Date:2025-12-12T16:04:46.862123700
