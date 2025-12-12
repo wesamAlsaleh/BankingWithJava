@@ -169,6 +169,8 @@ public class AccountService {
         // get the user accounts
         List<Account> userAccounts = accountRepository.getAllAccountsByUserId(user.getId());
 
+        System.out.println("User accounts: " + userAccounts);
+
         // iterate over the accounts
         for (Account userAccount : userAccounts) {
             //  if the user has an account with the same type and currency code

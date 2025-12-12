@@ -7,10 +7,7 @@ import Global.Utils.FileHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class AccountRepository {
     private final DBPaths dbPaths = new DBPaths();
@@ -86,8 +83,12 @@ public class AccountRepository {
     // function to write a new account record in the accounts directory
     public boolean saveNewAccountRecord(String fileName, String accountRecord) {
         try {
+            System.out.println("save account record");
+
             // get the path of the parent directory
             var rootDirectory = dbPaths.getAccountsDirectoryPath();
+
+            System.out.println("root dir " + rootDirectory);
 
             // prepare the path of the new file
             var newFile = new File(rootDirectory, fileName); // this will handle the path

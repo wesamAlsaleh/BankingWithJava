@@ -40,7 +40,7 @@ public class DBPaths {
 
     // function to get the path of the file that handle the id counter "user_index.txt"
     public String getUserIndexPath() {
-        return DB_ROOT.resolve("User_Index.txt").toString();
+        return DB_ROOT.resolve("user_index.txt").toString();
     }
 
     // function to get the path of the directory that contains the users files
