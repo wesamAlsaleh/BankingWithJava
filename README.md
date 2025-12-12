@@ -26,6 +26,8 @@ You will need the following software installed on your machine:
 
 * **Java Development Kit (JDK):** Version 17 or higher (Recommended).
 * **An IDE:** IntelliJ IDEA.
+* Required Libraries: Make sure to download and install the following JARs:
+  * jbcrypt-0.4.jar (placed in /BankingWithJava folder)
 
 ### Installation
 
