@@ -1,0 +1,1 @@
+User_Id:2, Account_Number:53542149646731, Card_Number:8914513728692803, Card_Type:PLATINUM
