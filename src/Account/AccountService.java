@@ -425,56 +425,67 @@ public class AccountService {
         // get the senderAccount of the targeted targetUser
         var receiverAccounts = getUserAccounts(receiver);
 
-        // iterate over the accounts
+        // iterate over the receiver accounts
         for (Account receiverAccount : receiverAccounts) {
+            // if the receiver account number is the same as the provided number
             if (receiverAccount.getAccountNumber().equals(receiverAccountNumber)) {
-                // get the balance of the sender
-                var senderBalance = senderAccount.getBalance();
-
-                // withdraw from the main senderAccount
-                senderAccount.setBalance(senderBalance - amount);
-
-                // get the currencies
-                var currencies = currencyRepository.getCurrencies();
+                // holder values
                 var senderFlag = false;
                 var receiverFlag = false;
                 String senderCurrency = "";
                 String receiverCurrency = "";
 
-                // iterate over them
+                // get the balance of the sender account
+                var senderBalance = senderAccount.getBalance();
+
+                // get the currencies of the system
+                var currencies = currencyRepository.getCurrencies();
+
+                // iterate over the currencies
                 for (Currency currency : currencies) {
-                    // check if the sender has an exchange rate
+                    // if the sender has an exchange rate
                     if (currency.currencyCode().equals(senderAccount.getCurrency())) {
                         senderFlag = true; // set to trues
                         senderCurrency = senderAccount.getCurrency();
                     }
 
-                    // check if the receiver has an exchange rate
+                    // if the receiver has an exchange rate
                     if (currency.currencyCode().equals(receiverAccount.getCurrency())) {
                         receiverFlag = true; // set to trues
                         receiverCurrency = receiverAccount.getCurrency();
                     }
                 }
 
-                // if the currency is not in the system print message
+                // if the sender currency is not in the system print message
                 if (!senderFlag) {
                     printer.printError("Cannot transfer " + amount + " from this account in the moment.");
                     return false; // do nothing
                 }
 
+                // if the receiver currency is not in the system print message
                 if (!receiverFlag) {
                     printer.printError("Cannot transfer " + amount + " to this account in the moment.");
                     return false; // do nothing
                 }
 
-                // calculate the rate between
+                // convert the amount to the receiver currency
                 var receiverAmount = currencyService.convertCurrency(senderCurrency, receiverCurrency, amount);
 
                 // get the balance of the receiver
                 var receiverBalance = receiverAccount.getBalance();
 
-                // deposit it into the targeted targetUser
-                receiverAccount.setBalance(receiverBalance + receiverAmount);
+                // if the receiver account is the sender
+                if (senderAccount.getAccountNumber().equals(receiverAccountNumber)) {
+                    // send error message
+                    printer.printError("Cannot transfer to the same account!");
+                    return false; // failed
+                } else {
+                    // withdraw from the main senderAccount
+                    senderAccount.setBalance(senderBalance - amount);
+
+                    // deposit it into the targeted targetUser
+                    receiverAccount.setBalance(receiverBalance + receiverAmount);
+                }
 
                 // save the changes for both accounts
                 var senderSuccess = accountRepository.updateAccountRecord(senderAccount);

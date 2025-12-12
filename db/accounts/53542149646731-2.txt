@@ -1,0 +1,1 @@
+user_id:2, account_name:customer BHD, account_number:53542149646731, iban:BH66 GAJB 5354 2149 6467 31, account_type:Checking, currency:BHD, balance:20.000, overdraft_count:0, is_active:TRUE, created_at:2025-12-12T16:35:47.787205500
