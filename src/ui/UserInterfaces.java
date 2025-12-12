@@ -144,7 +144,7 @@ public class UserInterfaces {
             System.out.println("[WITH] Withdraw money");
             System.out.println("[T]    Transfer money");
             System.out.println("[TH]   Transfer history");
-            System.out.println("[ATM]   ATM (Pay by debit card)");
+            System.out.println("[ATM]  ATM (Pay by debit card)");
             System.out.println("[DBTH] Debit card transactions history");
 
             // options requires to pass the middleware
