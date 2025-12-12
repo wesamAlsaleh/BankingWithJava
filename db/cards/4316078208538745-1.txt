@@ -1,1 +1,0 @@
-User_Id:1, Account_Number:53549437066802, Card_Number:4316078208538745, Card_Type:TITANIUM

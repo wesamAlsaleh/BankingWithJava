@@ -1,0 +1,1 @@
+First_Name:banker, Last_Name:user, Email:banker@gmail.com, Password: $2a$10$tY27qiX3dRmeRsym5W1VB.uCLUk0SKRTFwiHKzwtMk1lG7pK/duKK, Role: Banker, fraud_Attempts_Count: 0, LockUntil: null, Created_At: 2025-12-12T00:26:08.628215400, Updated_At: 2025-12-12T00:26:08.628215400

@@ -1,1 +1,0 @@
-UUID:add07c2b-6607-49b8-a98d-4d794f01f812, User_Id:9, Account_Name:new usd, Account_Number:53545645113494, Iban:BH40 GAJB 5354 5645 1134 94, Transaction_Type:TRANSFER, Transaction_Amount:20.000, Post_Balance:0.00, Transaction_Date:2025-12-10T03:04:35.457602500

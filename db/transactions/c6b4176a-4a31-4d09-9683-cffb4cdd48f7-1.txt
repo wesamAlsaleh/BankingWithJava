@@ -1,1 +1,0 @@
-UUID:c6b4176a-4a31-4d09-9683-cffb4cdd48f7, User_Id:1, Account_Name:wesam eu, Account_Number:53549437066802, Iban:BH50 GAJB 5354 9437 0668 02, Transaction_Type:WITHDRAW, Transaction_Amount:10.000, Post_Balance:10.00, Transaction_Date:2025-12-11T23:44:28.545957800

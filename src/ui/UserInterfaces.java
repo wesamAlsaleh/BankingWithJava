@@ -149,7 +149,8 @@ public class UserInterfaces {
 
             // options requires to pass the middleware
             if (user.getRole().equals(UserRole.Banker)) {
-                printer.printColoredLine(Printer.PURPLE, "[SC]   See All Currencies");
+                printer.printColoredLine(Printer.PURPLE, "[BA]   Create bunker account");
+                printer.printColoredLine(Printer.PURPLE, "[SC]   See all currencies");
                 printer.printColoredLine(Printer.PURPLE, "[AC]   Add currency");
                 printer.printColoredLine(Printer.PURPLE, "[DC]   Delete currency");
                 printer.printColoredLine(Printer.PURPLE, "[ST]   System transactions");
@@ -189,6 +190,11 @@ public class UserInterfaces {
                 case "dbth":
                     userDebitCardTransferHistoryPage(user);
                     break;
+                case "ba":
+                    // if user not allowed this option is not available
+                    userMiddleware(user.getRole().toString());
+                    createBankerAccountPage();
+                    break;
                 case ("sc"):
                     // if user not allowed this option is not available
                     userMiddleware(user.getRole().toString());
@@ -216,6 +222,73 @@ public class UserInterfaces {
                 default:
                     printer.printWrongChoice();
             }
+        }
+    }
+
+    // *************************************************************************
+    // -------------------------------Users Pages----------------------------------
+    // *************************************************************************
+
+    // function to show create bunker account page
+    private void createBankerAccountPage() {
+        // initial message
+        printer.printColoredTitle("Create Banker Account");
+
+        while (true) {
+            // first name input
+            printer.printQuestion("Enter the first name: ");
+
+            // user input
+            var firstName = scanner.nextLine().trim();
+
+            // last name input
+            printer.printQuestion("Enter the last name: ");
+
+            // user input
+            var lastName = scanner.nextLine().trim();
+
+            // email input
+            printer.printQuestion("Enter the email address: ");
+
+            // user input
+            var email = scanner.nextLine().trim();
+
+            // password input
+            printer.printQuestion("Enter the password: ");
+
+            // user input
+            var password = scanner.nextLine().trim();
+
+            // validate the inputs
+            var reply = userValidation.validateRegisterInput(firstName, lastName, email, password);
+
+            // if there are errors stop creation
+            if (!reply.isEmpty()) {
+                printer.printError(reply); // print the errors
+                return; // exit the page
+            }
+
+            // generate new id
+            var id = userRepository.generateUserId();
+
+            // create the new user
+            var user = new User(
+                    id,
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    UserRole.Banker
+            );
+
+            // save it in the db
+            userRepository.saveUser(user);
+
+            // show success message
+            printer.printSuccessful(String.format("Created Banker account with ID: %s", id));
+
+            // exit the while loop
+            break;
         }
     }
 

@@ -1,1 +1,0 @@
-UUID:540d39a2-cb50-4212-88a5-553fca369eb0, User_Id:1, Account_Name:wesam BHD, Account_Number:53540462998986, Iban:BH88 GAJB 5354 0462 9989 86, Transaction_Type:DEPOSIT, Transaction_Amount:9.900, Post_Balance:4.10, Transaction_Date:2025-12-11T23:42:25.334733500

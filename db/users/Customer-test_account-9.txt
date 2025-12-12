@@ -1,1 +1,0 @@
-First_Name:test, Last_Name:account, Email:new@gmail.com, Password: $2a$10$LYSY0ssIpf0Ut8t.eyqB5uxsuVnIcrCuVc6ojfo7CTWPip95wjwpC, Role: Customer, fraud_Attempts_Count: 0, LockUntil: null, Created_At: 2025-12-06T00:47:32.005883300, Updated_At: 2025-12-06T00:47:32.005883300

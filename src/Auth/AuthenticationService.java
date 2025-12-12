@@ -60,7 +60,7 @@ public class AuthenticationService {
                 // generate new id
                 var id = userRepository.generateUserId();
 
-                // create user record and todo: customer record
+                // create user record
                 var user = new User(id, firstName, lastName, email, password);
 
                 // create user file
